@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Transaction
+ * Class PaymentType
  */
-class Transaction extends Model
+class PaymentType extends Model
 {
-    protected $table = 'transaction';
+    protected $table = 'payment_type';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'prefix_id',
-        'customer_info_id',
-        'product_fg_code_id',
-        'qty',
-        'payment_type_id',
+        'name',
+        'redirect_url',
         'input_date',
         'input_by',
         'update_date',

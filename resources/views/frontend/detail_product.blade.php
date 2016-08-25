@@ -59,39 +59,38 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="collapse navbar-collapse">
-                    <div class="product">
-                        <div id="product_name">
-                          <h1>{{ $product['name'] }}</h1>
-                        </div>
-                        <div class="img_preview" style="margin-bottom: 10px; margin-top: 10px; min-height: 480px;">
-                          <img id="img_preview" src="{{$product['image_url']}}" style="max-width:320px; max-height:480px"/>
-                        </div>
-                        <div class="img_thumb">
-                          <ul class="img-nav">
-                            <li>
-                              <a class="img-nav-icon" href="{{$product['image_url']}}">
-                                <img src="{{$product['image_url']}}" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
-                              </a>
-                            </li>
-                            @foreach($colours as $colour)
-                            <li>
-                              <a class="img-nav-icon" href="{{$colour['image_url']}}">
-                                <img src="{{$colour['image_url']}}" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
-                              </a>
-                            </li>
-                            @endforeach
-                          </ul>
-                        </div>
-                        <br/>
-                        <h2>Rp {{ number_format(0,2,",",".") }}</h2>
-                        <br/>
-                        <button type="button" id="buy" name="buy" class="btn btn-danger" style="width: 320px; margin-top: 20px">Beli</button>
-                        <h4 style="margin-top: 50px">Detail Product</h4>
-                        <hr/>
-                        <div class="detail-product">
-                          <p>{!!$product['description']!!}</p>
-                        </div>
+                <div class="product">
+                  <div id="product_name">
+                    <h1 style="font-weight:bold">{{ $product['name'] }}</h1>
+                  </div>
+                    <div class="left-side" style="display: inline-block;">
+                      <div class="img_preview" style="margin-bottom: 10px; margin-top: 10px; min-height: 480px;">
+                        <img id="img_preview" src="{{$colours[0]['image_url']}}" style="max-width:320px; max-height:480px"/>
+                      </div>
+                      <div class="img_thumb">
+                        <ul class="img-nav">
+                          @if(isset($colours))
+                          @foreach($colours as $colour)
+                          <li>
+                            <a class="img-nav-icon" data-price="{{$colour['price']}}" href="{{$colour['image_url']}}">
+                              <img src="{{$colour['image_url']}}" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
+                            </a>
+                          </li>
+                          @endforeach
+                          @endif
+                        </ul>
+                      </div>
+                      <br/>
+                    </div>
+                    <div class="right-side" style="display: inline-block; vertical-align:top">
+                      <h4 style="">Detail Product</h4>
+                      <hr/>
+                      <div class="detail-product" style="text-align:left">
+                        <p>{!!$product['description']!!}</p>
+                      </div>
+                      <h2 id="price">Rp {{ number_format($colours[0]['price'],0,",",".") }}</h2>
+                      <br/>
+                      <button type="button" id="buy" name="buy" class="btn btn-danger" style="width: 320px; margin-top: 20px">Beli</button>
                     </div>
                 </div>
             </div>
@@ -108,9 +107,23 @@
                 @endif
             });
 
+            Number.prototype.formatMoney = function(c, d, t){
+              var n = this,
+                  c = isNaN(c = Math.abs(c)) ? 2 : c,
+                  d = d == undefined ? "." : d,
+                  t = t == undefined ? "," : t,
+                  s = n < 0 ? "-" : "",
+                  i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+                  j = (j = i.length) > 3 ? j % 3 : 0;
+                 return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
             $(".img-nav-icon").click(function(e){
               e.preventDefault();
               $("#img_preview").attr("src",$(this).find("img").attr("src"));
+              var price = $(this).data("price");
+              $("#price").html("Rp "+price.formatMoney(0, ',', '.'));
+              console.log();
             });
 
             $("#buy").click(function(e){

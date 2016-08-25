@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateTransactionTable extends Migration {
+class CreatePaymentTypeTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,13 +12,11 @@ class CreateTransactionTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('transaction', function(Blueprint $table)
+		Schema::create('payment_type', function(Blueprint $table)
 		{
-			$table->string('prefix_id')->default('DOTS');
 			$table->integer('id', true);
-			$table->integer('customer_info_id')->nullable()->index('transaction_customer_info_id');
-			$table->integer('product_fg_code_id')->nullable()->index('transaction_product_fg_code_id');
-			$table->integer('qty')->nullable();
+			$table->string('name')->nullable();
+			$table->text('redirect_url', 65535)->nullable();
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();
 			$table->timestamp('update_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -34,7 +32,7 @@ class CreateTransactionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('transaction');
+		Schema::drop('payment_type');
 	}
 
 }

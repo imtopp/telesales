@@ -15,8 +15,9 @@ class CreateProductColourTable extends Migration {
 		Schema::create('product_colour', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->string('nama')->nullable();
+			$table->string('name')->nullable();
 			$table->integer('product_id')->nullable()->index('product_colour_product_id');
+			$table->text('image_url', 65535)->nullable();
 			$table->enum('status', array('0','1'))->nullable()->default('1');
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();

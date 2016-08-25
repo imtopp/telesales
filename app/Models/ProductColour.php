@@ -16,6 +16,7 @@ class ProductColour extends Model
     protected $fillable = [
         'name',
         'product_id',
+        'image_url',
         'status',
         'input_date',
         'input_by',

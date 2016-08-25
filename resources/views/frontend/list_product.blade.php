@@ -47,7 +47,7 @@
                         <div id="{{str_replace(' ','_',$category['name'])}}" class="collapse">
                             @foreach($all_product as $product)
                                 @if($product['category']==$category['name'])
-                                <div class="product" data-fgcode="{{$product['fg_code']}}">
+                                <div class="product" data-id="{{$product['id']}}">
                                     <img src="{{$product['image_url']}}" width="145" height="198" style="margin-bottom: 10px;"/>
                                     <br/>
                                     <b style="font-size: large;">{{$product['name']}}</b>
@@ -62,9 +62,9 @@
 
         <script>
             $(".product").click(function(e){
-                var fg_code = $(this).data("fgcode");
+                var id = $(this).data("id");
 
-                window.location.href = "{{ URL::to('/product_detail') }}"+"?id="+fg_code;
+                window.location.href = "{{ URL::to('/product_detail') }}"+"?id="+id;
             });
         </script>
     </body>

@@ -18,7 +18,6 @@ class ProductFgCode extends Model
         'product_colour_id',
         'price',
         'description',
-        'image_url',
         'status',
         'input_date',
         'input_by',
@@ -28,7 +27,5 @@ class ProductFgCode extends Model
 
     protected $guarded = [];
 
-    public function productColour(){
-		return $this->belongsTo('App\Models\ProductColour');
-	}
+        
 }

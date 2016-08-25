@@ -30,6 +30,30 @@
             .content {
                 text-align: center;
             }
+
+            .img-nav {
+              padding: 0;
+              margin: 0;
+            }
+
+            .img-nav li {
+              list-style: none;
+              width: 50px;
+              height: 50px;
+              display: inline-block;
+              border: grey;
+              border-style: solid;
+              border-width: thin;
+            }
+
+            .img-nav li a {
+              display: block;
+            }
+
+            .img-nav li a img{
+              max-height:48px;
+              max-width:48px;
+            }
         </style>
     </head>
     <body>
@@ -37,15 +61,37 @@
             <div class="content">
                 <div class="collapse navbar-collapse">
                     <div class="product">
-                        <h1>{{ $product['name'] }}</h1>
-                        <img src="{{$product['image_url']}}" width="320" height="480" style="margin-bottom: 10px; margin-top: 10px;"/>
+                        <div id="product_name">
+                          <h1>{{ $product['name'] }}</h1>
+                        </div>
+                        <div class="img_preview" style="margin-bottom: 10px; margin-top: 10px; min-height: 480px;">
+                          <img id="img_preview" src="{{$product['image_url']}}" style="max-width:320px; max-height:480px"/>
+                        </div>
+                        <div class="img_thumb">
+                          <ul class="img-nav">
+                            <li>
+                              <a class="img-nav-icon" href="{{$product['image_url']}}">
+                                <img src="{{$product['image_url']}}" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
+                              </a>
+                            </li>
+                            @foreach($colours as $colour)
+                            <li>
+                              <a class="img-nav-icon" href="{{$colour['image_url']}}">
+                                <img src="{{$colour['image_url']}}" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
+                              </a>
+                            </li>
+                            @endforeach
+                          </ul>
+                        </div>
                         <br/>
-                        <h2>Rp {{ number_format($product['price'],2,",",".") }}</h2>
+                        <h2>Rp {{ number_format(0,2,",",".") }}</h2>
                         <br/>
                         <button type="button" id="buy" name="buy" class="btn btn-danger" style="width: 320px; margin-top: 20px">Beli</button>
                         <h4 style="margin-top: 50px">Detail Product</h4>
                         <hr/>
-                        <p>{!!$product['description']!!}</p>
+                        <div class="detail-product">
+                          <p>{!!$product['description']!!}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,10 +108,13 @@
                 @endif
             });
 
-            $("#buy").click(function(e){
-                var fg_code = $(this).data("fgcode");
+            $(".img-nav-icon").click(function(e){
+              e.preventDefault();
+              $("#img_preview").attr("src",$(this).find("img").attr("src"));
+            });
 
-                window.location.href = "{{ URL::to('/buy_product') }}"+"?id="+{{ $product['fg_code'] }};
+            $("#buy").click(function(e){
+              window.location.href = "{{ URL::to('/buy_product') }}"+"?id=";
             });
         </script>
 

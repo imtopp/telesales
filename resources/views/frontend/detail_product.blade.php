@@ -44,6 +44,7 @@
               border: grey;
               border-style: solid;
               border-width: thin;
+              vertical-align: top;
             }
 
             .img-nav li a {
@@ -64,7 +65,7 @@
                 <h1 style="font-weight:bold">{{ $product['name'] }}</h1>
               </div>
               <div class="left-side" style="display: inline-block;">
-                <div class="img_preview" style="margin-bottom: 10px; margin-top: 10px; min-height: 480px;">
+                <div class="img_preview" style="margin-bottom: 10px; margin-top: 10px; min-height: 480px;min-width:320px;">
                   <img id="img_preview" src="{{$colours[0]['image_url']}}" style="max-width:320px; max-height:480px"/>
                 </div>
                 <hr/>
@@ -98,7 +99,7 @@
     						{!! Form::hidden('price',$colours[0]['price'],array('id'=>'price')) !!}
     					</div>
               <div class='form-group'>
-                {!! Form::label('Warna') !!}
+                {!! Form::label('Variant') !!}
                 {!! Form::select('product_colour_id',isset($colours_dropdown)?$colours_dropdown:array(),null,array('required','id'=>'product_colour_id','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
               </div>
               <div class='form-group'>
@@ -156,7 +157,7 @@
             }
             $("#img_preview").attr("src",image);
 
-            $("#fg_code").val(colour.data("fg-code"));
+            $("#fg_code").val(colour_id.data("fg-code"));
           });
 
           Number.prototype.formatMoney = function(c, d, t){

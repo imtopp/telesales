@@ -32,6 +32,7 @@
             }
             .product {
                 margin-bottom: 20px;
+                margin-right: 10px;
                 cursor: pointer;
                 display: inline-block;
             }
@@ -49,7 +50,9 @@
                             @foreach($all_product as $product)
                                 @if($product['category']==$category['name'])
                                 <div class="product" data-id="{{$product['id']}}">
-                                    <img src="{{$product['image_url']}}" width="145" height="198" style="margin-bottom: 10px;"/>
+                                    <div class="img_thumbnail" style="min-height:198px;">
+                                      <img src="{{$product['image_url']}}" style="margin-bottom:10px; max-width:145px; max-height:198px;"/>
+                                    </div>
                                     <br/>
                                     <b style="font-size: large;">{{$product['name']}}</b>
                                 </div>

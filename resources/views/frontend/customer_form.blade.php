@@ -41,7 +41,7 @@
           <div class="content">
             <div class="left-side" style="display: inline-block; margin-right:20px; margin-top:20px">
             	<div class="product" data-fgcode="{{$product['fg_code']}}">
-                <img src="{{$product['image_url']}}" width="145" height="198" style="margin-bottom: 10px;"/>
+                <img src="{{$product['image_url']}}" width="160" height="240" style="margin-bottom: 10px;" onerror="this.onerror=null;this.src='assets/img/img_not_found.jpg';"/>
                 <br/>
                 <b style="font-size: large;">{{$product['name']}}</b>
                 <h4>{{ $product['qty'] }} x Rp {{ number_format($product['price'],0,",",".") }}</h4>

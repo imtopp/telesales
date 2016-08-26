@@ -33,6 +33,7 @@
             .product {
                 margin-bottom: 20px;
                 cursor: pointer;
+                display: inline-block;
             }
         </style>
     </head>

@@ -99,30 +99,30 @@ class FrontendProductController extends BaseController
   		$all_data = null; //set all_data null
 
   	if(isset($all_data) && count($all_data)!=0){ //check if the all_data is set for value and it's count of value is not 0
-      $colour = array();
+      $colours = array();
+      $colours_dropdown = array();
       foreach($all_data as $data){
         $product = array('name'=>$data['product']->name,'image_url'=>$data['product']->image_url,'description'=>$data['product']->description);
         $colours[] = array('id'=>$data['colour']->id,'name'=>$data['colour']->name,'image_url'=>$data['colour']->image_url,'fg_code'=>$data['fg_code']->fg_code,'price'=>$data['fg_code']->price);
+        $colours_dropdown[$data['colour']->id] = $data['colour']->name;
       }
       $message = null;
     }else{ //the fg_code is not found so it cant find the product or product not found
-    	$product = null;
-      $colours = null;
     	$message = "Maaf produk yang anda cari tidak dapat ditemukan.";
     }
 
-  	return view('frontend/detail_product',['product'=>$product,'colours'=>$colours,'message'=>$message]); //display detail_product view with product property and the message
+  	return view('frontend/detail_product',['product'=>isset($product)?$product:null,'colours'=>isset($colours)?$colours:null,'colours_dropdown'=>isset($colours_dropdown)?$colours_dropdown:null,'message'=>$message]); //display detail_product view with product property and the message
   }
 
   //public function for showing form to customer when they want buy product
 	public function showCustomerForm(){
-		if(isset($_GET['id']) && $_GET['id']!="") //checking if there is fg_code at $_GET['id'] from URL
-    		$all_data = $this->getActiveProduct($_GET['id']); //getting active product from the fg_code
+		if(isset($_POST['fg_code']) && $_POST['fg_code']!="") //checking if there is fg_code at $_GET['id'] from URL
+    		$product = $this->getActiveProduct(null,$_POST['fg_code']); //getting active product from the fg_code
     	else //when the $_GET['id'] is not set / there is no fg_code in URL
-    		$all_data = null; //set all_data null
+    		$product = null; //set all_data null
 
-    	if(isset($all_data) && count($all_data)!=0){ //check if the all_data is set for value and it's count of value is not 0
-	    	$product = array('name'=>$all_data['product']->name." - ".$all_data['colour']->name,'image_url'=>$all_data['fg_code']->image_url,'fg_code'=>$all_data['fg_code']->fg_code,'price'=>$all_data['fg_code']->price);
+    	if(isset($product) && count($product)!=0){ //check if the all_data is set for value and it's count of value is not 0
+	    	$data_product = array('name'=>$product['product']->name." - ".$product['colour']->name,'image_url'=>$product['colour']->image_url,'fg_code'=>$product['fg_code']->fg_code,'price'=>$product['fg_code']->price,'total_price'=>$_POST['price'],'qty'=>$_POST['qty']);
 	    	$payment_type = array(); //initialize array for payment_type
 	    	$payment_types = PaymentTypeModel::get(); //getting available payment type
         foreach($payment_types as $type){ //creating array of payment_type
@@ -130,11 +130,10 @@ class FrontendProductController extends BaseController
 	    	}
 	    	$message = File::get('assets/disclaimer/disclaimer.txt'); //message for showing disclaimer
 	    }else{ //the fg_code is not found so it cant find the product or product not found
-	    	$product = null;
 	    	$message = "Maaf produk yang anda cari tidak dapat ditemukan.";
 	    }
 
-    	return view('frontend/customer_form',['product'=>$product,'message'=>$message,'payment_type'=>$payment_type]); //display customer_form for buying product with the product,payment_type and the message
+    	return view('frontend/customer_form',['product'=>isset($data_product)?$data_product:null,'message'=>$message,'payment_type'=>$payment_type]); //display customer_form for buying product with the product,payment_type and the message
 	}
 
   //public function for storing customer form input when they want buy product
@@ -164,7 +163,7 @@ class FrontendProductController extends BaseController
 
       //fill transaction model
   		$transaction->customer_info_id = $customer_info->id;
-  		$transaction->product_fg_code_id = $product->id;
+  		$transaction->product_fg_code_id = $fg_codes->id;
   		$transaction->qty = $_POST['qty'];
   		$transaction->payment_type_id = $payment_type->id;
   		$transaction->input_date = $date->format("Y-m-d H:i:s");

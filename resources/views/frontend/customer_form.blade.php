@@ -116,10 +116,10 @@
           {!! Form::label('Alamat Pengiriman') !!}
           {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
         </div>
-        <!--<div class='form-group'>
+        <div class='form-group'>
         {!! Form::label('Metode Pembayaran') !!}
         {!! Form::select('payment_type',$payment_type,null,array('required','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
-      </div>-->
+      </div>
       <div class='form-group' style="text-align:left">
         <h4>Harga Barang : Rp {{ number_format($product['total_price'],0,",",".") }}</h4>
       </div>

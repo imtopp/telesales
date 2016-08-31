@@ -155,7 +155,7 @@ class FrontendProductController extends BaseController
     $fg_codes = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['user_form']['fg_code']])->first(); //find fg_code from the model
     $key = "t3rs3r@h"; //key for encryption
     if(isset($_POST) && count($_POST)!=0){
-      //$payment_type = PaymentTypeModel::where(['id'=>$_POST['payment_type']])->first(); //find payment_type model
+      $payment_type = PaymentTypeModel::where(['id'=>$_POST['user_form']['payment_type']])->first(); //find payment_type model
 
       //fill customer_info model
       $customer_info->name = $this->encrypt($key,$_POST['user_form']['name']);
@@ -181,7 +181,7 @@ class FrontendProductController extends BaseController
       $transaction->customer_info_id = $customer_info->id;
       $transaction->product_fg_code_id = $fg_codes->id;
       $transaction->qty = $_POST['user_form']['qty'];
-      //$transaction->payment_type_id = $payment_type->id;
+      $transaction->payment_type_id = $payment_type->id;
       $transaction->input_date = $date->format("Y-m-d H:i:s");
       $transaction->input_by = "System";
       $transaction->input_date = $date->format("Y-m-d H:i:s");

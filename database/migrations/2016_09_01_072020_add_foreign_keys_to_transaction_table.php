@@ -15,7 +15,7 @@ class AddForeignKeysToTransactionTable extends Migration {
 		Schema::table('transaction', function(Blueprint $table)
 		{
 			$table->foreign('customer_info_id', 'transaction_customer_info_id')->references('id')->on('customer_info')->onUpdate('CASCADE')->onDelete('RESTRICT');
-			$table->foreign('payment_type_id', 'transaction_payment_type_id')->references('id')->on('payment_type')->onUpdate('CASCADE')->onDelete('RESTRICT');
+			$table->foreign('payment_type_id', 'transaction_payment_type_id')->references('id')->on('payment_method')->onUpdate('CASCADE')->onDelete('RESTRICT');
 			$table->foreign('product_fg_code_id', 'transaction_product_fg_code_id')->references('id')->on('product_fg_code')->onUpdate('CASCADE')->onDelete('RESTRICT');
 		});
 	}

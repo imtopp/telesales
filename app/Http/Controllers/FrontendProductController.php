@@ -13,7 +13,13 @@ use App\Models\Product as ProductModel;
 use App\Models\ProductCategory as ProductCategoryModel;
 use App\Models\CustomerInfo as CustomerInfoModel;
 use App\Models\Transaction as TransactionModel;
-use App\Models\PaymentType as PaymentTypeModel;
+use App\Models\CustomerLocationProvince as CustomerLocationProvinceModel;
+use App\Models\CustomerLocationCity as CustomerLocationCityModel;
+use App\Models\CustomerLocationDistrict as CustomerLocationDistrictModel;
+use App\Models\PaymentMethodLocationMapping as PaymentMethodLocationMappingModel;
+use App\Models\PaymentMethod as PaymentMethodModel;
+use App\Models\TotalPriceCategory as TotalPriceCategoryModel;
+use App\Models\DeliveryPrice as DeliveryPriceModel;
 use File;
 use DateTime;
 
@@ -96,9 +102,6 @@ class FrontendProductController extends BaseController
     $all_category = array_unique($all_category,SORT_REGULAR); //create unique category
     $all_product = array_unique($all_product,SORT_REGULAR); //create unique product
 
-    foreach($all_data as $data){
-    }
-
     return view('frontend/list_product',['all_category'=>$all_category,'all_product'=>$all_product]); //display list_product view with all_category and all_product
   }
 
@@ -112,6 +115,9 @@ class FrontendProductController extends BaseController
     if(isset($all_data) && count($all_data)!=0){ //check if the all_data is set for value and it's count of value is not 0
       $colours = array();
       $colours_dropdown = array();
+      $product_data = ProductModel::where(['status'=>'1','id'=>$_GET['id']])->first();
+      $product_data->hit_count = ++$product_data->hit_count;
+      $product_data->save();
       foreach($all_data as $data){
         $product = array('name'=>$data['product']->name,'image_url'=>$data['product']->image_url,'description'=>$data['product']->description);
         $colours[] = array('id'=>$data['colour']->id,'name'=>$data['colour']->name,'image_url'=>$data['colour']->image_url,'fg_code'=>$data['fg_code']->fg_code,'price'=>$data['fg_code']->price);
@@ -134,17 +140,64 @@ class FrontendProductController extends BaseController
 
     if(isset($product) && count($product)!=0){ //check if the all_data is set for value and it's count of value is not 0
       $data_product = array('name'=>$product['product']->name." - ".$product['colour']->name,'image_url'=>$product['colour']->image_url,'fg_code'=>$product['fg_code']->fg_code,'price'=>$product['fg_code']->price,'total_price'=>$_POST['price'],'qty'=>$_POST['qty']);
-      $payment_type = array(); //initialize array for payment_type
-      $payment_types = PaymentTypeModel::get(); //getting available payment type
-      foreach($payment_types as $type){ //creating array of payment_type
-        $payment_type[$type->id] = $type->name;
-      }
+      #$payment_method = array(); //initialize array for payment_method
+       //getting available payment type
+      #foreach($payment_methods as $type){ //creating array of payment_method
+      #  $payment_method[$type->id] = $type->name;
+      #}
       $message = File::get('assets/disclaimer/disclaimer.txt'); //message for showing disclaimer
+      $message_title = "Syarat & Ketentuan Smartfren Online Shop";
     }else{ //the fg_code is not found so it cant find the product or product not found
       $message = "Maaf produk yang anda cari tidak dapat ditemukan.";
+      $message_title = "Product Tidak Ditemukan";
     }
 
-    return view('frontend/customer_form',['product'=>isset($data_product)?$data_product:null,'message'=>$message,'payment_type'=>$payment_type]); //display customer_form for buying product with the product,payment_type and the message
+    return view('frontend/customer_form',['product'=>isset($data_product)?$data_product:null,'message'=>$message,'message_title'=>$message_title]); //display customer_form for buying product with the product,payment_method and the message
+  }
+
+  public function getProvinceDropdown(){
+    return CustomerLocationProvinceModel::lists('name','id');
+  }
+
+  public function getCityDropdown(){
+    if(isset($_POST['province_id']))
+      return CustomerLocationCityModel::where(["province_id"=>$_POST['province_id']])->lists('name','id');
+    else
+      return null;
+  }
+
+  public function getDistrictDropdown(){
+    if(isset($_POST['city_id']))
+      return CustomerLocationDistrictModel::where(["city_id"=>$_POST['city_id']])->lists('name','id');
+    else
+      return null;
+  }
+
+  public function getPaymentMethodDropdown(){
+    if(isset($_POST['district'])){
+      $models = PaymentMethodLocationMappingModel::where(['location_district_id'=>$_POST['district']])->get();
+      $payment_method = array();
+      foreach ($models as $model){
+        $payment = PaymentMethodModel::where(['status'=>'1','id'=>$model->payment_method_id])->first();
+        $payment_method[$payment->id] = $payment->name;
+      }
+      return $payment_method;
+    }else{
+      return null;
+    }
+  }
+
+  public function getDeliveryPrice(){
+    if(isset($_POST['payment_method'])){
+      $payment_method_location_mapping = PaymentMethodLocationMappingModel::where(['location_district_id'=>$_POST['district'],'payment_method_id'=>$_POST['payment_method']])->first();
+      $fg_code = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['fg_code']])->first();
+      $total_price_category = TotalPriceCategoryModel::where([['min_price','<=',$fg_code->price],['max_price','>=',$fg_code->price]])->first();
+      $delivery_price = DeliveryPriceModel::where(['payment_method_location_mapping_id'=>$payment_method_location_mapping->id,'total_price_category_id'=>$total_price_category->id])->first();
+
+      return response()->json(["delivery_price"=>$delivery_price->price,"total_price"=>$fg_code->price]);;
+    }else{
+      return null;
+    }
   }
 
   //public function for storing customer form input when they want buy product
@@ -155,7 +208,7 @@ class FrontendProductController extends BaseController
     $fg_codes = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['user_form']['fg_code']])->first(); //find fg_code from the model
     $key = "t3rs3r@h"; //key for encryption
     if(isset($_POST) && count($_POST)!=0){
-      $payment_type = PaymentTypeModel::where(['id'=>$_POST['user_form']['payment_type']])->first(); //find payment_type model
+      $payment_method = PaymentMethodModel::where(['id'=>$_POST['user_form']['payment_method']])->first(); //find payment_method model
 
       //fill customer_info model
       $customer_info->name = $this->encrypt($key,$_POST['user_form']['name']);
@@ -181,7 +234,7 @@ class FrontendProductController extends BaseController
       $transaction->customer_info_id = $customer_info->id;
       $transaction->product_fg_code_id = $fg_codes->id;
       $transaction->qty = $_POST['user_form']['qty'];
-      $transaction->payment_type_id = $payment_type->id;
+      $transaction->payment_method_id = $payment_method->id;
       $transaction->input_date = $date->format("Y-m-d H:i:s");
       $transaction->input_by = "System";
       $transaction->input_date = $date->format("Y-m-d H:i:s");
@@ -218,39 +271,39 @@ class FrontendProductController extends BaseController
 
   private function encrypt($key,$string){
     $iv = mcrypt_create_iv(
-    mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC),
-    MCRYPT_DEV_URANDOM
+      mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC),
+      MCRYPT_DEV_URANDOM
+    );
+
+    $encrypted = base64_encode(
+    $iv .
+    mcrypt_encrypt(
+    MCRYPT_RIJNDAEL_128,
+    hash('sha256',$key,true),
+    $string,
+    MCRYPT_MODE_CBC,
+    $iv
+    )
   );
 
-  $encrypted = base64_encode(
-  $iv .
-  mcrypt_encrypt(
-  MCRYPT_RIJNDAEL_128,
-  hash('sha256',$key,true),
-  $string,
-  MCRYPT_MODE_CBC,
-  $iv
-  )
-);
+  return $encrypted;
+  }
 
-return $encrypted;
-}
+  private function decrypt($key,$encrypted){
+    $data = base64_decode($encrypted);
+    $iv = substr($data, 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_CBC));
 
-private function decrypt($key,$encrypted){
-  $data = base64_decode($encrypted);
-  $iv = substr($data, 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_CBC));
+    $decrypted = rtrim(
+    mcrypt_decrypt(
+    MCRYPT_RIJNDAEL_128,
+    hash('sha256',$key,true),
+    substr($data, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC)),
+    MCRYPT_MODE_CBC,
+    $iv
+  ),
+  "\0"
+  );
 
-  $decrypted = rtrim(
-  mcrypt_decrypt(
-  MCRYPT_RIJNDAEL_128,
-  hash('sha256',$key,true),
-  substr($data, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC)),
-  MCRYPT_MODE_CBC,
-  $iv
-),
-"\0"
-);
-
-return $decrypted;
-}
+  return $decrypted;
+  }
 }

@@ -14,13 +14,14 @@
   <title>List Product</title>
 
   <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ URL::asset('assets/css/font.css') }}" rel="stylesheet" type="text/css">
   <script src="{{ URL::asset('assets/js/jquery-1.11.0.min.js') }}"></script>
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
   <style>
   @font-face {
-    font-family: 'Roboto-light';
-    src: url('{{ URL::asset('assets/font/roboto/Roboto-light.ttf') }}');
+    font-family: 'roboto-light';
+    src: url('{{ URL::asset('assets/font/roboto/roboto-light.ttf') }}') format('truetype');
     font-weight: normal;
     font-style: normal;
   }
@@ -35,7 +36,7 @@
     width: 100%;
     display: table;
     font-weight: 100;
-    font-family: 'Roboto-light', sans-serif;
+    font-family: 'din_regular', sans-serif;
   }
 
   .container {
@@ -63,7 +64,7 @@
       <div class="row" data-toggle="collapse" data-target="#{{str_replace(' ','_',$category['name'])}}" style="cursor: pointer;">
         <h1><b>{{$category['name']}}</b></h1><hr/></a>
       </div>
-      <div id="{{str_replace(' ','_',$category['name'])}}" class="collapse row">
+      <div id="{{str_replace(' ','_',$category['name'])}}" class="collapse">
         <?php $count=array();$iteration=0; ?>
         @foreach($all_product as $product)
         <?php $iteration++ ?>
@@ -79,8 +80,10 @@
               <img src="{{$product['image_url']}}" style="max-width: 100%; max-height:148pt;"/>
             </div>
             <b style="font-size: large;">{{$product['name']}}</b><br>
-            <b>Rp {{ number_format($product['price'],0,",",".") }}</b><br>
-            {!! Form::button('Beli',array('class'=>'btn btn-danger','style'=>'width: 80%;')) !!}
+            Rp {{ number_format($product['price'],0,",",".") }}<br>
+            <div class="col-xs-6 col-md-12" style="display: -webkit-inline-box; float: initial;">
+              {!! Form::button('Beli',array('class'=>'btn btn-danger btn-block')) !!}
+            </div>
           </div>
           <?php $count[$category['name']]++;?>
           @if($count[$category['name']]==6)
@@ -98,6 +101,10 @@
 </div>
 
 <script>
+$(function(){
+  $("body").hide().show();
+});
+
 $(".product").click(function(e){
   var id = $(this).data("id");
 

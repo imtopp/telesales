@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Transaction
+ * Class TotalPriceCategory
  */
-class Transaction extends Model
+class TotalPriceCategory extends Model
 {
-    protected $table = 'transaction';
+    protected $table = 'total_price_category';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'prefix_id',
-        'customer_info_id',
-        'product_fg_code_id',
-        'qty',
-        'payment_method_id',
+        'min_price',
+        'max_price',
         'input_date',
         'input_by',
         'update_date',

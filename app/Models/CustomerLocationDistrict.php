@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class PaymentType
+ * Class CustomerLocationDistrict
  */
-class PaymentType extends Model
+class CustomerLocationDistrict extends Model
 {
-    protected $table = 'payment_type';
+    protected $table = 'customer_location_district';
 
     public $timestamps = false;
 
     protected $fillable = [
         'name',
-        'redirect_url',
+        'city_id',
         'input_date',
         'input_by',
         'update_date',

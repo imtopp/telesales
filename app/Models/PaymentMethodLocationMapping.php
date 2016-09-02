@@ -5,19 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Transaction
+ * Class PaymentMethodLocationMapping
  */
-class Transaction extends Model
+class PaymentMethodLocationMapping extends Model
 {
-    protected $table = 'transaction';
+    protected $table = 'payment_method_location_mapping';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'prefix_id',
-        'customer_info_id',
-        'product_fg_code_id',
-        'qty',
+        'location_district_id',
         'payment_method_id',
         'input_date',
         'input_by',

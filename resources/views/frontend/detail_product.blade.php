@@ -14,6 +14,7 @@
   <title>List Product</title>
 
   <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ URL::asset('assets/css/font.css') }}" rel="stylesheet" type="text/css">
   <script src="{{ URL::asset('assets/js/jquery-1.11.0.min.js') }}"></script>
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
@@ -50,7 +51,7 @@
     width: 100%;
     display: table;
     font-weight: 100;
-    font-family: 'Roboto-light', sans-serif;
+    font-family: 'din_regular', sans-serif;
   }
 
   .container {
@@ -97,7 +98,7 @@
   }
 
   .form-group{
-    font-family: 'roboto-regular',sans-serif;
+    font-family: 'din_bold',sans-serif;
   }
   </style>
 </head>

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePaymentTypeTable extends Migration {
+class CreateCustomerLocationCityTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,11 @@ class CreatePaymentTypeTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('payment_type', function(Blueprint $table)
+		Schema::create('customer_location_city', function(Blueprint $table)
 		{
 			$table->integer('id', true);
 			$table->string('name')->nullable();
-			$table->text('redirect_url', 65535)->nullable();
+			$table->integer('province_id')->nullable()->index('customer_location_city_province_id');
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();
 			$table->timestamp('update_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -32,7 +32,7 @@ class CreatePaymentTypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('payment_type');
+		Schema::drop('customer_location_city');
 	}
 
 }

@@ -14,13 +14,21 @@
   <title>List Product</title>
 
   <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ URL::asset('assets/css/font.css') }}" rel="stylesheet" type="text/css">
   <script src="{{ URL::asset('assets/js/jquery-1.11.0.min.js') }}"></script>
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
   <style>
   @font-face {
+    font-family: 'Roboto-regular';
+    src: url('{{ URL::asset('assets/font/roboto/roboto-regular.ttf') }}');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
     font-family: 'Roboto-light';
-    src: url('{{ URL::asset('assets/font/roboto/Roboto-light.ttf') }}');
+    src: url('{{ URL::asset('assets/font/roboto/roboto-light.ttf') }}');
     font-weight: normal;
     font-style: normal;
   }
@@ -35,7 +43,7 @@
     width: 100%;
     display: table;
     font-weight: 100;
-    font-family: 'Roboto-light', sans-serif;
+    font-family: 'din_regular', sans-serif;
   }
 
   .container {
@@ -53,7 +61,16 @@
   }
 
   .form-group{
-    font-family: 'roboto-regular',sans-serif;
+    font-family: 'din_bold',sans-serif;
+  }
+
+  .modal .modal-body{
+    max-height: 420px;
+    overflow-y: auto;
+  }
+
+  .modal-title{
+    font-family: 'din_bold',sans-serif;
   }
   </style>
 </head>
@@ -83,7 +100,7 @@
 
         {!! Form::open(array(null,'class'=>'form','id'=>'user_form')) !!}
         <div class="form-group">
-          {!! Form::hidden('fg_code', $product['fg_code']) !!}
+          {!! Form::hidden('fg_code', $product['fg_code'],array('id'=>'fg_code')) !!}
         </div>
         <div class="form-group">
           {!! Form::hidden('qty', $product['qty']) !!}
@@ -113,86 +130,212 @@
           {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Nomor Handphone Anda')) !!}
         </div>
         <div class='form-group'>
-          {!! Form::label('Alamat Pengiriman') !!}
-          {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
+        {!! Form::label('Provinsi') !!}
+        {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control','placeholder'=>'Provinsi lokasi pengiriman Anda')) !!}
+        </div>
+        <div class='form-group'>
+        {!! Form::label('Kota') !!}
+        {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Kota lokasi pengiriman Anda')) !!}
+        </div>
+        <div class='form-group'>
+        {!! Form::label('Kecamatan') !!}
+        {!! Form::select('district',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district','class'=>'form-control','placeholder'=>'Kecamatan lokasi pengiriman Anda')) !!}
+        </div>
+        <div class='form-group'>
+        {!! Form::label('Alamat Pengiriman') !!}
+        {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
         </div>
         <div class='form-group'>
         {!! Form::label('Metode Pembayaran') !!}
-        {!! Form::select('payment_type',$payment_type,null,array('required','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
+        {!! Form::select('payment_method',[''=>'Silahkan Pilih Metode Pembayaran'],null,array('required','id'=>'payment_method','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
+        </div>
+        <div class='form-group' style="text-align:left">
+          <h4>Harga Barang : Rp {{ number_format($product['total_price'],0,",",".") }}</h4>
+          <h4>Ongkos Kirim : <span id="delivery_price">Rp 0</span></h4>
+          <h4>Subtotal : <span id="subtotal">Rp {{ number_format($product['total_price'],0,",",".") }}</span></h4>
+        </div>
+        <div class='form-group' style='text-align:left'>
+          {!! Form::checkbox('agree','yes',null,array('required')) !!}
+          <span>Saya setuju dengan <a href="#" id="disclaimer"><b>Syarat & Ketentuan</b></a> yang berlaku</span>
+        </div>
+        <div class="form-group" style="margin-top:20px">
+          {!! Form::submit('Beli',array('id'=>'buy','class'=>'btn btn-danger','style'=>'width: 100%;')) !!}
+        </div>
+        {!! Form::close() !!}
       </div>
-      <div class='form-group' style="text-align:left">
-        <h4>Harga Barang : Rp {{ number_format($product['total_price'],0,",",".") }}</h4>
+    </div>
+
+    <div class="modal fade" id="modal_view" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 id="title" class="modal-title">{{$message_title}}</h4>
+          </div>
+          <div class="modal-body">
+            <span id="message">{!! $message !!}</span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-      <div class='form-group' style='text-align:left'>
-        {!! Form::checkbox('agree','yes',null,array('required')) !!}
-        <span>Saya setuju dengan <a href="#" id="disclaimer">Syarat & Ketentuan</a> yang berlaku</span>
-      </div>
-      <div class="form-group" style="margin-top:20px">
-        {!! Form::submit('Beli',array('id'=>'buy','class'=>'btn btn-danger','style'=>'width: 100%;')) !!}
-      </div>
-      {!! Form::close() !!}
     </div>
   </div>
 
-  <div class="modal fade" id="modal_view" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Message</h4>
-        </div>
-        <div class="modal-body">
-          <p id="message">{{ $message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-$(document).ready(function(){
-  @if(!isset($product))
-  $('.content').remove();
-  $('#modal_view').modal('show');
-  $('#modal_view').on('hidden.bs.modal',function(){
-    window.location.href = "{{ URL::to('/') }}";
-  });
-  @endif
-
-  $("#user_form").submit(function(e) {
-    e.preventDefault();
-    var user_form = {};
-    $("form#user_form :input").each(function(){
-      user_form[$(this).attr('name')]=$(this).val();
+  <script>
+  var price = {{$product['total_price']}};
+  $(document).ready(function(){
+    @if(!isset($product))
+    $('.content').remove();
+    $('#modal_view').modal('show');
+    $('#modal_view').on('hidden.bs.modal',function(){
+      window.location.href = "{{ URL::to('/') }}";
     });
-    user_form = {"_token":"{{ csrf_token() }}","user_form":user_form};
-    $.ajax({
-      url : '{{URL::route('checkout')}}',
-      type: 'POST',
-      dataType: 'JSON',
-      data: user_form,
-      success : function(data){
-        if(data.success){
-          $("#message").html(data.message);
-          $('#modal_view').modal('show');
-          $('#modal_view').on('hidden.bs.modal',function(){
-            window.location.href = "{{ URL::to('/') }}";
+    @endif
+
+    $(function(){
+      $.ajax({
+        url : '{{URL::route('get_province_dropdown')}}',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {"_token":"{{ csrf_token() }}"},
+        success : function(data){
+          $.each(data,function(key,value){
+            $("#province").append('<option value="'+key+'">'+value+'</option>');
           });
         }
+      });
+    });
+
+    $("#province").change(function(){
+      if($("#province").val()!=""){
+        $.ajax({
+          url : '{{URL::route('get_city_dropdown')}}',
+          type: 'POST',
+          dataType: 'JSON',
+          data: {"_token":"{{ csrf_token() }}","province_id":$("#province").val()},
+          success : function(data){
+            $("#city").empty();
+            $("#city").append('<option value="">Silahkan Pilih Kota</option>');
+            $.each(data,function(key,value){
+              $("#city").append('<option value="'+key+'">'+value+'</option>');
+            });
+          }
+        });
+      }else{
+        $("#city").empty();
+        $("#city").append('<option value="">Silahkan Pilih Kota</option>');
       }
-    })
+    });
+
+    $("#city").change(function(){
+      if($("#city").val()!=""){
+        $.ajax({
+          url : '{{URL::route('get_district_dropdown')}}',
+          type: 'POST',
+          dataType: 'JSON',
+          data: {"_token":"{{ csrf_token() }}","city_id":$("#city").val()},
+          success : function(data){
+            $("#district").empty();
+            $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+            $.each(data,function(key,value){
+              $("#district").append('<option value="'+key+'">'+value+'</option>');
+            });
+          }
+        });
+      }else{
+        $("#district").empty();
+        $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+      }
+    });
+
+    $("#district").change(function(){
+      if($("#district").val()!=""){
+        $.ajax({
+          url : '{{URL::route('get_payment_method')}}',
+          type: 'POST',
+          dataType: 'JSON',
+          data: {"_token":"{{ csrf_token() }}","district":$("#district").val()},
+          success : function(data){
+            $("#payment_method").empty();
+            $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+            $.each(data,function(key,value){
+              $("#payment_method").append('<option value="'+key+'">'+value+'</option>');
+            });
+          }
+        });
+      }else{
+        $("#payment_method").empty();
+        $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+      }
+    });
+
+    $("#payment_method").change(function(){
+      Number.prototype.formatMoney = function(c, d, t){
+        var n = this,
+        c = isNaN(c = Math.abs(c)) ? 2 : c,
+        d = d == undefined ? "." : d,
+        t = t == undefined ? "," : t,
+        s = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+      };
+
+      if($("#payment_method").val()!=""){
+        $.ajax({
+          url : '{{URL::route('get_delivery_price')}}',
+          type: 'POST',
+          dataType: 'JSON',
+          data: {"_token":"{{ csrf_token() }}","payment_method":$("#payment_method").val(),"district":$("#district").val(),"fg_code":$("#fg_code").val()},
+          success : function(data){
+            if(typeof data.delivery_price != 'undefined'){
+              $("#delivery_price").html("Rp "+data.delivery_price.formatMoney(0, ',', '.'));
+              $("#subtotal").html("Rp "+(data.delivery_price+data.total_price).formatMoney(0, ',', '.'));
+            }else {
+              $("#delivery_price").html("Rp 0");
+              $("#subtotal").html("Rp "+data.total_price.formatMoney(0, ',', '.'));
+            }
+          }
+        });
+      }else{
+        $("#delivery_price").html("Rp 0");
+        $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
+      }
+    });
+
+    $("#user_form").submit(function(e) {
+      e.preventDefault();
+      var user_form = {};
+      $("form#user_form :input").each(function(){
+        user_form[$(this).attr('name')]=$(this).val();
+      });
+      user_form = {"_token":"{{ csrf_token() }}","user_form":user_form};
+      $.ajax({
+        url : '{{URL::route('checkout')}}',
+        type: 'POST',
+        dataType: 'JSON',
+        data: user_form,
+        success : function(data){
+          if(data.success){
+            $("#title").html("Pesan");
+            $("#message").html(data.message);
+            $('#modal_view').modal('show');
+            $('#modal_view').on('hidden.bs.modal',function(){
+              window.location.href = "{{ URL::to('/') }}";
+            });
+          }
+        }
+      });
+    });
   });
-});
 
-$("#disclaimer").click(function(e){
-  e.preventDefault();
+  $("#disclaimer").click(function(e){
+    e.preventDefault();
 
-  $('#modal_view').modal('show');
-});
-</script>
+    $('#modal_view').modal('show');
+  });
+  </script>
 </body>
 </html>

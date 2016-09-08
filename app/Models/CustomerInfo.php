@@ -20,6 +20,7 @@ class CustomerInfo extends Model
         'identity_number',
         'email',
         'mdn',
+        'location_district_id',
         'delivery_address',
         'input_date',
         'input_by',

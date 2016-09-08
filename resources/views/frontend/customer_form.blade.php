@@ -103,7 +103,7 @@
           {!! Form::hidden('fg_code', $product['fg_code'],array('id'=>'fg_code')) !!}
         </div>
         <div class="form-group">
-          {!! Form::hidden('qty', $product['qty']) !!}
+          {!! Form::hidden('qty', $product['qty'],array('id'=>'qty')) !!}
         </div>
         <div class="form-group">
           {!! Form::label('Nama') !!}
@@ -127,17 +127,17 @@
         </div>
         <div class='form-group'>
           {!! Form::label('Nomor Handphone') !!}
-          {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Nomor Handphone Anda')) !!}
+          {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Nomor Handphone Anda dalam format 088xxxxxxxxx','onkeypress'=>'return isNumberKey(event);')) !!}
         </div>
         <div class='form-group'>
         {!! Form::label('Provinsi') !!}
         {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control','placeholder'=>'Provinsi lokasi pengiriman Anda')) !!}
         </div>
-        <div class='form-group'>
+        <div class='form-group city' style="display:none">
         {!! Form::label('Kota') !!}
         {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Kota lokasi pengiriman Anda')) !!}
         </div>
-        <div class='form-group'>
+        <div class='form-group district' style="display:none">
         {!! Form::label('Kecamatan') !!}
         {!! Form::select('district',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district','class'=>'form-control','placeholder'=>'Kecamatan lokasi pengiriman Anda')) !!}
         </div>
@@ -145,13 +145,13 @@
         {!! Form::label('Alamat Pengiriman') !!}
         {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
         </div>
-        <div class='form-group'>
+        <div class='form-group payment_method' style="display:none">
         {!! Form::label('Metode Pembayaran') !!}
         {!! Form::select('payment_method',[''=>'Silahkan Pilih Metode Pembayaran'],null,array('required','id'=>'payment_method','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
         </div>
         <div class='form-group' style="text-align:left">
           <h4>Harga Barang : Rp {{ number_format($product['total_price'],0,",",".") }}</h4>
-          <h4>Ongkos Kirim : <span id="delivery_price">Rp 0</span></h4>
+          <h4 class="delivery_price" style="display:none;">Ongkos Kirim : <span id="delivery_price">Rp 0</span></h4>
           <h4>Subtotal : <span id="subtotal">Rp {{ number_format($product['total_price'],0,",",".") }}</span></h4>
         </div>
         <div class='form-group' style='text-align:left'>
@@ -208,6 +208,17 @@
       });
     });
 
+    Number.prototype.formatMoney = function(c, d, t){
+      var n = this,
+      c = isNaN(c = Math.abs(c)) ? 2 : c,
+      d = d == undefined ? "." : d,
+      t = t == undefined ? "," : t,
+      s = n < 0 ? "-" : "",
+      i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+      j = (j = i.length) > 3 ? j % 3 : 0;
+      return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
+
     $("#province").change(function(){
       if($("#province").val()!=""){
         $.ajax({
@@ -221,11 +232,31 @@
             $.each(data,function(key,value){
               $("#city").append('<option value="'+key+'">'+value+'</option>');
             });
+            $(".city").show();
+            $(".district").hide();
+            $(".payment_method").hide();
+            $(".delivery_price").hide();
+            $("#district").empty();
+            $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+            $("#payment_method").empty();
+            $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+            $("#delivery_price").html("Rp 0");
+            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
           }
         });
       }else{
+        $(".city").hide();
+        $(".district").hide();
+        $(".payment_method").hide();
+        $(".delivery_price").hide();
         $("#city").empty();
         $("#city").append('<option value="">Silahkan Pilih Kota</option>');
+        $("#district").empty();
+        $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+        $("#payment_method").empty();
+        $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+        $("#delivery_price").html("Rp 0");
+        $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
       }
     });
 
@@ -242,11 +273,25 @@
             $.each(data,function(key,value){
               $("#district").append('<option value="'+key+'">'+value+'</option>');
             });
+            $(".district").show();
+            $(".payment_method").hide();
+            $(".delivery_price").hide();
+            $("#payment_method").empty();
+            $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+            $("#delivery_price").html("Rp 0");
+            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
           }
         });
       }else{
+        $(".district").hide();
+        $(".payment_method").hide();
+        $(".delivery_price").hide();
         $("#district").empty();
         $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+        $("#payment_method").empty();
+        $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+        $("#delivery_price").html("Rp 0");
+        $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
       }
     });
 
@@ -263,43 +308,42 @@
             $.each(data,function(key,value){
               $("#payment_method").append('<option value="'+key+'">'+value+'</option>');
             });
+            $(".payment_method").show();
+            $(".delivery_price").hide();
+            $("#delivery_price").html("Rp 0");
+            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
           }
         });
       }else{
+        $(".payment_method").hide();
+        $(".delivery_price").hide();
         $("#payment_method").empty();
         $("#payment_method").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
+        $("#delivery_price").html("Rp 0");
+        $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
       }
     });
 
     $("#payment_method").change(function(){
-      Number.prototype.formatMoney = function(c, d, t){
-        var n = this,
-        c = isNaN(c = Math.abs(c)) ? 2 : c,
-        d = d == undefined ? "." : d,
-        t = t == undefined ? "," : t,
-        s = n < 0 ? "-" : "",
-        i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
-        j = (j = i.length) > 3 ? j % 3 : 0;
-        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-      };
-
       if($("#payment_method").val()!=""){
         $.ajax({
           url : '{{URL::route('get_delivery_price')}}',
           type: 'POST',
           dataType: 'JSON',
-          data: {"_token":"{{ csrf_token() }}","payment_method":$("#payment_method").val(),"district":$("#district").val(),"fg_code":$("#fg_code").val()},
+          data: {"_token":"{{ csrf_token() }}","payment_method":$("#payment_method").val(),"district":$("#district").val(),"fg_code":$("#fg_code").val(),"qty":$("#qty").val()},
           success : function(data){
             if(typeof data.delivery_price != 'undefined'){
               $("#delivery_price").html("Rp "+data.delivery_price.formatMoney(0, ',', '.'));
-              $("#subtotal").html("Rp "+(data.delivery_price+data.total_price).formatMoney(0, ',', '.'));
+              $("#subtotal").html("Rp "+(data.delivery_price+price).formatMoney(0, ',', '.'));
             }else {
               $("#delivery_price").html("Rp 0");
-              $("#subtotal").html("Rp "+data.total_price.formatMoney(0, ',', '.'));
+              $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
             }
+            $(".delivery_price").show();
           }
         });
       }else{
+        $(".delivery_price").hide();
         $("#delivery_price").html("Rp 0");
         $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
       }
@@ -330,6 +374,13 @@
       });
     });
   });
+
+  function isNumberKey(event){
+    var charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode != 43 && charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    return true;
+  }
 
   $("#disclaimer").click(function(e){
     e.preventDefault();

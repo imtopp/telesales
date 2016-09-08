@@ -156,21 +156,79 @@ class FrontendProductController extends BaseController
   }
 
   public function getProvinceDropdown(){
-    return CustomerLocationProvinceModel::lists('name','id');
+    $province_list = array();
+    $district_list = array();
+    $mapping = PaymentMethodLocationMappingModel::get();
+    $districts = CustomerLocationDistrictModel::get();
+    foreach($mapping as $map){
+      foreach($districts as $district){
+        if($map->location_district_id==$district->id){
+          $district_list[] = array("id"=>$district->id,"name"=>$district->name,"city_id"=>$district->city_id);
+        }
+      }
+    }
+    $district_list = array_unique($district_list,SORT_REGULAR);
+    foreach($district_list as $district){
+      $cities = CustomerLocationCityModel::where(["id"=>$district['city_id']])->get();
+      foreach($cities as $city){
+        $provinces = CustomerLocationProvinceModel::where(["id"=>$city->province_id])->get();
+        foreach($provinces as $province){
+          $province_list[$province->id] = $province->name;
+        }
+      }
+    }
+    $province_list = array_unique($province_list,SORT_REGULAR);
+    return $province_list;
   }
 
   public function getCityDropdown(){
-    if(isset($_POST['province_id']))
-      return CustomerLocationCityModel::where(["province_id"=>$_POST['province_id']])->lists('name','id');
-    else
+    if(isset($_POST['province_id'])){
+      $city_list = array();
+      $district_list = array();
+      $mapping = PaymentMethodLocationMappingModel::get();
+      $districts = CustomerLocationDistrictModel::get();
+      foreach($mapping as $map){
+        foreach($districts as $district){
+          if($map->location_district_id==$district->id){
+            $district_list[] = array("id"=>$district->id,"name"=>$district->name,"city_id"=>$district->city_id);
+          }
+        }
+      }
+      $district_list = array_unique($district_list,SORT_REGULAR);
+      foreach($district_list as $district){
+        $cities = CustomerLocationCityModel::where(["id"=>$district['city_id']])->get();
+        foreach($cities as $city){
+          $provinces = CustomerLocationProvinceModel::where(["id"=>$city->province_id])->get();
+          foreach($provinces as $province){
+            if($province->id==$_POST['province_id'])
+              $city_list[$city->id] = $city->name;
+          }
+        }
+      }
+      $city_list = array_unique($city_list,SORT_REGULAR);
+      return $city_list;
+    }else{
       return null;
+    }
   }
 
   public function getDistrictDropdown(){
-    if(isset($_POST['city_id']))
-      return CustomerLocationDistrictModel::where(["city_id"=>$_POST['city_id']])->lists('name','id');
-    else
+    if(isset($_POST['city_id'])){
+      $district_list = array();
+      $mapping = PaymentMethodLocationMappingModel::get();
+      $districts = CustomerLocationDistrictModel::where(["city_id"=>$_POST['city_id']])->get();
+      foreach($mapping as $map){
+        foreach($districts as $district){
+          if($map->location_district_id==$district->id){
+            $district_list[$district->id] = $district->name;
+          }
+        }
+      }
+      $district_list = array_unique($district_list,SORT_REGULAR);
+      return $district_list;
+    }else{
       return null;
+    }
   }
 
   public function getPaymentMethodDropdown(){
@@ -189,12 +247,13 @@ class FrontendProductController extends BaseController
 
   public function getDeliveryPrice(){
     if(isset($_POST['payment_method'])){
+      $qty = $_POST['qty'];
       $payment_method_location_mapping = PaymentMethodLocationMappingModel::where(['location_district_id'=>$_POST['district'],'payment_method_id'=>$_POST['payment_method']])->first();
       $fg_code = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['fg_code']])->first();
-      $total_price_category = TotalPriceCategoryModel::where([['min_price','<=',$fg_code->price],['max_price','>=',$fg_code->price]])->first();
+      $total_price_category = TotalPriceCategoryModel::where('min_price','<=',$fg_code->price*$qty)->where(function($query)use($fg_code,$qty){return $query->where('max_price','>=',$fg_code->price*$qty)->orWhere('max_price','=','0');})->first();
       $delivery_price = DeliveryPriceModel::where(['payment_method_location_mapping_id'=>$payment_method_location_mapping->id,'total_price_category_id'=>$total_price_category->id])->first();
 
-      return response()->json(["delivery_price"=>$delivery_price->price,"total_price"=>$fg_code->price]);;
+      return response()->json(["delivery_price"=>$delivery_price->price]);;
     }else{
       return null;
     }
@@ -217,6 +276,7 @@ class FrontendProductController extends BaseController
       $customer_info->identity_number = $this->encrypt($key,$_POST['user_form']['identity_number']);
       $customer_info->email = $this->encrypt($key,$_POST['user_form']['email']);
       $customer_info->mdn = $this->encrypt($key,$_POST['user_form']['mdn']);
+      $customer_info->location_district_id = $_POST['user_form']['district'];
       $customer_info->delivery_address = $this->encrypt($key,$_POST['user_form']['delivery_address']);
       $customer_info->input_date = $date->format("Y-m-d H:i:s");
       $customer_info->input_by = "System";
@@ -230,11 +290,14 @@ class FrontendProductController extends BaseController
         $message = $ex->getMessage();
       }
 
+      $qty=$_POST['user_form']['qty'];
+      $total_price_category = TotalPriceCategoryModel::where('min_price','<=',$fg_codes->price*$qty)->where(function($query)use($fg_codes,$qty){return $query->where('max_price','>=',$fg_codes->price*$qty)->orWhere('max_price','=','0');})->first();
       //fill transaction model
       $transaction->customer_info_id = $customer_info->id;
       $transaction->product_fg_code_id = $fg_codes->id;
-      $transaction->qty = $_POST['user_form']['qty'];
+      $transaction->qty = $qty;
       $transaction->payment_method_id = $payment_method->id;
+      $transaction->total_price_category_id = $total_price_category->id;
       $transaction->input_date = $date->format("Y-m-d H:i:s");
       $transaction->input_by = "System";
       $transaction->input_date = $date->format("Y-m-d H:i:s");
@@ -254,18 +317,40 @@ class FrontendProductController extends BaseController
   }
 
   public function checkData(){
-    $customer_info = CustomerInfoModel::get();
-    $key = "t3rs3r@h";
-
-    foreach($customer_info as $info){
-      echo $this->decrypt($key,$info->name)." ";
-      echo $this->decrypt($key,$info->address)." ";
-      echo $this->decrypt($key,$info->identity_type)." ";
-      echo $this->decrypt($key,$info->identity_number)." ";
-      echo $this->decrypt($key,$info->email)." ";
-      echo $this->decrypt($key,$info->mdn)." ";
-      echo $this->decrypt($key,$info->delivery_address)." ";
-      echo "<br/>";
+    $transactions = TransactionModel::get();
+    foreach($transactions as $transaction){
+      $customer_info = CustomerInfoModel::where(["id"=>$transaction->customer_info_id])->get();
+      $key = "t3rs3r@h";
+      foreach($customer_info as $info){
+        $item = ProductFgCodeModel::where(["id"=>$transaction->product_fg_code_id])->first();
+        $colour = ProductColourModel::where(['id'=>$item->product_colour_id])->first();
+        $product = ProductModel::where(['id'=>$colour->product_id])->first();
+        $district = CustomerLocationDistrictModel::where(['id'=>$info->location_district_id])->first();
+        $city = CustomerLocationCityModel::where(['id'=>isset($district->city_id)?$district->city_id:null])->first();
+        $province = CustomerLocationProvinceModel::where(['id'=>isset($city->province_id)?$city->province_id:null])->first();
+        $payment_method = PaymentMethodModel::where(['id'=>$transaction->payment_method_id])->first();
+        $mapping = PaymentMethodLocationMappingModel::where(['payment_method_id'=>isset($payment_method->id)?$payment_method->id:null,'location_district_id'=>isset($district->id)?$district->id:null])->first();
+        $total_price_category = TotalPriceCategoryModel::where('min_price','<=',$item->price*$transaction->qty)->where(function($query)use($item,$transaction){return $query->where('max_price','>=',$item->price*$transaction->qty)->orWhere('max_price','=','0');})->first();
+        $delivery_price = DeliveryPriceModel::where(['payment_method_location_mapping_id'=>isset($mapping->id)?$mapping->id:null,'total_price_category_id'=>$total_price_category->id])->first();
+        echo "Customer Name : ".$this->decrypt($key,$info->name)."<br/>";
+        echo "Address : ".$this->decrypt($key,$info->address)."<br/>";
+        echo "Identity Type : ".$this->decrypt($key,$info->identity_type)."<br/>";
+        echo "Identity Number : ".$this->decrypt($key,$info->identity_number)."<br/>";
+        echo "Email : ".$this->decrypt($key,$info->email)."<br/>";
+        echo "MDN : ".$this->decrypt($key,$info->mdn)."<br/>";
+        echo "Province : ".(isset($province->name)?$province->name:null)."<br/>";
+        echo "City : ".(isset($city->name)?$city->name:null)."<br/>";
+        echo "District : ".(isset($district->name)?$district->name:null)."<br/>";
+        echo "Delivery Address : ".$this->decrypt($key,$info->delivery_address)."<br/>";
+        echo "Product : ".$product->name." ".$colour->name."<br/>";
+        echo "Product Price : Rp ".$item->price."<br/>";
+        echo "Total QTY : ".$transaction->qty." unit<br/>";
+        echo "Payment Method : ".(isset($payment_method->name)?$payment_method->name:null)."<br/>";
+        echo "Delivery Price : ".(isset($delivery_price->price)?$delivery_price->price:null)."<br/>";
+        echo "Total Price : Rp ".(($item->price*$transaction->qty)+(isset($delivery_price->price)?$delivery_price->price:0))."<br/>";
+        echo "<br/>";
+        echo "<br/>";
+      }
     }
   }
 

@@ -19,87 +19,65 @@
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
   <style>
-  @font-face {
-    font-family: 'Roboto-regular';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-regular.ttf') }}');
-    font-weight: normal;
-    font-style: normal;
-  }
+    html, body {
+      height: 100%;
+    }
 
-  @font-face {
-    font-family: 'Roboto-light';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-light.ttf') }}');
-    font-weight: normal;
-    font-style: normal;
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      display: table;
+      font-weight: 100;
+      font-family: 'din_regular', sans-serif;
+    }
 
-  @font-face {
-    font-family: 'Roboto-Bold';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-bold.ttf') }}');
-    font-weight: normal;
-    font-style: normal;
-  }
+    .container {
+      text-align: center;
+      display: table-cell;
+      vertical-align: top;
+    }
 
+    .content {
+      text-align: center;
+    }
 
-  html, body {
-    height: 100%;
-  }
+    .left-side {
+      display: inline-block;
+    }
 
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    display: table;
-    font-weight: 100;
-    font-family: 'din_regular', sans-serif;
-  }
+    .right-side {
+      display: inline-block;
+    }
 
-  .container {
-    text-align: center;
-    display: table-cell;
-    vertical-align: top;
-  }
+    .img-nav {
+      padding: 0;
+      margin: 0;
+    }
 
-  .content {
-    text-align: center;
-  }
+    .img-nav li {
+      list-style: none;
+      width: 50px;
+      height: 50px;
+      display: inline-block;
+      border: grey;
+      border-style: solid;
+      border-width: thin;
+      vertical-align: top;
+    }
 
-  .left-side {
-    display: inline-block;
-  }
+    .img-nav li a {
+      display: block;
+    }
 
-  .right-side {
-    display: inline-block;
-  }
+    .img-nav li a img{
+      max-height:48px;
+      max-width:48px;
+    }
 
-  .img-nav {
-    padding: 0;
-    margin: 0;
-  }
-
-  .img-nav li {
-    list-style: none;
-    width: 50px;
-    height: 50px;
-    display: inline-block;
-    border: grey;
-    border-style: solid;
-    border-width: thin;
-    vertical-align: top;
-  }
-
-  .img-nav li a {
-    display: block;
-  }
-
-  .img-nav li a img{
-    max-height:48px;
-    max-width:48px;
-  }
-
-  .form-group{
-    font-family: 'din_bold',sans-serif;
-  }
+    .form-group{
+      font-family: 'din_bold',sans-serif;
+    }
   </style>
 </head>
 <body>

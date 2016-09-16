@@ -19,20 +19,6 @@
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
   <style>
-  @font-face {
-    font-family: 'Roboto-regular';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-regular.ttf') }}');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: 'Roboto-light';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-light.ttf') }}');
-    font-weight: normal;
-    font-style: normal;
-  }
-
   html, body {
     height: 100%;
   }

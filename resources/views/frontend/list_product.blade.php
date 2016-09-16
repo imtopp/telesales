@@ -19,42 +19,35 @@
   <script src="{{ URL::asset('assets/js/bootstrap.min.js') }}"></script>
 
   <style>
-  @font-face {
-    font-family: 'roboto-light';
-    src: url('{{ URL::asset('assets/font/roboto/roboto-light.ttf') }}') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+    html, body {
+      height: 100%;
+    }
 
-  html, body {
-    height: 100%;
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      display: table;
+      font-weight: 100;
+      font-family: 'din_regular', sans-serif;
+    }
 
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    display: table;
-    font-weight: 100;
-    font-family: 'din_regular', sans-serif;
-  }
+    .container {
+      text-align: center;
+      display: table-cell;
+      vertical-align: top;
+    }
 
-  .container {
-    text-align: center;
-    display: table-cell;
-    vertical-align: top;
-  }
+    .content {
+      text-align: center;
+    }
 
-  .content {
-    text-align: center;
-  }
+    .product {
 
-  .product {
-
-    margin-bottom: 20px;
-    cursor: pointer;
-    display: inline-block;
-  }
+      margin-bottom: 20px;
+      cursor: pointer;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>

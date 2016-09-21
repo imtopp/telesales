@@ -2,71 +2,121 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
-use Validator;
+use App\Models\User;
+use App\Models\UserRole as UserRoleModel;
+use DateTime;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 
-class AuthController extends Controller
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
-
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+class AuthController extends Controller {
 
     /**
-     * Where to redirect users after login / registration.
-     *
-     * @var string
+     * the model instance
+     * @var User
      */
-    protected $redirectTo = '/';
+    protected $user;
+    /**
+     * The Guard implementation.
+     *
+     * @var Authenticator
+     */
+    protected $auth;
 
     /**
      * Create a new authentication controller instance.
      *
+     * @param  Authenticator  $auth
      * @return void
      */
-    public function __construct()
+    public function __construct(Guard $auth, User $user)
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->user = $user;
+        $this->auth = $auth;
+
+        $this->middleware('guest', ['except' => ['getLogout']]);
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Show the application registration form.
      *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return Response
      */
-    protected function validator(array $data)
+    public function getRegister()
     {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+        return view('signup');
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  RegisterRequest  $request
+     * @return Response
+     */
+    public function postRegister(RegisterRequest $request)
+    {
+        $role = UserRoleModel::where(['name'=>'customer'])->first();
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+
+        $this->user->email = $request->email;
+        $this->user->password = Hash::make($request->password);
+        $this->user->role_id = $role->id;
+        $this->user->input_date = $date->format('Y-m-d H:i:s');
+        $this->user->input_by = 'Self Registration';
+        $this->user->update_date = $date->format('Y-m-d H:i:s');
+        $this->user->update_by = 'Self Registration';
+
+        $this->user->save();
+
+        //$this->auth->login($this->user);
+        return redirect('/auth/login');
+    }
+
+    /**
+     * Show the application login form.
+     *
+     * @return Response
+     */
+    public function getLogin()
+    {
+        return view('signin');
+    }
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  LoginRequest  $request
+     * @return Response
+     */
+    public function postLogin(LoginRequest $request)
+    {
+        $login_info = $request->only('email', 'password');
+        $login_info['status'] = 'active';
+        if ($this->auth->attempt($login_info))
+        {
+            if($this->auth->user()->userRole->name=="Customer"){
+              return redirect('/');
+            }else{
+              return \Redirect::route('backend_home');
+            }
+        }
+
+        return redirect('/auth/login')->withErrors([
+            'email' => 'Maaf user/password salah. Silahkan coba kembali.',
         ]);
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Log the user out of the application.
      *
-     * @param  array  $data
-     * @return User
+     * @return Response
      */
-    protected function create(array $data)
+    public function getLogout()
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $this->auth->logout();
+
+        return redirect('/auth/login');
     }
 }

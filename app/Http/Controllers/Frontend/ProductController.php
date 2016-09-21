@@ -32,20 +32,20 @@ class ProductController extends BaseController
     $all_data = array(); //initialize all active product array
 
     //trace active product model from category to fg_code
-    $categories = ProductCategoryModel::where(['status'=>'1'])->get();
+    $categories = ProductCategoryModel::where(['status'=>'active'])->get();
     foreach($categories as $category){ //looping active category
       if(!isset($find_product_id)){ //check if the request is not find on specific product_id
-        $products = ProductModel::where(['status'=>'1','category_id'=>$category->id])->get();
+        $products = ProductModel::where(['status'=>'active','category_id'=>$category->id])->get();
         foreach($products as $product){ //looping active product
-          $colours = ProductColourModel::where(['status'=>'1','product_id'=>$product->id])->get();
+          $colours = ProductColourModel::where(['status'=>'active','product_id'=>$product->id])->get();
           foreach($colours as $colour){ //looping active colour
             //assumed there is only 1 fg_code active for 1 product colour and store it to all_data array.
             if(!isset($find_fg_code)){ //check if the request is not find on specific fg_code
-              $fg_code = ProductFgCodeModel::where(['status'=>'1','product_colour_id'=>$colour->id])->first();
+              $fg_code = ProductFgCodeModel::where(['status'=>'active','product_colour_id'=>$colour->id])->first();
               if(isset($fg_code) && count($fg_code)!=0) //fg_code is available
               $all_data[] = array('category'=>$category,'product'=>$product,'colour'=>$colour,'fg_code'=>$fg_code);
             }else{ //finding specific fg_code
-              $fg_code = ProductFgCodeModel::where(['status'=>'1','product_colour_id'=>$colour->id,'fg_code'=>$find_fg_code])->first();
+              $fg_code = ProductFgCodeModel::where(['status'=>'active','product_colour_id'=>$colour->id,'fg_code'=>$find_fg_code])->first();
               if(isset($fg_code) && count($fg_code)!=0){ //specific fg_code is found
                 $all_data = array('category'=>$category,'product'=>$product,'colour'=>$colour,'fg_code'=>$fg_code);
                 return $all_data; //stop the function and return the data after found;
@@ -54,17 +54,17 @@ class ProductController extends BaseController
           }
         }
       }else{
-        $products = ProductModel::where(['status'=>'1','category_id'=>$category->id,'id'=>$find_product_id])->get();
+        $products = ProductModel::where(['status'=>'active','category_id'=>$category->id,'id'=>$find_product_id])->get();
         foreach($products as $product){ //looping active product
-          $colours = ProductColourModel::where(['status'=>'1','product_id'=>$product->id])->get();
+          $colours = ProductColourModel::where(['status'=>'active','product_id'=>$product->id])->get();
           foreach($colours as $colour){ //looping active colour
             //assumed there is only 1 fg_code active for 1 product colour and store it to all_data array.
             if(!isset($find_fg_code)){ //check if the request is not find on specific fg_code
-              $fg_code = ProductFgCodeModel::where(['status'=>'1','product_colour_id'=>$colour->id])->first();
+              $fg_code = ProductFgCodeModel::where(['status'=>'active','product_colour_id'=>$colour->id])->first();
               if(isset($fg_code) && count($fg_code)!=0) //fg_code is available
               $all_data[] = array('category'=>$category,'product'=>$product,'colour'=>$colour,'fg_code'=>$fg_code);
             }else{ //finding specific fg_code
-              $fg_code = ProductFgCodeModel::where(['status'=>'1','product_colour_id'=>$colour->id,'fg_code'=>$find_fg_code])->first();
+              $fg_code = ProductFgCodeModel::where(['status'=>'active','product_colour_id'=>$colour->id,'fg_code'=>$find_fg_code])->first();
               if(isset($fg_code) && count($fg_code)!=0){ //specific fg_code is found
                 $all_data = array('category'=>$category,'product'=>$product,'colour'=>$colour,'fg_code'=>$fg_code);
                 return $all_data; //stop the function and return the data after found;
@@ -115,7 +115,7 @@ class ProductController extends BaseController
     if(isset($all_data) && count($all_data)!=0){ //check if the all_data is set for value and it's count of value is not 0
       $colours = array();
       $colours_dropdown = array();
-      $product_data = ProductModel::where(['status'=>'1','id'=>$_GET['id']])->first();
+      $product_data = ProductModel::where(['status'=>'active','id'=>$_GET['id']])->first();
       $product_data->hit_count = ++$product_data->hit_count;
       $product_data->save();
       foreach($all_data as $data){
@@ -236,7 +236,7 @@ class ProductController extends BaseController
       $models = PaymentMethodLocationMappingModel::where(['location_district_id'=>$_POST['district']])->get();
       $payment_method = array();
       foreach ($models as $model){
-        $payment = PaymentMethodModel::where(['status'=>'1','id'=>$model->payment_method_id])->first();
+        $payment = PaymentMethodModel::where(['status'=>'active','id'=>$model->payment_method_id])->first();
         $payment_method[$payment->id] = $payment->name;
       }
       return $payment_method;
@@ -249,11 +249,11 @@ class ProductController extends BaseController
     if(isset($_POST['payment_method'])){
       $qty = $_POST['qty'];
       $payment_method_location_mapping = PaymentMethodLocationMappingModel::where(['location_district_id'=>$_POST['district'],'payment_method_id'=>$_POST['payment_method']])->first();
-      $fg_code = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['fg_code']])->first();
+      $fg_code = ProductFgCodeModel::where(['status'=>'active','fg_code'=>$_POST['fg_code']])->first();
       $total_price_category = TotalPriceCategoryModel::where('min_price','<=',$fg_code->price*$qty)->where(function($query)use($fg_code,$qty){return $query->where('max_price','>=',$fg_code->price*$qty)->orWhere('max_price','=','0');})->first();
       $delivery_price = DeliveryPriceModel::where(['payment_method_location_mapping_id'=>$payment_method_location_mapping->id,'total_price_category_id'=>$total_price_category->id])->first();
 
-      return response()->json(["delivery_price"=>$delivery_price->price]);;
+      return response()->json(["delivery_price"=>$delivery_price->price]);
     }else{
       return null;
     }
@@ -264,7 +264,7 @@ class ProductController extends BaseController
     $customer_info = new CustomerInfoModel; //creating model for customer_info
     $transaction = new TransactionModel; //creating model for transaction
     $date = DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d H:i:s")); //initialize date parameter
-    $fg_codes = ProductFgCodeModel::where(['status'=>'1','fg_code'=>$_POST['user_form']['fg_code']])->first(); //find fg_code from the model
+    $fg_codes = ProductFgCodeModel::where(['status'=>'active','fg_code'=>$_POST['user_form']['fg_code']])->first(); //find fg_code from the model
     $key = "t3rs3r@h"; //key for encryption
     if(isset($_POST) && count($_POST)!=0){
       $payment_method = PaymentMethodModel::where(['id'=>$_POST['user_form']['payment_method']])->first(); //find payment_method model

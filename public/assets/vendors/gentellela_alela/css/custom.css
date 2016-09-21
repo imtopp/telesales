@@ -133,7 +133,7 @@
   color: #BAB8B8; }
 
 .profile_info h2 {
-  font-size: 14px;
+  font-size: 9px;
   color: #ECF0F1;
   margin: 0;
   font-weight: 300; }
@@ -656,7 +656,9 @@ a:hover, a:focus {
   line-height: 30px; }
 
 .main_menu_side {
-  padding: 0; }
+  padding: 0;
+  margin-top: 60px
+  padding-top: 10px }
 
 .bs-docs-sidebar .nav > li > a {
   display: block;
@@ -3133,26 +3135,28 @@ a.hiddenanchor {
   max-width: 350px;
   position: relative; }
 
-.registration_form, .login_form {
+.registration_form, .login_form, .reset_password_form {
   position: absolute;
   top: 0px;
   width: 100%; }
 
-.registration_form {
+.registration_form, .reset_password_form {
   z-index: 21;
   opacity: 0;
-  width: 100%; }
+  width: 100%;
+  display: none; }
 
 .login_form {
   z-index: 22; }
 
-#signup:target ~ .login_wrapper .registration_form, #signin:target ~ .login_wrapper .login_form {
+#signup:target ~ .login_wrapper .registration_form, #signin:target ~ .login_wrapper .login_form, #forgetpwd:target ~ .login_wrapper .reset_password_form {
   z-index: 22;
-  animation-name: fadeInLeft;
-  animation-delay: .1s; }
+  animation-name: fadeIn;
+  animation-delay: .1s;
+  display: block; }
 
-#signup:target ~ .login_wrapper .login_form, #signin:target ~ .login_wrapper .registration_form {
-  animation-name: fadeOutLeft; }
+#signup:target ~ .login_wrapper .login_form, #signin:target ~ .login_wrapper .registration_form, #forgetpwd:target ~ .login_wrapper .login_form, #signin:target ~ .login_wrapper .reset_password_form {
+  animation-name: fadeOut; }
 
 .animate {
   -webkit-animation-duration: 0.5s;

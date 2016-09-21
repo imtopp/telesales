@@ -31,4 +31,8 @@ class MainController extends BaseController
   public function home(){
     return view('backend/content/home'); //display list_product view with all_category and all_product
   }
+
+  public function administrator(){
+    redirect('/administrator/home');
+  }
 }

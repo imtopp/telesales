@@ -163,9 +163,9 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-		Way\Generators\GeneratorsServiceProvider::class,
-		Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
-
+        App\Providers\SettingsServiceProvider::class,
+		    Way\Generators\GeneratorsServiceProvider::class,
+		    Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
     ],
 
     /*
@@ -194,6 +194,7 @@ return [
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'HTML' => Illuminate\Html\HtmlFacade::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
         'Form' => Illuminate\Html\FormFacade::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,

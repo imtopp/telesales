@@ -127,13 +127,15 @@
   var table;
     $(document).ready(function() {
       $("#manage-product-category").addClass("current-page");
+      $("#manage-product-category").parent().show();
+      $("#manage-product-category").parent().parent().addClass("active");
 
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
         "serverSide": true,
         buttons: [{
-          text: 'Tambah Category Baru',
+          text: 'Tambah Baru',
           action: create,
         }],
         ajax: {
@@ -166,7 +168,6 @@
       $("#title").html(title);
       if(typeof id != 'undefined'){
         $("#id").val(id);
-        $("#email").prop('readonly', true);
       }
       if(typeof name != 'undefined'){
         if($("#name").is("input")){
@@ -220,7 +221,7 @@
     }
 
     function create(){
-      initializeModal($("#modal-template").html(),"Tambah Category Baru");
+      initializeModal($("#modal-template").html(),"Tambah Data Baru");
       showModal();
       $('#modal_view').on('hidden.bs.modal',function(){
         resetModal();
@@ -230,7 +231,7 @@
     }
 
     function edit(e) {
-      initializeModal($("#modal-template").html(),"Edit Category",$(e).data('id'),$(e).data('name'),$(e).data('status'));
+      initializeModal($("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('status'));
       showModal();
       $('#modal_view').on('hidden.bs.modal',function(){
         resetModal();
@@ -240,7 +241,7 @@
     }
 
     function destroy(e) {
-      initializeModal($("#modal-template-delete").html(),"Delete Category",$(e).data('id'),$(e).data('name'));
+      initializeModal($("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
       showModal();
       $('#modal_view').on('hidden.bs.modal',function(){
         resetModal();

@@ -1,7 +1,7 @@
 <div class="menu_section">
   <h3>General</h3>
   <ul class="nav side-menu">
-    <li id="home"><a><i class="fa fa-home"></i> Home </a></li>
+    <li id="home"><a href="{{URL::route('backend_home')}}"><i class="fa fa-home"></i> Home </a></li>
   </ul>
 </div>
 <div class="menu_section">
@@ -10,9 +10,9 @@
     <li><a><i class="fa fa-edit"></i> Manage Product <span class="fa fa-chevron-down"></span></a>
       <ul class="nav child_menu">
         <li id="manage-product-category"><a href="{{URL::route('backend_manage_product_category')}}">Category</a></li>
-        <li id="manage-product-product"><a href="form_advanced.html">Product</a></li>
-        <li id="manage-product-colour"><a href="form_validation.html">Colour</a></li>
-        <li id="manage-product-fg-code"><a href="form_wizards.html">FG_CODE</a></li>
+        <li id="manage-product-product"><a href="{{URL::route('backend_manage_product_product')}}">Product</a></li>
+        <li id="manage-product-colour"><a href="{{URL::route('backend_manage_product_colour')}}">Colour</a></li>
+        <li id="manage-product-fg-code"><a href="{{URL::route('backend_manage_product_fg_code')}}">FG_CODE</a></li>
       </ul>
     </li>
     <li><a><i class="fa fa-map"></i> Manage Location <span class="fa fa-chevron-down"></span></a>

@@ -17,7 +17,7 @@ class Administrator
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::User()->userRole->name=="Customer") {
+        if (Auth::Check()?Auth::User()->userRole->name=="Customer":false) {
              abort(404, 'Not Found');
         }
 

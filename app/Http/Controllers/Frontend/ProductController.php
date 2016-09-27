@@ -22,6 +22,7 @@ use App\Models\TotalPriceCategory as TotalPriceCategoryModel;
 use App\Models\DeliveryPrice as DeliveryPriceModel;
 use File;
 use DateTime;
+use Mail;
 
 class ProductController extends BaseController
 {
@@ -302,6 +303,16 @@ class ProductController extends BaseController
       $transaction->input_by = "System";
       $transaction->input_date = $date->format("Y-m-d H:i:s");
       $transaction->update_by = "System";
+
+      Mail::send('frontend.emails.transaction_notification_administrator', ['customer'=>'MUKIDI','product'=>'Hape baru','fg_code'=>'1432151'], function($msg) {
+         $msg->from('admin@'.config('settings.app_name').'.com', config('settings.app_name'));
+         $msg->to("taufiq.putra@smartfren.com", 'taufiq okta pratama putra')->subject('Transaction notifications');
+      });
+
+      Mail::send('frontend.emails.transaction_notification_customer', ['product'=>'Hape baru'], function($msg) {
+         $msg->from('admin@'.config('settings.app_name').'.com', config('settings.app_name'));
+         $msg->to("taufiq.putra@smartfren.com", 'taufiq okta pratama putra')->subject('Transaction notifications');
+      });
 
       try {
         $success = $transaction->save();

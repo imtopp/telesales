@@ -97,7 +97,7 @@ class ManageProductController extends BaseController
     $model->update_by = Auth::User()->email;
 
     try {
-      $success = $category->save();
+      $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
       $success = false;

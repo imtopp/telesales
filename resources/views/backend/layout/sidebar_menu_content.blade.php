@@ -17,9 +17,9 @@
     </li>
     <li><a><i class="fa fa-map"></i> Manage Location <span class="fa fa-chevron-down"></span></a>
       <ul class="nav child_menu">
-        <li><a href="general_elements.html">Province</a></li>
-        <li><a href="media_gallery.html">City</a></li>
-        <li><a href="typography.html">District</a></li>
+        <li id="manage-location-province"><a href="{{URL::route('backend_manage_location_province')}}">Province</a></li>
+        <li id="manage-location-city"><a href="{{URL::route('backend_manage_location_city')}}">City</a></li>
+        <li id="manage-location-district"><a href="{{URL::route('backend_manage_location_district')}}">District</a></li>
       </ul>
     </li>
     <li><a><i class="fa fa-table"></i> Mapping & Pricing <span class="fa fa-chevron-down"></span></a>

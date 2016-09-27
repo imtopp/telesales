@@ -61,4 +61,23 @@ Route::group(['middleware' => ['auth.admin']], function(){
   Route::post('/administrator/manage-product/fg_code-create', ["as"=>"backend_manage_product_fg_code_create","uses"=>"Backend\ManageProductController@fg_codeCreate"]);
   Route::post('/administrator/manage-product/fg_code-update', ["as"=>"backend_manage_product_fg_code_update","uses"=>"Backend\ManageProductController@fg_codeUpdate"]);
   Route::post('/administrator/manage-product/fg_code-destroy', ["as"=>"backend_manage_product_fg_code_destroy","uses"=>"Backend\ManageProductController@fg_codeDestroy"]);
+  //management location
+  //province
+  Route::get('/administrator/manage-location/province', ["as"=>"backend_manage_location_province","uses"=>"Backend\ManageLocationController@province"]);
+  Route::post('/administrator/manage-location/province-read', ["as"=>"backend_manage_location_province_read","uses"=>"Backend\ManageLocationController@provinceRead"]);
+  Route::post('/administrator/manage-location/province-create', ["as"=>"backend_manage_location_province_create","uses"=>"Backend\ManageLocationController@provinceCreate"]);
+  Route::post('/administrator/manage-location/province-update', ["as"=>"backend_manage_location_province_update","uses"=>"Backend\ManageLocationController@provinceUpdate"]);
+  Route::post('/administrator/manage-location/province-destroy', ["as"=>"backend_manage_location_province_destroy","uses"=>"Backend\ManageLocationController@provinceDestroy"]);
+  //province
+  Route::get('/administrator/manage-location/city', ["as"=>"backend_manage_location_city","uses"=>"Backend\ManageLocationController@city"]);
+  Route::post('/administrator/manage-location/city-read', ["as"=>"backend_manage_location_city_read","uses"=>"Backend\ManageLocationController@cityRead"]);
+  Route::post('/administrator/manage-location/city-create', ["as"=>"backend_manage_location_city_create","uses"=>"Backend\ManageLocationController@cityCreate"]);
+  Route::post('/administrator/manage-location/city-update', ["as"=>"backend_manage_location_city_update","uses"=>"Backend\ManageLocationController@cityUpdate"]);
+  Route::post('/administrator/manage-location/city-destroy', ["as"=>"backend_manage_location_city_destroy","uses"=>"Backend\ManageLocationController@cityDestroy"]);
+  //district
+  Route::get('/administrator/manage-location/district', ["as"=>"backend_manage_location_district","uses"=>"Backend\ManageLocationController@district"]);
+  Route::post('/administrator/manage-location/district-read', ["as"=>"backend_manage_location_district_read","uses"=>"Backend\ManageLocationController@districtRead"]);
+  Route::post('/administrator/manage-location/district-create', ["as"=>"backend_manage_location_district_create","uses"=>"Backend\ManageLocationController@districtCreate"]);
+  Route::post('/administrator/manage-location/district-update', ["as"=>"backend_manage_location_district_update","uses"=>"Backend\ManageLocationController@districtUpdate"]);
+  Route::post('/administrator/manage-location/district-destroy', ["as"=>"backend_manage_location_district_destroy","uses"=>"Backend\ManageLocationController@districtDestroy"]);
 });

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50620
 File Encoding         : 65001
 
-Date: 2016-09-27 11:21:14
+Date: 2016-10-06 11:25:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,8 +33,150 @@ CREATE TABLE `configuration` (
 -- ----------------------------
 -- Records of configuration
 -- ----------------------------
-INSERT INTO `configuration` VALUES ('1', 'app_name', 'Telesales', '2016-09-16 10:05:50', 'System', '2016-09-16 10:05:50', 'System');
+INSERT INTO `configuration` VALUES ('1', 'app_name', 'Telesales', '2016-09-16 10:05:50', 'System', '2016-10-03 02:58:48', 'taufiq.putra@smartfren.com');
 INSERT INTO `configuration` VALUES ('2', 'fa_icon', 'fa-phone', '2016-09-16 13:54:58', 'System', '2016-09-16 13:54:58', 'System');
+
+-- ----------------------------
+-- Table structure for courier
+-- ----------------------------
+DROP TABLE IF EXISTS `courier`;
+CREATE TABLE `courier` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of courier
+-- ----------------------------
+INSERT INTO `courier` VALUES ('1', 'Internal', 'active', '2016-09-30 13:45:30', 'System', '2016-09-28 10:11:57', 'System');
+INSERT INTO `courier` VALUES ('2', 'GED', 'active', '2016-10-03 19:01:11', 'System', '2016-10-03 12:01:11', 'taufiq.putra@smartfren.com');
+
+-- ----------------------------
+-- Table structure for courier_ged_delivery_price
+-- ----------------------------
+DROP TABLE IF EXISTS `courier_ged_delivery_price`;
+CREATE TABLE `courier_ged_delivery_price` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `courier_location_mapping_id` int(255) NOT NULL,
+  `courier_ged_price_category_id` int(255) NOT NULL,
+  `price` int(255) DEFAULT NULL,
+  `input_by` varchar(255) DEFAULT NULL,
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `delivery_price_payment_method_location_maping_id` (`courier_location_mapping_id`),
+  KEY `delivery_price_total_price_category_id` (`courier_ged_price_category_id`),
+  CONSTRAINT `courier_ged_delivery_price_courier_ged_price_category` FOREIGN KEY (`courier_ged_price_category_id`) REFERENCES `courier_ged_price_category` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `courier_ged_delivery_price_courier_location_mapping_id` FOREIGN KEY (`courier_location_mapping_id`) REFERENCES `courier_location_mapping` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of courier_ged_delivery_price
+-- ----------------------------
+INSERT INTO `courier_ged_delivery_price` VALUES ('5', '13', '2', '20', 'taufiq.putra@smartfren.com', '2016-10-05 11:27:39', 'taufiq.putra@smartfren.com', '2016-10-05 11:30:48');
+INSERT INTO `courier_ged_delivery_price` VALUES ('6', '13', '1', '100', 'taufiq.putra@smartfren.com', '2016-10-05 11:44:59', 'taufiq.putra@smartfren.com', '2016-10-05 11:47:03');
+INSERT INTO `courier_ged_delivery_price` VALUES ('7', '13', '3', '10000', 'taufiq.putra@smartfren.com', '2016-10-05 11:45:26', 'taufiq.putra@smartfren.com', '2016-10-05 11:45:26');
+
+-- ----------------------------
+-- Table structure for courier_ged_price_category
+-- ----------------------------
+DROP TABLE IF EXISTS `courier_ged_price_category`;
+CREATE TABLE `courier_ged_price_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `min_price` int(255) DEFAULT NULL,
+  `max_price` int(255) DEFAULT NULL,
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of courier_ged_price_category
+-- ----------------------------
+INSERT INTO `courier_ged_price_category` VALUES ('1', 'Category 1', '1', '1000000', '2016-09-01 14:05:56', 'System', '2016-10-05 08:41:46', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_ged_price_category` VALUES ('2', 'Category 2', '1000001', '2000000', '2016-09-01 14:07:55', 'System', '2016-10-05 08:41:46', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_ged_price_category` VALUES ('3', 'Category 3', '2000001', '0', '2016-09-01 14:08:28', 'System', '2016-10-05 08:41:46', 'taufiq.putra@smartfren.com');
+
+-- ----------------------------
+-- Table structure for courier_internal_delivery_price
+-- ----------------------------
+DROP TABLE IF EXISTS `courier_internal_delivery_price`;
+CREATE TABLE `courier_internal_delivery_price` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `courier_location_mapping_id` int(255) DEFAULT NULL,
+  `price` int(255) DEFAULT NULL,
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of courier_internal_delivery_price
+-- ----------------------------
+INSERT INTO `courier_internal_delivery_price` VALUES ('3', '11', '1', '2016-10-05 10:05:11', 'taufiq.putra@smartfren.com', '2016-10-05 10:05:11', 'taufiq.putra@smartfren.com');
+
+-- ----------------------------
+-- Table structure for courier_location_mapping
+-- ----------------------------
+DROP TABLE IF EXISTS `courier_location_mapping`;
+CREATE TABLE `courier_location_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `courier_package_id` int(255) DEFAULT NULL,
+  `location_district_id` int(255) DEFAULT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `courier_mapping_location_district_id` (`location_district_id`),
+  KEY `courier_mapping_courier_package_id` (`courier_package_id`),
+  CONSTRAINT `courier_mapping_courier_package_id` FOREIGN KEY (`courier_package_id`) REFERENCES `courier_package` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `courier_mapping_location_district_id` FOREIGN KEY (`location_district_id`) REFERENCES `location_district` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of courier_location_mapping
+-- ----------------------------
+INSERT INTO `courier_location_mapping` VALUES ('11', '2', '176', 'active', '2016-10-05 10:05:11', 'taufiq.putra@smartfren.com', '2016-10-05 10:05:11', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_location_mapping` VALUES ('13', '1', '176', 'inactive', '2016-10-05 11:27:39', 'taufiq.putra@smartfren.com', '2016-10-05 11:27:39', 'taufiq.putra@smartfren.com');
+
+-- ----------------------------
+-- Table structure for courier_package
+-- ----------------------------
+DROP TABLE IF EXISTS `courier_package`;
+CREATE TABLE `courier_package` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `courier_id` int(255) NOT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `courier_package_courier_id` (`courier_id`),
+  CONSTRAINT `courier_package_courier_id` FOREIGN KEY (`courier_id`) REFERENCES `courier` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of courier_package
+-- ----------------------------
+INSERT INTO `courier_package` VALUES ('1', 'Reguler', '2', 'active', '2016-10-04 14:36:08', 'System', '2016-10-04 14:36:08', 'System');
+INSERT INTO `courier_package` VALUES ('2', 'COD', '1', 'active', '2016-10-04 14:36:24', 'System', '2016-10-04 14:36:24', 'System');
+INSERT INTO `courier_package` VALUES ('3', 'Reguler', '1', 'active', '2016-10-05 17:04:28', null, '2016-10-05 17:04:28', null);
 
 -- ----------------------------
 -- Table structure for customer_info
@@ -57,7 +199,7 @@ CREATE TABLE `customer_info` (
   PRIMARY KEY (`id`),
   KEY `customer_info_location_district_id` (`location_district_id`),
   CONSTRAINT `customer_info_location_district_id` FOREIGN KEY (`location_district_id`) REFERENCES `location_district` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of customer_info
@@ -100,6 +242,9 @@ INSERT INTO `customer_info` VALUES ('35', 0x7A756E575A6D41626B595064624B4B754737
 INSERT INTO `customer_info` VALUES ('36', 0x2B52663575446971673857626E555235723833593370457863465039744B45667775585248556C736444593D, 0x58674F5632584D314C71646D4E73422F326B2B446C2B5763597749774838723946433232495462726935673D, 0x4851485078692B6A594548352B31614676494168714E73324A7078663151396F3279316E45313533536A383D, 0x2B354E2F54534661324C4274665A4A494278344D2F786754754A31374F5A6848304F6262714C6C3463416B3D, 0x347634495A5676433655777532534B6C676E557579716C704C445737676D684C7A683570425575667170553D, 0x395A4E6C55733258303044735578774975745352756A58544A6B617072666358416558333064524B694C303D, '3', 0x6C2F6D6D4F2F71384C79477433486A4E477775422B557179564F30536B622F397279664C4E51684945716B3D, '2016-09-05 05:09:58', 'System', '2016-09-05 12:09:58', 'System');
 INSERT INTO `customer_info` VALUES ('37', 0x746B6E6D41467953574C69574D476C53514364576744513135545967526430487A612F2F317838787743303D, 0x6B7968797736694A63464E435445644E7356426544674F6D436246314C514679556F6B50786F3552724A303D, 0x533252426E466F31416E675474706D426B4B72714D524F5A354B696E77756544506C31492B7144676E7A773D, 0x37466D727675784C454836624A304A587452614931537356796D67766E384A47414474776865396B7748493D, 0x4B495042683748713543313079454A7758627648484670392B52445246567654576D464F636862674754553D, 0x4957517731346B4B4233425553316874395A6F4F6E542F333851484F79416932756C4F44534C516952484D3D, '177', 0x5978396E7A726465374B426D716962486B706557304967455431683246533438696C4C36584B6C7566436F3D, '2016-09-05 05:11:29', 'System', '2016-09-05 12:11:29', 'System');
 INSERT INTO `customer_info` VALUES ('38', 0x703576505A3943445071572B7A6E774E5A62356767474E6B4339704B4F4E50706D434A57474C554D756E7A5765785A7A786975376F2F42713665477931396A72, 0x48337A54696438577A364C4B455A6471723678797046615537434576782F3342546D5A3465756E77434B7733414B49426865523268654A5145315658354D7468367A51394A7045723230414B303765396369343052773D3D, 0x544B716668692B2F686B56374C5161776363683435584B7567526A77456C4A6664674D42444752784743513D, 0x424E4A336B53475839714552572B57695A39513171696D5445424C3641476C77323039477A7352426F4A553D, 0x654544617372704D466369614578613352363867733977316B5A453446473964635753434A465A66333839686C74513777457371524B4556746F587834784178, 0x632F7A384E5668512B6A62674534754D504734674F5853706350304D5779742B4F4F4556747650626834673D, '176', 0x5176576D50546668716C3435467256394B497459434A327A6E7A46454F326568774A386B36585663493730794C4F2B32495370386B5A4A786D61452F426E79734A374835374A4671317168375A656E727839623736413D3D, '2016-09-24 01:15:39', 'System', '2016-09-24 08:15:39', 'System');
+INSERT INTO `customer_info` VALUES ('39', 0x6D4734775550446A6E417A6D5665466E6B62756C484566764F6D556A4C37444865785870587A67624267556479764958636E754B516F4F7A4352643666616E50, 0x3076686E30435566596E3970722F646569747648454A504979716567754F42684233344736384A596A434734615A4856554577616A486F634E473349624E345A4666446D3263514134367356657A67675250767766673D3D, 0x376450546D6939677464326777512B345775533163725964497047526975756D394177586A414C4B58616B3D, 0x58494A6761655A7A4D356F3875636C31704255576A6833535A6C486136486469732F624854674C646D54733D, 0x473835517564325254756D4C502B4A6C654D566F546F2F32324B4C71447177626B783057306D50445065384E796A6F32654A6D46344C6A497775316676554475, 0x512B476E667744642B48394C3046344548304532397150564376422F346D56397975375251686D6D7837513D, '176', 0x413667523777365865352F5A5658756364692F7256744E686D4456754F6145364E366142697449594F5A633D, '2016-09-27 08:39:59', 'System', '2016-09-27 15:39:59', 'System');
+INSERT INTO `customer_info` VALUES ('40', 0x676C4369347171664F634C704F737A727668754D523037534E3559565469696C50464D5163314135644F65314E727068626C572B774A33725930346D4E4A505A, 0x36445768346C4474616273336163777463555157383868627A463564647551496678763472454538756E767563364678763031645A4C724C4247356A524B372F5179514A75554A555A4D7134474957523357367A72513D3D, 0x6A694852616877566A4C326935753250633574423447546539566A2B5455517A4C36374555487635486C593D, 0x7471394F724C78764A34776A6478676C6A713138753678556F716350507633674A445A6A43506965486C453D, 0x796F7A386D64684D5676544B39574E4C4F7748527938394E365331366576782B326D477463474B5A36702F7146564146515468396572644B64316567784E4D30, 0x4C7336754F68337A663039534A764B726D5856363641662F38636E69686F527A4F31434F72766C662B4F593D, '176', 0x5533676A6B74467474616B56413975796665575767544C543665782B6973754B5171456B4B46564246366F3D, '2016-09-27 08:40:23', 'System', '2016-09-27 15:40:23', 'System');
+INSERT INTO `customer_info` VALUES ('41', 0x385A7578426B573950742B30797068424472746333463161484A59736941662B6F507066312B61534A44493D, 0x7635773854474F546556523535697965354C2F484E4F734675614736586248786E4835507A4947437761493D, 0x486A4E6B584D464B522F4C636B556D4635545036634D31452F7658485A652F3457466F6537504764447A633D, 0x5033324556572F7A4A71587A4E37336765684C44555647326770656557484362415158396A7272537630343D, 0x7331484A6C4744344D64647361725175486B31453054644F776E77557651795A7276796C6276367A336B6B3D, 0x45684753725164477353766148586E6E657A6E73355A7276764F2B31687A6C5338526552556170325265453D, '176', 0x6F43636838686C53462F6D45566162516C32356C41776575344B5648417553347530466945534C6364706F3D, '2016-09-27 09:14:21', 'System', '2016-09-27 16:14:21', 'System');
 
 -- ----------------------------
 -- Table structure for location_city
@@ -109,239 +254,240 @@ CREATE TABLE `location_city` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `province_id` int(255) NOT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `input_by` varchar(255) DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `location_city_province_id` (`province_id`),
-  CONSTRAINT `location_city_province_id` FOREIGN KEY (`province_id`) REFERENCES `location_province` (`id`) ON UPDATE CASCADE
+  KEY `customer_location_city_province_id` (`province_id`),
+  CONSTRAINT `customer_location_city_province_id` FOREIGN KEY (`province_id`) REFERENCES `location_province` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of location_city
 -- ----------------------------
-INSERT INTO `location_city` VALUES ('1', 'Badung', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('2', 'Bangli', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('3', 'Buleleng', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('4', 'Denpasar', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('5', 'Gianyar', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('6', 'Jembrana', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('7', 'Karangasem', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('8', 'Klungkung', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('9', 'Tabanan', '17', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('10', 'Cilegon', '11', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('11', 'Lebak', '11', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('12', 'Pandeglang', '11', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('13', 'Serang', '11', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('14', 'Tangerang', '11', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('15', 'Bengkulu', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('16', 'BengkuluSelatan', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('17', 'BengkuluUtara', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('18', 'Kaur', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('19', 'Kepahiang', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('20', 'Lebong', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('21', 'MukoMuko', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('22', 'RejangLebong', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('23', 'Seluma', '9', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('24', 'Bantul', '15', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('25', 'GunungKidul', '15', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('26', 'KulonProgo', '15', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('27', 'Sleman', '15', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('28', 'Yogyakarta', '15', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('29', 'Jakarta', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('30', 'JakartaBarat', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('31', 'JakartaPusat', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('32', 'JakartaSelatan', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('33', 'JakartaTimur', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('34', 'JakartaUtara', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('35', 'KepulauanSeribu', '12', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('36', 'BatangHari', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('37', 'Bungo', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('38', 'Jambi', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('39', 'Kerinci', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('40', 'Merangin', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('41', 'MuaroJambi', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('42', 'Sarolangun', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('43', 'TanjungJabungBarat', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('44', 'TanjungJabungTimur', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('45', 'Tebo', '7', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('46', 'Bandung', '13', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('47', 'BandungBarat', '13', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('48', 'BanjarBDO', '13', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
-INSERT INTO `location_city` VALUES ('49', 'Bekasi', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('50', 'Bogor', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('51', 'Ciamis', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('52', 'Cianjur', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('53', 'Cimahi', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('54', 'Cirebon', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('55', 'Depok', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('56', 'Garut', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('57', 'Indramayu', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('58', 'Karawang', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('59', 'Kuningan', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('60', 'Majalengka', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('61', 'Purwakarta', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('62', 'Subang', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('63', 'Sukabumi', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('64', 'Sumedang', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('65', 'Tasikmalaya', '13', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('66', 'Banjarnegara', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('67', 'Banyumas', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('68', 'Batang', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('69', 'Blora', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('70', 'Bojonegoro', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('71', 'Boyolali', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('72', 'Brebes', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('73', 'Cilacap', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('74', 'Demak', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('75', 'Grobogan', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('76', 'Jepara', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('77', 'KarangAnyar', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('78', 'Kebumen', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('79', 'Kendal', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('80', 'Klaten', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('81', 'Kudus', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('82', 'Magelang', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('83', 'Pati', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('84', 'Pekalongan', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('85', 'Pemalang', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('86', 'Purbalingga', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('87', 'Purworejo', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('88', 'Rembang', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('89', 'Salatiga', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('90', 'Semarang', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('91', 'Sragen', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('92', 'Sukoharjo', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('93', 'Surakarta', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('94', 'Tegal', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('95', 'Temanggung', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('96', 'Wonogiri', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('97', 'Wonosobo', '14', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('98', 'Bangkalan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('99', 'Banyuwangi', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('100', 'Batu', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('101', 'Blitar', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('102', 'Bondowoso', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('103', 'Gresik', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('104', 'Jember', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('105', 'Jombang', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('106', 'Kediri', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('107', 'Lamongan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('108', 'Lumajang', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('109', 'Madiun', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('110', 'Magetan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('111', 'Malang', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('112', 'Mojokerto', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('113', 'Nganjuk', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('114', 'Ngawi', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('115', 'Pacitan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('116', 'Pamekasan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('117', 'Pasuruan', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('118', 'Ponorogo', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('119', 'Probolinggo', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('120', 'Sampang', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('121', 'Sidoarjo', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('122', 'SidoarjoSUB', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('123', 'Situbondo', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('124', 'Sumenep', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('125', 'Surabaya', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('126', 'Trenggalek', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('127', 'Tuban', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('128', 'Tulungagung', '16', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('129', 'BandarLampung', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('130', 'LampungBarat', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('131', 'LampungSelatan', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('132', 'LampungTengah', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('133', 'LampungTimur', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('134', 'LampungUtara', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('135', 'Metro', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('136', 'Pesawaran', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('137', 'Tanggamus', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('138', 'TulangBawang', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('139', 'WayKanan', '10', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('140', 'AcehBarat', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('141', 'AcehBaratDaya', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('142', 'AcehBesar', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('143', 'AcehJaya', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('144', 'AcehSelatan', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('145', 'AcehSingkil', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('146', 'AcehTamiang', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('147', 'AcehTengah', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('148', 'AcehTenggara', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('149', 'AcehTimur', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('150', 'AcehUtara', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('151', 'BandaAceh', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('152', 'BenerMeriah', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('153', 'Bireuen', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('154', 'GayoLues', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('155', 'Langsa', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('156', 'Lhokseumawe', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('157', 'NaganRaya', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('158', 'Pidie', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('159', 'PidieJaya', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('160', 'Sabang', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('161', 'Subulussalam', '1', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('162', 'Agam', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('163', 'BukitTinggi', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('164', 'Dharmasraya', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('165', 'KepulauanMentawai', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('166', 'LimaPuluhKota', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('167', 'Padang', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('168', 'PadangPanjang', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('169', 'PadangPariaman', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('170', 'Pariaman', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('171', 'Pasaman', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('172', 'PasamanBarat', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('173', 'Payakumbuh', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('174', 'PesisirSelatan', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('175', 'Sawahlunto', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('176', 'Sijunjung', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('177', 'Solok', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('178', 'SolokSelatan', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('179', 'TanahDatar', '3', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('180', 'Banyuasin', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('181', 'EmpatLawang', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('182', 'Lahat', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('183', 'LubukLinggau', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('184', 'MusiBanyuasin', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('185', 'MusiRawas', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('186', 'OganIlir', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('187', 'OganKomeringIlir', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('188', 'OganKomeringUlu', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('189', 'OganKomeringUluSelatan', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('190', 'OganKomeringUluTimur', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('191', 'PagarAlam', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('192', 'Palembang', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('193', 'Prabumulih', '4', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('194', 'Asahan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('195', 'Batubara', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('196', 'Binjai', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('197', 'Dairi', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('198', 'DeliSerdang', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('199', 'HumbangHasudutan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('200', 'Karo', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('201', 'LabuhanBatu', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('202', 'Langkat', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('203', 'MandailingNatal', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('204', 'Medan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('205', 'Nias', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('206', 'NiasSelatan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('207', 'PadangLawas', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('208', 'PadangLawasUtara', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('209', 'PadangSidempuan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('210', 'PakpakBarat', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('211', 'Pematangsiantar', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('212', 'Samosir', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('213', 'SerdangBedagai', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('214', 'Sibolga', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('215', 'Simalungun', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('216', 'TanjungBalai', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('217', 'TapanuliSelatan', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('218', 'TapanuliTengah', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('219', 'TapanuliUtara', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('220', 'TebingTinggi', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
-INSERT INTO `location_city` VALUES ('221', 'TobaSamosir', '2', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('1', 'Badung', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('2', 'Bangli', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('3', 'Buleleng', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('4', 'Denpasar', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('5', 'Gianyar', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('6', 'Jembrana', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('7', 'Karangasem', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('8', 'Klungkung', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('9', 'Tabanan', '17', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('10', 'Cilegon', '11', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('11', 'Lebak', '11', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('12', 'Pandeglang', '11', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('13', 'Serang', '11', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('14', 'Tangerang', '11', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('15', 'Bengkulu', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('16', 'BengkuluSelatan', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('17', 'BengkuluUtara', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('18', 'Kaur', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('19', 'Kepahiang', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('20', 'Lebong', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('21', 'MukoMuko', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('22', 'RejangLebong', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('23', 'Seluma', '9', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('24', 'Bantul', '15', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('25', 'GunungKidul', '15', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('26', 'KulonProgo', '15', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('27', 'Sleman', '15', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('28', 'Yogyakarta', '15', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('29', 'Jakarta', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('30', 'JakartaBarat', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('31', 'JakartaPusat', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('32', 'JakartaSelatan', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('33', 'JakartaTimur', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('34', 'JakartaUtara', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('35', 'KepulauanSeribu', '12', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('36', 'BatangHari', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('37', 'Bungo', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('38', 'Jambi', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('39', 'Kerinci', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('40', 'Merangin', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('41', 'MuaroJambi', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('42', 'Sarolangun', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('43', 'TanjungJabungBarat', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('44', 'TanjungJabungTimur', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('45', 'Tebo', '7', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('46', 'Bandung', '13', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('47', 'BandungBarat', '13', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('48', 'BanjarBDO', '13', 'active', '2016-09-01 14:53:14', null, '2016-09-01 14:53:14', null);
+INSERT INTO `location_city` VALUES ('49', 'Bekasi', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('50', 'Bogor', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('51', 'Ciamis', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('52', 'Cianjur', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('53', 'Cimahi', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('54', 'Cirebon', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('55', 'Depok', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('56', 'Garut', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('57', 'Indramayu', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('58', 'Karawang', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('59', 'Kuningan', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('60', 'Majalengka', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('61', 'Purwakarta', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('62', 'Subang', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('63', 'Sukabumi', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('64', 'Sumedang', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('65', 'Tasikmalaya', '13', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('66', 'Banjarnegara', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('67', 'Banyumas', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('68', 'Batang', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('69', 'Blora', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('70', 'Bojonegoro', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('71', 'Boyolali', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('72', 'Brebes', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('73', 'Cilacap', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('74', 'Demak', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('75', 'Grobogan', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('76', 'Jepara', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('77', 'KarangAnyar', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('78', 'Kebumen', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('79', 'Kendal', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('80', 'Klaten', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('81', 'Kudus', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('82', 'Magelang', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('83', 'Pati', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('84', 'Pekalongan', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('85', 'Pemalang', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('86', 'Purbalingga', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('87', 'Purworejo', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('88', 'Rembang', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('89', 'Salatiga', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('90', 'Semarang', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('91', 'Sragen', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('92', 'Sukoharjo', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('93', 'Surakarta', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('94', 'Tegal', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('95', 'Temanggung', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('96', 'Wonogiri', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('97', 'Wonosobo', '14', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('98', 'Bangkalan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('99', 'Banyuwangi', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('100', 'Batu', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('101', 'Blitar', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('102', 'Bondowoso', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('103', 'Gresik', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('104', 'Jember', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('105', 'Jombang', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('106', 'Kediri', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('107', 'Lamongan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('108', 'Lumajang', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('109', 'Madiun', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('110', 'Magetan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('111', 'Malang', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('112', 'Mojokerto', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('113', 'Nganjuk', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('114', 'Ngawi', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('115', 'Pacitan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('116', 'Pamekasan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('117', 'Pasuruan', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('118', 'Ponorogo', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('119', 'Probolinggo', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('120', 'Sampang', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('121', 'Sidoarjo', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('122', 'SidoarjoSUB', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('123', 'Situbondo', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('124', 'Sumenep', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('125', 'Surabaya', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('126', 'Trenggalek', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('127', 'Tuban', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('128', 'Tulungagung', '16', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('129', 'BandarLampung', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('130', 'LampungBarat', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('131', 'LampungSelatan', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('132', 'LampungTengah', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('133', 'LampungTimur', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('134', 'LampungUtara', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('135', 'Metro', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('136', 'Pesawaran', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('137', 'Tanggamus', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('138', 'TulangBawang', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('139', 'WayKanan', '10', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('140', 'AcehBarat', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('141', 'AcehBaratDaya', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('142', 'AcehBesar', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('143', 'AcehJaya', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('144', 'AcehSelatan', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('145', 'AcehSingkil', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('146', 'AcehTamiang', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('147', 'AcehTengah', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('148', 'AcehTenggara', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('149', 'AcehTimur', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('150', 'AcehUtara', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('151', 'BandaAceh', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('152', 'BenerMeriah', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('153', 'Bireuen', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('154', 'GayoLues', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('155', 'Langsa', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('156', 'Lhokseumawe', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('157', 'NaganRaya', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('158', 'Pidie', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('159', 'PidieJaya', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('160', 'Sabang', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('161', 'Subulussalam', '1', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('162', 'Agam', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('163', 'BukitTinggi', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('164', 'Dharmasraya', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('165', 'KepulauanMentawai', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('166', 'LimaPuluhKota', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('167', 'Padang', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('168', 'PadangPanjang', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('169', 'PadangPariaman', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('170', 'Pariaman', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('171', 'Pasaman', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('172', 'PasamanBarat', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('173', 'Payakumbuh', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('174', 'PesisirSelatan', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('175', 'Sawahlunto', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('176', 'Sijunjung', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('177', 'Solok', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('178', 'SolokSelatan', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('179', 'TanahDatar', '3', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('180', 'Banyuasin', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('181', 'EmpatLawang', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('182', 'Lahat', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('183', 'LubukLinggau', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('184', 'MusiBanyuasin', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('185', 'MusiRawas', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('186', 'OganIlir', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('187', 'OganKomeringIlir', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('188', 'OganKomeringUlu', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('189', 'OganKomeringUluSelatan', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('190', 'OganKomeringUluTimur', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('191', 'PagarAlam', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('192', 'Palembang', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('193', 'Prabumulih', '4', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('194', 'Asahan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('195', 'Batubara', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('196', 'Binjai', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('197', 'Dairi', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('198', 'DeliSerdang', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('199', 'HumbangHasudutan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('200', 'Karo', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('201', 'LabuhanBatu', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('202', 'Langkat', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('203', 'MandailingNatal', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('204', 'Medan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('205', 'Nias', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('206', 'NiasSelatan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('207', 'PadangLawas', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('208', 'PadangLawasUtara', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('209', 'PadangSidempuan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('210', 'PakpakBarat', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('211', 'Pematangsiantar', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('212', 'Samosir', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('213', 'SerdangBedagai', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('214', 'Sibolga', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('215', 'Simalungun', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('216', 'TanjungBalai', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('217', 'TapanuliSelatan', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('218', 'TapanuliTengah', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('219', 'TapanuliUtara', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('220', 'TebingTinggi', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
+INSERT INTO `location_city` VALUES ('221', 'TobaSamosir', '2', 'active', '2016-09-01 14:53:15', null, '2016-09-01 14:53:15', null);
 
 -- ----------------------------
 -- Table structure for location_district
@@ -351,186 +497,188 @@ CREATE TABLE `location_district` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `city_id` int(255) NOT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `input_by` varchar(255) DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `location_district` (`city_id`),
-  CONSTRAINT `location_district` FOREIGN KEY (`city_id`) REFERENCES `location_city` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8;
+  KEY `customer_location_district` (`city_id`),
+  CONSTRAINT `customer_location_district` FOREIGN KEY (`city_id`) REFERENCES `location_city` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of location_district
 -- ----------------------------
-INSERT INTO `location_district` VALUES ('1', 'AronganLambalek', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('2', 'Bubon', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('3', 'JohanPahlawan', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('4', 'Kec.KawayXVI', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('5', 'Meulaboh', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('6', 'PanteCeureumen', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('7', 'Samatiga', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('8', 'SungaiMas', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('9', 'Woyla', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('10', 'WoylaBarat', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('11', 'WoylaTimur', '140', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('12', 'BabahRot', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('13', 'Blangpidie', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('14', 'kualaBatee', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('15', 'Manggeng', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('16', 'Susoh', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('17', 'TanganTangan', '141', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('18', 'Baitussalam', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('19', 'DarulImarah', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('20', 'DarulKamal', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('21', 'Darussalam', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('22', 'Indrapuri', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('23', 'InginJaya', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('24', 'Janto', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('25', 'KruengBaronaJaya', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('26', 'KutaBaro', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('27', 'KutaCotGlie', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('28', 'KutaMalaka', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('29', 'LembahSeulawah', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('30', 'Leupung', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('31', 'Lho\'Nga', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('32', 'Lhoong', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('33', 'MesjidRaya', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('34', 'Montasik', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('35', 'PeukanBada', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('36', 'Puroaceh', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('37', 'Seulimeum', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('38', 'Simpangtiga', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('39', 'Sukamakmur', '142', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('40', 'Jaya', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('41', 'KruengSabee/Calang', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('42', 'Pangat', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('43', 'SampoNiet', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('44', 'SetiaBakti', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('45', 'Teunom', '143', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('46', 'Bakongan', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('47', 'BakonganTimur', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('48', 'KluetSelatan', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('49', 'KluetTengah', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('50', 'KluetTimur', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('51', 'KluetUtara', '144', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
-INSERT INTO `location_district` VALUES ('52', 'LabuhanHaji', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('53', 'LabuhanHajiBarat', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('54', 'LabuhanHajiTimur', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('55', 'Meukek', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('56', 'Pasieraja', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('57', 'SamaDua', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('58', 'Sawang', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('59', 'TapakTuan', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('60', 'Trumon', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('61', 'TrumonTimur', '144', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('62', 'DanauParis', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('63', 'GunungMeriah', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('64', 'KotaBaharu', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('65', 'PulauBanyak', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('66', 'SimpangKanan', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('67', 'Singkil', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('68', 'SingkilUtara', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('69', 'Singkohor', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('70', 'SuroBaru', '145', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('71', 'Bendahara', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('72', 'KarangBaru', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('73', 'KejuruanMuda', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('74', 'KualaSimpang', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('75', 'ManyakPayed', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('76', 'Rantau', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('77', 'Seuruway', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('78', 'TamiangHulu', '146', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('79', 'AtuLintang', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('80', 'Bebesen', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('81', 'Bies', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('82', 'Bintang', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('83', 'Celala', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('84', 'JagongJeget', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('85', 'Kebayakan', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('86', 'Ketol', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('87', 'KutePanang', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('88', 'LautTawar', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('89', 'LingeIsak', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('90', 'Pegasing', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('91', 'RusipAntara', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('92', 'SilihNara', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('93', 'Takengon', '147', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('94', 'BabulMakmur', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('95', 'BabulRahmat', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('96', 'Babussalam', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('97', 'Badar', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('98', 'Bambel', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('99', 'BukitTusam', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('100', 'DarulHasanah', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('101', 'Kutacane', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('102', 'LaweAlas', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('103', 'LaweBulan', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('104', 'LaweSigala-gala', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('105', 'Semadam', '148', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('106', 'BandaAlam', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('107', 'BiremBayeun', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('108', 'DarulAman', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('109', 'DarulIksan', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('110', 'IdiRayeuk', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('111', 'IdiTuning', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('112', 'IndraMakmur', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('113', 'Julok', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('114', 'Madat', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('115', 'Nurussalam', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('116', 'PanteBeudari', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('117', 'Peudawa', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('118', 'Peureulak', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('119', 'PeureulakBarat', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('120', 'PeureulakTimur', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('121', 'RantauSelamat', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('122', 'RantoPeureulak', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('123', 'SerbaJadi/Lokop', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('124', 'SimpangJernih', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('125', 'SimpangUlim', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('126', 'SungaiRaya', '149', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('127', 'Baktia', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('128', 'BaktiaBarat', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('129', 'CotGirek', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('130', 'Dewantara', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('131', 'KutaMakmur', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('132', 'Langkahan', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('133', 'Lhoksukon', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('134', 'MatangKuli', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('135', 'MeurahMulia', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('136', 'MuaraBatu', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('137', 'Nibong', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('138', 'Nisam', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('139', 'PayaBakong', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('140', 'Samudera', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('141', 'Sawang', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('142', 'Seunuddon', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('143', 'SimpangKeuramat', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('144', 'SyamtaliraAron', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('145', 'SyamtaliraBayu', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('146', 'TanahJamboAye', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('147', 'TanahLuas', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('148', 'TanahPasir', '150', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('149', 'AmpekNagari', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('150', 'Banuhampu', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('151', 'Baso', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('152', 'Candung', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('153', 'IVAngkatCanduang', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('154', 'IVKoto', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('155', 'KamangMagek', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('156', 'LubukBasung', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('157', 'Matur', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('158', 'Palembayan', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('159', 'Palupuh', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('160', 'SungaiPuar', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('161', 'TanjungMutiara', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('162', 'TanjungRaya', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('163', 'TilatangKamang', '162', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
-INSERT INTO `location_district` VALUES ('176', 'Kec. Barat', '30', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
-INSERT INTO `location_district` VALUES ('177', 'Kec. Pusat', '31', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
-INSERT INTO `location_district` VALUES ('178', 'Kec. Selatan', '32', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
-INSERT INTO `location_district` VALUES ('179', 'Kec. Timur', '33', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
-INSERT INTO `location_district` VALUES ('180', 'Kec. Utara', '34', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('1', 'AronganLambalek', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('2', 'Bubon', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('3', 'JohanPahlawan', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('4', 'Kec.KawayXVI', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('5', 'Meulaboh', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('6', 'PanteCeureumen', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('7', 'Samatiga', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('8', 'SungaiMas', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('9', 'Woyla', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('10', 'WoylaBarat', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('11', 'WoylaTimur', '140', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('12', 'BabahRot', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('13', 'Blangpidie', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('14', 'kualaBatee', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('15', 'Manggeng', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('16', 'Susoh', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('17', 'TanganTangan', '141', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('18', 'Baitussalam', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('19', 'DarulImarah', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('20', 'DarulKamal', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('21', 'Darussalam', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('22', 'Indrapuri', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('23', 'InginJaya', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('24', 'Janto', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('25', 'KruengBaronaJaya', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('26', 'KutaBaro', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('27', 'KutaCotGlie', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('28', 'KutaMalaka', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('29', 'LembahSeulawah', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('30', 'Leupung', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('31', 'Lho\'Nga', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('32', 'Lhoong', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('33', 'MesjidRaya', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('34', 'Montasik', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('35', 'PeukanBada', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('36', 'Puroaceh', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('37', 'Seulimeum', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('38', 'Simpangtiga', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('39', 'Sukamakmur', '142', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('40', 'Jaya', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('41', 'KruengSabee/Calang', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('42', 'Pangat', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('43', 'SampoNiet', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('44', 'SetiaBakti', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('45', 'Teunom', '143', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('46', 'Bakongan', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('47', 'BakonganTimur', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('48', 'KluetSelatan', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('49', 'KluetTengah', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('50', 'KluetTimur', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('51', 'KluetUtara', '144', 'active', '2016-09-01 16:08:23', null, '2016-09-01 16:08:23', null);
+INSERT INTO `location_district` VALUES ('52', 'LabuhanHaji', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('53', 'LabuhanHajiBarat', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('54', 'LabuhanHajiTimur', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('55', 'Meukek', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('56', 'Pasieraja', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('57', 'SamaDua', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('58', 'Sawang', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('59', 'TapakTuan', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('60', 'Trumon', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('61', 'TrumonTimur', '144', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('62', 'DanauParis', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('63', 'GunungMeriah', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('64', 'KotaBaharu', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('65', 'PulauBanyak', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('66', 'SimpangKanan', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('67', 'Singkil', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('68', 'SingkilUtara', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('69', 'Singkohor', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('70', 'SuroBaru', '145', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('71', 'Bendahara', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('72', 'KarangBaru', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('73', 'KejuruanMuda', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('74', 'KualaSimpang', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('75', 'ManyakPayed', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('76', 'Rantau', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('77', 'Seuruway', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('78', 'TamiangHulu', '146', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('79', 'AtuLintang', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('80', 'Bebesen', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('81', 'Bies', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('82', 'Bintang', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('83', 'Celala', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('84', 'JagongJeget', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('85', 'Kebayakan', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('86', 'Ketol', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('87', 'KutePanang', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('88', 'LautTawar', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('89', 'LingeIsak', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('90', 'Pegasing', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('91', 'RusipAntara', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('92', 'SilihNara', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('93', 'Takengon', '147', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('94', 'BabulMakmur', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('95', 'BabulRahmat', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('96', 'Babussalam', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('97', 'Badar', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('98', 'Bambel', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('99', 'BukitTusam', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('100', 'DarulHasanah', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('101', 'Kutacane', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('102', 'LaweAlas', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('103', 'LaweBulan', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('104', 'LaweSigala-gala', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('105', 'Semadam', '148', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('106', 'BandaAlam', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('107', 'BiremBayeun', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('108', 'DarulAman', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('109', 'DarulIksan', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('110', 'IdiRayeuk', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('111', 'IdiTuning', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('112', 'IndraMakmur', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('113', 'Julok', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('114', 'Madat', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('115', 'Nurussalam', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('116', 'PanteBeudari', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('117', 'Peudawa', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('118', 'Peureulak', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('119', 'PeureulakBarat', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('120', 'PeureulakTimur', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('121', 'RantauSelamat', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('122', 'RantoPeureulak', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('123', 'SerbaJadi/Lokop', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('124', 'SimpangJernih', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('125', 'SimpangUlim', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('126', 'SungaiRaya', '149', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('127', 'Baktia', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('128', 'BaktiaBarat', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('129', 'CotGirek', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('130', 'Dewantara', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('131', 'KutaMakmur', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('132', 'Langkahan', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('133', 'Lhoksukon', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('134', 'MatangKuli', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('135', 'MeurahMulia', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('136', 'MuaraBatu', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('137', 'Nibong', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('138', 'Nisam', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('139', 'PayaBakong', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('140', 'Samudera', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('141', 'Sawang', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('142', 'Seunuddon', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('143', 'SimpangKeuramat', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('144', 'SyamtaliraAron', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('145', 'SyamtaliraBayu', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('146', 'TanahJamboAye', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('147', 'TanahLuas', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('148', 'TanahPasir', '150', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('149', 'AmpekNagari', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('150', 'Banuhampu', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('151', 'Baso', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('152', 'Candung', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('153', 'IVAngkatCanduang', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('154', 'IVKoto', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('155', 'KamangMagek', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('156', 'LubukBasung', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('157', 'Matur', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('158', 'Palembayan', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('159', 'Palupuh', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('160', 'SungaiPuar', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('161', 'TanjungMutiara', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('162', 'TanjungRaya', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('163', 'TilatangKamang', '162', 'active', '2016-09-01 16:08:24', null, '2016-09-01 16:08:24', null);
+INSERT INTO `location_district` VALUES ('176', 'Kec. Barat', '30', 'active', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('177', 'Kec. Pusat', '31', 'active', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('178', 'Kec. Selatan', '32', 'active', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('179', 'Kec. Timur', '33', 'active', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('180', 'Kec. Utara', '34', 'active', '2016-09-02 10:40:40', null, '2016-09-02 10:40:40', null);
+INSERT INTO `location_district` VALUES ('181', 'Kotabaru', '30', 'active', '2016-10-03 11:47:09', 'taufiq.putra@smartfren.com', '2016-10-03 11:47:09', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for location_province
@@ -539,6 +687,7 @@ DROP TABLE IF EXISTS `location_province`;
 CREATE TABLE `location_province` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `input_by` varchar(255) DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -549,100 +698,40 @@ CREATE TABLE `location_province` (
 -- ----------------------------
 -- Records of location_province
 -- ----------------------------
-INSERT INTO `location_province` VALUES ('1', 'Nanggroe Aceh Darussalam', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('2', 'Sumatra Utara', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('3', 'Sumatra Barat', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('4', 'Sumatra Selatan', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('5', 'Riau', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('6', 'Kepulauan Riau', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('7', 'Jambi', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('8', 'Bangka Belitung', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
-INSERT INTO `location_province` VALUES ('9', 'Bengkulu', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('10', 'Lampung', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('11', 'Banten', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('12', 'DKI Jakarta', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('13', 'Jawa Barat', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('14', 'Jawa Tengah', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('15', 'DI Yogyakarta', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('16', 'Jawa Timur', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('17', 'Bali', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('18', 'Nusa Tenggara Barat', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('19', 'Nusa Tenggara Timur', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('20', 'Gorontalo', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('21', 'Sulawesi Barat', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('22', 'Sulawesi Tengah', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('23', 'Sulawesi Utara', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('24', 'Sulawesi Tenggara', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('25', 'Sulawesi Selatan', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('26', 'Kalimantan Barat', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('27', 'Kalimantan Timur', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('28', 'Kalimantan Selatan', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('29', 'Kalimantan Tengah', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('30', 'Kalimantan Utara', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('31', 'Maluku', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('32', 'Maluku Utara', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('33', 'Papua', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-INSERT INTO `location_province` VALUES ('34', 'Papua Barat', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
-
--- ----------------------------
--- Table structure for delivery_price
--- ----------------------------
-DROP TABLE IF EXISTS `delivery_price`;
-CREATE TABLE `delivery_price` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `payment_method_location_mapping_id` int(255) NOT NULL,
-  `total_price_category_id` int(255) NOT NULL,
-  `price` int(255) DEFAULT NULL,
-  `input_by` varchar(255) DEFAULT NULL,
-  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
-  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `delivery_price_payment_method_location_maping_id` (`payment_method_location_mapping_id`),
-  KEY `delivery_price_total_price_category_id` (`total_price_category_id`),
-  CONSTRAINT `delivery_price_payment_method_location_maping_id` FOREIGN KEY (`payment_method_location_mapping_id`) REFERENCES `payment_method_location_mapping` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `delivery_price_total_price_category_id` FOREIGN KEY (`total_price_category_id`) REFERENCES `total_price_category` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of delivery_price
--- ----------------------------
-INSERT INTO `delivery_price` VALUES ('1', '1', '1', '15000', null, '2016-09-02 10:50:26', null, '2016-09-02 10:50:26');
-INSERT INTO `delivery_price` VALUES ('2', '2', '1', '15000', null, '2016-09-02 10:50:26', null, '2016-09-02 10:50:26');
-INSERT INTO `delivery_price` VALUES ('3', '3', '1', '15000', null, '2016-09-02 10:50:26', null, '2016-09-02 10:50:26');
-INSERT INTO `delivery_price` VALUES ('4', '4', '1', '15000', null, '2016-09-02 10:50:26', null, '2016-09-02 10:50:26');
-INSERT INTO `delivery_price` VALUES ('5', '5', '1', '15000', null, '2016-09-02 10:50:26', null, '2016-09-02 10:50:26');
-INSERT INTO `delivery_price` VALUES ('6', '1', '2', '20000', null, '2016-09-02 10:50:40', null, '2016-09-02 10:50:40');
-INSERT INTO `delivery_price` VALUES ('7', '2', '2', '20000', null, '2016-09-02 10:50:40', null, '2016-09-02 10:50:40');
-INSERT INTO `delivery_price` VALUES ('8', '3', '2', '20000', null, '2016-09-02 10:50:41', null, '2016-09-02 10:50:41');
-INSERT INTO `delivery_price` VALUES ('9', '4', '2', '20000', null, '2016-09-02 10:50:41', null, '2016-09-02 10:50:41');
-INSERT INTO `delivery_price` VALUES ('10', '5', '2', '20000', null, '2016-09-02 10:50:41', null, '2016-09-02 10:50:41');
-INSERT INTO `delivery_price` VALUES ('11', '1', '3', '25000', null, '2016-09-02 10:50:59', null, '2016-09-02 10:50:59');
-INSERT INTO `delivery_price` VALUES ('12', '2', '3', '25000', null, '2016-09-02 10:50:59', null, '2016-09-02 10:50:59');
-INSERT INTO `delivery_price` VALUES ('13', '3', '3', '25000', null, '2016-09-02 10:50:59', null, '2016-09-02 10:50:59');
-INSERT INTO `delivery_price` VALUES ('14', '4', '3', '25000', null, '2016-09-02 10:50:59', null, '2016-09-02 10:50:59');
-INSERT INTO `delivery_price` VALUES ('15', '5', '3', '25000', null, '2016-09-02 10:50:59', null, '2016-09-02 10:50:59');
-INSERT INTO `delivery_price` VALUES ('16', '6', '1', '9000', null, '2016-09-02 10:51:55', null, '2016-09-02 10:51:55');
-INSERT INTO `delivery_price` VALUES ('17', '7', '1', '9000', null, '2016-09-02 10:51:55', null, '2016-09-02 10:51:55');
-INSERT INTO `delivery_price` VALUES ('18', '8', '1', '9000', null, '2016-09-02 10:51:55', null, '2016-09-02 10:51:55');
-INSERT INTO `delivery_price` VALUES ('19', '9', '1', '9000', null, '2016-09-02 10:51:55', null, '2016-09-02 10:51:55');
-INSERT INTO `delivery_price` VALUES ('20', '10', '1', '9000', null, '2016-09-02 10:51:55', null, '2016-09-02 10:51:55');
-INSERT INTO `delivery_price` VALUES ('21', '6', '2', '18000', null, '2016-09-02 10:52:36', null, '2016-09-02 10:52:36');
-INSERT INTO `delivery_price` VALUES ('22', '7', '2', '18000', null, '2016-09-02 10:52:36', null, '2016-09-02 10:52:36');
-INSERT INTO `delivery_price` VALUES ('23', '8', '2', '18000', null, '2016-09-02 10:52:36', null, '2016-09-02 10:52:36');
-INSERT INTO `delivery_price` VALUES ('24', '9', '2', '18000', null, '2016-09-02 10:52:36', null, '2016-09-02 10:52:36');
-INSERT INTO `delivery_price` VALUES ('25', '10', '2', '18000', null, '2016-09-02 10:52:36', null, '2016-09-02 10:52:36');
-INSERT INTO `delivery_price` VALUES ('26', '6', '3', '27000', null, '2016-09-02 10:53:15', null, '2016-09-02 10:53:15');
-INSERT INTO `delivery_price` VALUES ('27', '7', '3', '27000', null, '2016-09-02 10:53:15', null, '2016-09-02 10:53:15');
-INSERT INTO `delivery_price` VALUES ('28', '8', '3', '27000', null, '2016-09-02 10:53:15', null, '2016-09-02 10:53:15');
-INSERT INTO `delivery_price` VALUES ('29', '9', '3', '27000', null, '2016-09-02 10:53:15', null, '2016-09-02 10:53:15');
-INSERT INTO `delivery_price` VALUES ('30', '10', '3', '27000', null, '2016-09-02 10:53:15', null, '2016-09-02 10:53:15');
-INSERT INTO `delivery_price` VALUES ('31', '11', '1', '30000', null, '2016-09-02 10:54:06', null, '2016-09-02 10:54:06');
-INSERT INTO `delivery_price` VALUES ('32', '12', '1', '30000', null, '2016-09-02 10:54:06', null, '2016-09-02 10:54:06');
-INSERT INTO `delivery_price` VALUES ('33', '11', '2', '35000', null, '2016-09-02 10:54:25', null, '2016-09-02 10:54:25');
-INSERT INTO `delivery_price` VALUES ('34', '12', '2', '35000', null, '2016-09-02 10:54:25', null, '2016-09-02 10:54:25');
-INSERT INTO `delivery_price` VALUES ('35', '11', '3', '40000', null, '2016-09-02 10:54:40', null, '2016-09-02 10:54:40');
-INSERT INTO `delivery_price` VALUES ('36', '12', '3', '40000', null, '2016-09-02 10:54:40', null, '2016-09-02 10:54:40');
+INSERT INTO `location_province` VALUES ('1', 'Nanggroe Aceh Darussalam', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('2', 'Sumatra Utara', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('3', 'Sumatra Barat', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('4', 'Sumatra Selatan', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('5', 'Riau', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('6', 'Kepulauan Riau', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('7', 'Jambi', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('8', 'Bangka Belitung', 'active', '2016-09-01 14:13:16', 'System', '2016-09-01 14:13:16', 'System');
+INSERT INTO `location_province` VALUES ('9', 'Bengkulu', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('10', 'Lampung', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('11', 'Banten', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('12', 'DKI Jakarta', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('13', 'Jawa Barat', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('14', 'Jawa Tengah', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('15', 'DI Yogyakarta', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('16', 'Jawa Timur', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('17', 'Bali', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('18', 'Nusa Tenggara Barat', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('19', 'Nusa Tenggara Timur', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('20', 'Gorontalo', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('21', 'Sulawesi Barat', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('22', 'Sulawesi Tengah', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('23', 'Sulawesi Utara', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('24', 'Sulawesi Tenggara', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('25', 'Sulawesi Selatan', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('26', 'Kalimantan Barat', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('27', 'Kalimantan Timur', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('28', 'Kalimantan Selatan', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('29', 'Kalimantan Tengah', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('30', 'Kalimantan Utara', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('31', 'Maluku', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('32', 'Maluku Utara', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('33', 'Papua', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
+INSERT INTO `location_province` VALUES ('34', 'Papua Barat', 'active', '2016-09-01 14:13:17', 'System', '2016-09-01 14:13:17', 'System');
 
 -- ----------------------------
 -- Table structure for payment_method
@@ -651,20 +740,20 @@ DROP TABLE IF EXISTS `payment_method`;
 CREATE TABLE `payment_method` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `redirect_url` text,
   `status` enum('inactive','active') DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `input_by` varchar(255) DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_method
 -- ----------------------------
-INSERT INTO `payment_method` VALUES ('1', 'COD', '/', 'active', '2016-08-24 09:20:06', 'System', '2016-08-24 09:20:06', 'System');
-INSERT INTO `payment_method` VALUES ('2', 'Bank Transfer', null, 'active', '2016-08-26 13:48:37', 'System', '2016-08-26 13:48:37', 'System');
+INSERT INTO `payment_method` VALUES ('1', 'COD', 'active', '2016-08-24 09:20:06', 'System', '2016-08-24 09:20:06', 'System');
+INSERT INTO `payment_method` VALUES ('2', 'Bank Transfer', 'active', '2016-08-26 13:48:37', 'System', '2016-08-26 13:48:37', 'System');
+INSERT INTO `payment_method` VALUES ('3', 'Virtual Account', 'active', '2016-09-29 14:24:27', 'System', '2016-09-29 14:24:27', 'System');
 
 -- ----------------------------
 -- Table structure for payment_method_location_mapping
@@ -674,6 +763,7 @@ CREATE TABLE `payment_method_location_mapping` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `location_district_id` int(255) NOT NULL,
   `payment_method_id` int(255) NOT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `input_by` varchar(255) DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -683,23 +773,24 @@ CREATE TABLE `payment_method_location_mapping` (
   KEY `payment_method_location_district_id` (`location_district_id`),
   CONSTRAINT `payment_method_location_district_id` FOREIGN KEY (`location_district_id`) REFERENCES `location_district` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `payment_method_location_payment_method_id` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_method_location_mapping
 -- ----------------------------
-INSERT INTO `payment_method_location_mapping` VALUES ('1', '176', '1', '2016-09-02 10:41:49', null, '2016-09-02 10:41:49', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('2', '177', '1', '2016-09-02 10:41:53', null, '2016-09-02 10:41:53', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('3', '178', '1', '2016-09-02 10:41:56', null, '2016-09-02 10:41:56', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('4', '179', '1', '2016-09-02 10:42:05', null, '2016-09-02 10:42:05', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('5', '180', '1', '2016-09-02 10:42:09', null, '2016-09-02 10:42:09', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('6', '176', '2', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('7', '177', '2', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('8', '178', '2', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('9', '179', '2', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('10', '180', '2', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('11', '38', '2', '2016-09-02 10:43:08', null, '2016-09-02 10:43:08', null);
-INSERT INTO `payment_method_location_mapping` VALUES ('12', '3', '2', '2016-09-02 10:43:24', null, '2016-09-02 10:43:24', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('1', '176', '1', 'active', '2016-09-02 10:41:49', null, '2016-09-02 10:41:49', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('2', '177', '1', 'active', '2016-09-02 10:41:53', null, '2016-09-02 10:41:53', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('3', '178', '1', 'active', '2016-09-02 10:41:56', null, '2016-09-02 10:41:56', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('4', '179', '1', 'active', '2016-09-02 10:42:05', null, '2016-09-02 10:42:05', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('5', '180', '1', 'active', '2016-09-02 10:42:09', null, '2016-09-02 10:42:09', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('6', '176', '2', 'active', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('7', '177', '2', 'active', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('8', '178', '2', 'active', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('9', '179', '2', 'active', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('10', '180', '2', 'active', '2016-09-02 10:42:42', null, '2016-09-02 10:42:42', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('11', '38', '2', 'active', '2016-09-02 10:43:08', null, '2016-09-02 10:43:08', null);
+INSERT INTO `payment_method_location_mapping` VALUES ('12', '2', '2', 'inactive', '2016-09-02 10:43:24', null, '2016-09-29 02:53:03', 'taufiq.putra@smartfren.com');
+INSERT INTO `payment_method_location_mapping` VALUES ('13', '1', '2', 'active', '2016-09-29 01:58:24', 'taufiq.putra@smartfren.com', '2016-09-29 01:58:24', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for product
@@ -720,14 +811,14 @@ CREATE TABLE `product` (
   PRIMARY KEY (`id`),
   KEY `product_category_id` (`category_id`),
   CONSTRAINT `product_category_id` FOREIGN KEY (`category_id`) REFERENCES `product_category` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of product
 -- ----------------------------
-INSERT INTO `product` VALUES ('1', 'Andromax A', '1', '<p class=\"MsoNormalCxSpMiddle\" style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Spesifikasi\r\n:</span></b></p>\r\n\r\n<span lang=\"IN\" style=\"font-size:10.0pt;font-family:\r\n\" arial\",\"sans-serif\"\"=\"\">4.</span><span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5”\r\nFWVGA</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Quad\r\nCore 1.1 Ghz </span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Qualcomm\r\nSnapdragon</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">OS\r\n5 (Lollipop)</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1GB\r\nRAM + 8GB ROM</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Dual\r\nCamera</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5MP\r\nAF LED Flash</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">+\r\n5MP Wide Angle</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1950\r\nmAh</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">VOLTE</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Fitur\r\nSVI</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Smart\r\nScreen</span><br>\r\n\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormal\"></p><div style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Benefit\r\n:</span></b></div><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">\r\nBonus Kuota 17 GB*</span><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\"><br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</span><p></p>\r\n\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt\">Note :</span></b><b><span style=\"font-size:8.0pt\"> </span></b><br>\r\n\r\n<span style=\"font-size:8.0pt\">*&nbsp;Bonus didapat dengan\r\nmelakukan isi ulang pertama senilai min 100 Ribu </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota dapat digunakan 24\r\njam <br>\r\ndan berlaku 17 hari sejak pengisian ulang pertama dilakukan </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota hanya berlaku satu\r\nkali <br>\r\ndan tidak dapat diakumulasi dengan kuota lainnya </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Periode promo 10-31 Agustus\r\n2016</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">** Bonus 2 GB + 6 GB (internet\r\nMalam) berlaku 30 hari <br>\r\nsejak pengisian ulang pertama di lakukan.</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Total Bonus yang didapat\r\nsetelah melakukan isi ulang pertama <br>\r\nsenilai min 100 Ribu adalah <br>\r\n17 GB + 2 GB + 6 GB (internet malam)</span></p>', 'assets/img/product/andromax_a/image.png', '11', 'active', '2016-08-22 09:17:26', 'System', '2016-09-27 02:36:24', 'taufiq.putra@smartfren.com');
-INSERT INTO `product` VALUES ('2', 'Andromax E2', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA Bright LCD</span><br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n<span lang=IN>1GB RAM + 8GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>2000 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + DTS </span><br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2/image.png', '8', 'active', '2016-08-22 09:18:08', 'System', '2016-08-22 09:18:08', 'System');
-INSERT INTO `product` VALUES ('3', 'Andromax E2+', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA </span>IPS OCA <br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n2<span lang=IN>GB RAM + </span>16<span lang=IN>GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n19<span lang=IN>00 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + </span>Dolby + Quick Charge </p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2+/image.png', '5', 'active', '2016-08-22 09:18:53', 'System', '2016-08-22 09:18:53', 'System');
+INSERT INTO `product` VALUES ('1', 'Andromax A', '1', '<p class=\"MsoNormalCxSpMiddle\" style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Spesifikasi\r\n:</span></b></p>\r\n\r\n<span lang=\"IN\" style=\"font-size:10.0pt;font-family:\r\n\" arial\",\"sans-serif\"\"=\"\">4.</span><span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5”\r\nFWVGA</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Quad\r\nCore 1.1 Ghz </span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Qualcomm\r\nSnapdragon</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">OS\r\n5 (Lollipop)</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1GB\r\nRAM + 8GB ROM</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Dual\r\nCamera</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5MP\r\nAF LED Flash</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">+\r\n5MP Wide Angle</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1950\r\nmAh</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">VOLTE</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Fitur\r\nSVI</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Smart\r\nScreen</span><br>\r\n\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormal\"></p><div style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Benefit\r\n:</span></b></div><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">\r\nBonus Kuota 17 GB*</span><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\"><br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</span><p></p>\r\n\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt\">Note :</span></b><b><span style=\"font-size:8.0pt\"> </span></b><br>\r\n\r\n<span style=\"font-size:8.0pt\">*&nbsp;Bonus didapat dengan\r\nmelakukan isi ulang pertama senilai min 100 Ribu </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota dapat digunakan 24\r\njam <br>\r\ndan berlaku 17 hari sejak pengisian ulang pertama dilakukan </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota hanya berlaku satu\r\nkali <br>\r\ndan tidak dapat diakumulasi dengan kuota lainnya </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Periode promo 10-31 Agustus\r\n2016</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">** Bonus 2 GB + 6 GB (internet\r\nMalam) berlaku 30 hari <br>\r\nsejak pengisian ulang pertama di lakukan.</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Total Bonus yang didapat\r\nsetelah melakukan isi ulang pertama <br>\r\nsenilai min 100 Ribu adalah <br>\r\n17 GB + 2 GB + 6 GB (internet malam)</span></p>', 'assets/img/product/andromax_a/image.png', '16', 'active', '2016-08-22 09:17:26', 'System', '2016-09-27 02:36:24', 'taufiq.putra@smartfren.com');
+INSERT INTO `product` VALUES ('2', 'Andromax E2', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA Bright LCD</span><br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n<span lang=IN>1GB RAM + 8GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>2000 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + DTS </span><br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2/image.png', '9', 'active', '2016-08-22 09:18:08', 'System', '2016-08-22 09:18:08', 'System');
+INSERT INTO `product` VALUES ('3', 'Andromax E2+', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA </span>IPS OCA <br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n2<span lang=IN>GB RAM + </span>16<span lang=IN>GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n19<span lang=IN>00 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + </span>Dolby + Quick Charge </p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2+/image.png', '11', 'active', '2016-08-22 09:18:53', 'System', '2016-08-22 09:18:53', 'System');
 INSERT INTO `product` VALUES ('13', 'Andromax R2', '1', '<p class=MsoNormal><b>Spesifikasi</b><b> :</b></p>\r\n\r\n<span lang=IN>.5” HD IPS OGS </span><br/>\r\n\r\n<span lang=IN>With Dragron Trail Glass</span><br/>\r\n\r\n<span lang=IN>Octa Core 1.4 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS Lollipop</span><br/>\r\n\r\n<span lang=IN>2GB RAM + 16GB ROM</span><br/>\r\n\r\n<span lang=IN>2320 mAh</span><br/>\r\n\r\n<span lang=IN>Dual Camera Triple LED </span><br/>\r\n\r\n<span lang=IN>13MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>Gyroscope</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Kinetic Selfie + Smart Gesture + Dolby</span></p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_r2/image.png', '2', 'active', '2016-08-26 14:13:54', 'System', '2016-08-26 14:13:54', 'System');
 INSERT INTO `product` VALUES ('14', 'New Andromax M3Y', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\n MySmartfren Apps for checking                  <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlack &amp; White<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note:</b><br/>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3y/image.png', '1', 'active', '2016-08-26 14:14:13', 'System', '2016-08-26 14:14:13', 'System');
 INSERT INTO `product` VALUES ('15', 'New Andromax M3Z', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\nMySmartfren Apps for checking                   <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlue &amp; Brown<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;<br/>\r\n\r\n<p class=MsoNormal><b>Note:</b></p>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3z/image.png', '0', 'active', '2016-08-26 14:14:34', 'System', '2016-08-26 14:14:34', 'System');
@@ -745,6 +836,7 @@ INSERT INTO `product` VALUES ('38', 'My Smartplan', '5', '<table style=\"width: 
 INSERT INTO `product` VALUES ('39', 'Unlimited', '5', '<table style=\"width: 135.9pt; border-collapse: collapse;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"181\">\r\n	<tbody>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 135.9pt; border-width: 1pt medium medium; border-style: solid none none; border-color: #c0504d -moz-use-text-color -moz-use-text-color; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"181\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet Unlimited 60rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 135.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"181\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet Unlimited 100rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 135.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"181\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet Unlimited 200rb </span>\r\n			</td>\r\n		</tr>\r\n	</tbody>\r\n</table>', 'assets/img/product/unlimited/image.png', '0', 'active', '2016-08-26 14:28:38', 'System', '2016-08-26 14:28:38', 'System');
 INSERT INTO `product` VALUES ('40', 'VOLTE', '5', '<table style=\"width: 68.25pt; border-collapse: collapse;\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"91\">\r\n	<tbody>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 68.25pt; border: 1pt solid white; padding: 0.75pt 0.75pt 0in; height: 12.75pt;\" width=\"91\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">VoLTE Plan A </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 13.5pt;\">\r\n			<td style=\"width: 68.25pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color white white; background: #f2dbdb none repeat scroll 0% 0%; padding: 0.75pt 0.75pt 0in; height: 13.5pt;\" width=\"91\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">VoLTE Plan B </span>\r\n			</td>\r\n		</tr>\r\n	</tbody>\r\n</table>', 'assets/img/product/volte/image.png', '0', 'active', '2016-08-26 14:28:50', 'System', '2016-08-26 14:28:50', 'System');
 INSERT INTO `product` VALUES ('115', 'Volume Base (Quota)', '5', '<table style=\"width: 117.9pt; border-collapse: collapse;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"157\">\r\n	<tbody>\r\n		<tr style=\"height: 15pt;\">\r\n			<td style=\"width: 117.9pt; border-width: 1pt medium medium; border-style: solid none none; border-color: #c0504d -moz-use-text-color -moz-use-text-color; padding: 0in 5.4pt; height: 15pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 12rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 12rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 25rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 25rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 50rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 50rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 60rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 60rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 100rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 100rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 150rb </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; background: #efd3d2 none repeat scroll 0% 0%; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet 150rb Otomatis </span>\r\n			</td>\r\n		</tr>\r\n		<tr style=\"height: 12.75pt;\">\r\n			<td style=\"width: 117.9pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #c0504d; padding: 0in 5.4pt; height: 12.75pt;\" valign=\"top\" width=\"157\"><span style=\"font-size: 10pt; font-family: \'Arial\',\'sans-serif\'; color: black;\">Internet Volume 300rb </span>\r\n			</td>\r\n		</tr>\r\n	</tbody>\r\n</table>', 'assets/img/product/volume_base_(quota)/image.png', '0', 'active', '2016-08-26 15:08:38', 'System', '2016-08-26 15:08:38', 'System');
+INSERT INTO `product` VALUES ('116', 'Baru', '3', '<p>Ini descriptio <b>LHO</b></p><ul><li><b>no 1</b></li><li><b>no 2</b></li></ul>', 'assets/img/product/baru/116.png', '0', 'active', '2016-10-03 11:44:31', 'taufiq.putra@smartfren.com', '2016-10-03 11:44:40', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for product_category
@@ -764,7 +856,7 @@ CREATE TABLE `product_category` (
 -- ----------------------------
 -- Records of product_category
 -- ----------------------------
-INSERT INTO `product_category` VALUES ('1', 'Andromax', 'active', '2016-08-22 09:14:54', 'System', '2016-08-22 09:14:54', 'System');
+INSERT INTO `product_category` VALUES ('1', 'Andromax', 'active', '2016-08-22 09:14:54', 'System', '2016-09-27 09:24:17', 'taufiq.putra@smartfren.com');
 INSERT INTO `product_category` VALUES ('2', 'Mifi', 'active', '2016-08-22 09:15:05', 'System', '2016-08-22 09:15:05', 'System');
 INSERT INTO `product_category` VALUES ('3', 'Smartphone', 'active', '2016-08-26 14:15:39', 'System', '2016-08-26 14:15:39', 'System');
 INSERT INTO `product_category` VALUES ('4', 'Pulsa', 'inactive', '2016-08-26 14:19:19', 'System', '2016-08-26 14:19:19', 'System');
@@ -787,7 +879,7 @@ CREATE TABLE `product_colour` (
   PRIMARY KEY (`id`),
   KEY `product_colour_product_id` (`product_id`),
   CONSTRAINT `product_colour_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of product_colour
@@ -807,7 +899,7 @@ INSERT INTO `product_colour` VALUES ('13', '150.000', '27', 'assets/img/product/
 INSERT INTO `product_colour` VALUES ('14', '200.000', '27', 'assets/img/product/pulsa/variant/200000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('15', '300.000', '27', 'assets/img/product/pulsa/variant/300000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('16', '500.000', '27', 'assets/img/product/pulsa/variant/500000.png', 'active', '2016-08-26 14:25:39', 'System', '2016-08-26 14:25:39', 'System');
-INSERT INTO `product_colour` VALUES ('17', 'My SmartPlan Mingguan 20rb', '38', 'assets/img/product/my_smartplan/variant/1.png', 'active', '2016-08-26 15:09:18', 'System', '2016-08-26 15:09:18', 'System');
+INSERT INTO `product_colour` VALUES ('17', 'My SmartPlan Mingguan 20rb', '38', 'assets/img/product/my_smartplan/variant/1.png', 'inactive', '2016-08-26 15:09:18', 'System', '2016-09-27 09:34:34', 'taufiq.putra@smartfren.com');
 INSERT INTO `product_colour` VALUES ('18', 'Prepaid My SmartPlan Bronze', '38', 'assets/img/product/my_smartplan/variant/2.png', 'active', '2016-08-26 15:09:59', 'System', '2016-08-26 15:09:59', 'System');
 INSERT INTO `product_colour` VALUES ('19', 'Prepaid My SmartPlan Silver', '38', 'assets/img/product/my_smartplan/variant/3.png', 'active', '2016-08-26 15:10:01', 'System', '2016-08-26 15:10:01', 'System');
 INSERT INTO `product_colour` VALUES ('20', 'Prepaid My SmartPlan Silver 75rb', '38', 'assets/img/product/my_smartplan/variant/4.png', 'active', '2016-08-26 15:10:03', 'System', '2016-08-26 15:10:03', 'System');
@@ -863,7 +955,7 @@ CREATE TABLE `product_fg_code` (
   UNIQUE KEY `fg_code` (`fg_code`),
   KEY `product_fg_code_product_colour_id` (`product_colour_id`),
   CONSTRAINT `product_fg_code_product_colour_id` FOREIGN KEY (`product_colour_id`) REFERENCES `product_colour` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of product_fg_code
@@ -921,28 +1013,6 @@ INSERT INTO `product_fg_code` VALUES ('58', '49', '51', '150001', null, 'active'
 INSERT INTO `product_fg_code` VALUES ('59', '50', '52', '300001', null, 'active', '2016-08-26 16:10:50', null, '2016-08-26 16:10:50', null);
 
 -- ----------------------------
--- Table structure for total_price_category
--- ----------------------------
-DROP TABLE IF EXISTS `total_price_category`;
-CREATE TABLE `total_price_category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `min_price` int(255) DEFAULT NULL,
-  `max_price` int(255) DEFAULT NULL,
-  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
-  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of total_price_category
--- ----------------------------
-INSERT INTO `total_price_category` VALUES ('1', '1', '1000000', '2016-09-01 14:05:56', 'System', '2016-09-01 14:05:56', 'System');
-INSERT INTO `total_price_category` VALUES ('2', '1000001', '2000000', '2016-09-01 14:07:55', 'System', '2016-09-01 14:07:55', 'System');
-INSERT INTO `total_price_category` VALUES ('3', '2000000', '0', '2016-09-01 14:08:28', 'System', '2016-09-01 14:08:28', 'System');
-
--- ----------------------------
 -- Table structure for transaction
 -- ----------------------------
 DROP TABLE IF EXISTS `transaction`;
@@ -966,8 +1036,8 @@ CREATE TABLE `transaction` (
   CONSTRAINT `transaction_customer_info_id` FOREIGN KEY (`customer_info_id`) REFERENCES `customer_info` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `transaction_payment_type_id` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `transaction_product_fg_code_id` FOREIGN KEY (`product_fg_code_id`) REFERENCES `product_fg_code` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `transaction_total_price_category_id` FOREIGN KEY (`total_price_category_id`) REFERENCES `total_price_category` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+  CONSTRAINT `transaction_total_price_category_id` FOREIGN KEY (`total_price_category_id`) REFERENCES `courier_ged_price_category` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of transaction
@@ -1003,6 +1073,8 @@ INSERT INTO `transaction` VALUES ('DOTS', '28', '35', '1', '1', null, '1', '2016
 INSERT INTO `transaction` VALUES ('DOTS', '29', '36', '3', '3', null, '2', '2016-09-05 05:09:58', 'System', '2016-09-05 12:09:58', 'System');
 INSERT INTO `transaction` VALUES ('DOTS', '30', '37', '5', '1', '2', '1', '2016-09-05 05:11:29', 'System', '2016-09-05 12:11:29', 'System');
 INSERT INTO `transaction` VALUES ('DOTS', '31', '38', '3', '1', '1', '1', '2016-09-24 01:15:39', 'System', '2016-09-24 08:15:39', 'System');
+INSERT INTO `transaction` VALUES ('DOTS', '32', '40', '3', '1', '1', '1', '2016-09-27 08:40:23', 'System', '2016-09-27 15:40:47', 'System');
+INSERT INTO `transaction` VALUES ('DOTS', '33', '41', '4', '1', '1', '1', '2016-09-27 09:14:21', 'System', '2016-09-27 16:14:45', 'System');
 
 -- ----------------------------
 -- Table structure for users
@@ -1028,8 +1100,7 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$RJaeSZyuDmbrT/RyJwgDFuJTe.nxml9M04mtsy5s0r0TkpVmDr7ja', '1', 'uiE3fu7aZwsgGF5xlep9lbJruzp7ehqcKBqOOMmCV8j5toiQ85EKa6OC58LU', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-09-19 14:51:50', 'Self Registration');
-INSERT INTO `users` VALUES ('2', 'TOPPcomptech@gmail.com', 'íWÂDˆ”GÑõ+:è0gçF1Ý7ZÊæ¦', '2', null, 'active', '2016-09-16 16:20:48', 'Self Registration', '2016-09-16 23:20:48', 'Self Registration');
+INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$RJaeSZyuDmbrT/RyJwgDFuJTe.nxml9M04mtsy5s0r0TkpVmDr7ja', '1', 'vamC7UBXjoUp1IhXpmOqRSQmfQ9D4CaGRQ7eOVzCPm60q0TfYmmqieiM3SNM', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-09-19 14:51:50', 'Self Registration');
 INSERT INTO `users` VALUES ('3', 'TOPPunofficials@smartfren.com', '$2y$10$PMOBgLzi2FfgfISoCie/1egdzjpa.QpPEo8fr6mNgnfGgyy05LtG.', '2', '3uv4i244XNo8X1hQxELNJYKaJHbODD4R01JA1Hnz4Fu8x4BP1HUhtX9XgvRl', 'active', '2016-09-19 14:41:58', 'Self Registration', '2016-09-19 21:41:58', 'Self Registration');
 INSERT INTO `users` VALUES ('4', 'yogipunx@yahoo.co.uk', '$2y$10$FaMfzrkkZ8bakPiRhdesqeY1UMU6gIbsGuVUkEekJ.HKJYgay6PuO', '1', '6fJGEyqvxJnsDyadu4TkUmnj5fLe3puvABnOxUJYIgFgGcmsxtluwF2gx1Vm', 'active', '2016-09-20 10:41:40', 'Self Registration', '2016-09-21 07:05:30', 'taufiq.putra@smartfren.com');
 INSERT INTO `users` VALUES ('8', 'test@tist.com', '$2y$10$4nYCmmWU0MfuR1vp.9n30eLUCe62iABv.wPjEs2irThbOLd.WQZ2C', '1', null, 'active', '2016-09-21 07:04:46', 'taufiq.putra@smartfren.com', '2016-09-21 07:04:46', 'taufiq.putra@smartfren.com');
@@ -1053,3 +1124,63 @@ CREATE TABLE `user_roles` (
 -- ----------------------------
 INSERT INTO `user_roles` VALUES ('1', 'Administrator', '2016-09-16 17:34:11', 'System', '2016-09-16 17:34:11', 'System');
 INSERT INTO `user_roles` VALUES ('2', 'Customer', '2016-09-16 17:34:23', 'System', '2016-09-16 17:34:23', 'System');
+
+-- ----------------------------
+-- View structure for view_active_product
+-- ----------------------------
+DROP VIEW IF EXISTS `view_active_product`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER  VIEW `view_active_product` AS SELECT
+	product_category.id AS category_id,
+	product.id AS product_id,
+	product_colour.id AS colour_id,
+	product_fg_code.id AS fg_code_id,
+	product_category.`name` AS category,
+	product.`name` AS product,
+	product_colour.`name` AS colour,
+	product_fg_code.fg_code AS fg_code,
+	product.image_url AS product_image_url,
+	product_colour.image_url AS colour_image_url,
+	product.description AS product_description
+FROM `product_category`
+LEFT JOIN product ON product.category_id = product_category.id
+LEFT JOIN product_colour ON product_colour.product_id = product.id
+LEFT JOIN product_fg_code ON product_fg_code.product_colour_id = product_colour.id
+WHERE
+	product_category.`status`="active"
+	AND
+	product.`status`="active"
+	AND
+	product_colour.`status`="active"
+	AND
+	product_fg_code.`status`="active"
+	AND
+	product.`name` IS NOT NULL
+	AND
+	product_colour.`name` IS NOT NULL
+	AND
+	product_fg_code.fg_code IS NOT NULL ;
+
+-- ----------------------------
+-- View structure for view_location
+-- ----------------------------
+DROP VIEW IF EXISTS `view_location`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER  VIEW `view_location` AS SELECT
+	province.id AS province_id,
+	city.id AS city_id,
+	district.id AS district_id,
+	province.`name` AS province,
+	city.`name` AS city,
+	district.`name` AS district
+FROM location_province province
+LEFT JOIN location_city city ON city.province_id=province.id
+LEFT JOIN location_district district ON district.city_id=city.id
+WHERE
+    city.`name` IS NOT NULL
+    AND
+    district.`name` IS NOT NULL
+		AND
+		province.`status` = "active"
+		AND
+		city.`status` = "active"
+		AND
+		district.`status` = "active" ;

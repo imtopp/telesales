@@ -126,10 +126,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-product-category").addClass("current-page");
-      $("#manage-product-category").parent().show();
-      $("#manage-product-category").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,

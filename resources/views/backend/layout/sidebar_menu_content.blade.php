@@ -22,11 +22,27 @@
         <li id="manage-location-district"><a href="{{URL::route('backend_manage_location_district')}}">District</a></li>
       </ul>
     </li>
-    <li><a><i class="fa fa-table"></i> Mapping & Pricing <span class="fa fa-chevron-down"></span></a>
+    <li><a><i class="fa fa-credit-card"></i> Manage Payment <span class="fa fa-chevron-down"></span></a>
       <ul class="nav child_menu">
-        <li><a> Manage Total Price Category </a></li>
-        <li><a href="tables.html">Payment Method Location Mapping</a></li>
-        <li><a href="tables_dynamic.html">Delivery Price</a></li>
+        <li id="manage-payment-method"><a href="{{URL::route('backend_manage_payment_method')}}">Payment Method</a></li>
+        <li id="manage-payment-method-location-mapping"><a href="{{URL::route('backend_manage_payment_method_location_mapping')}}">Payment Method Location Mapping</a></li>
+      </ul>
+    </li>
+    <li><a><i class="fa fa-send"></i> Manage Courier <span class="fa fa-chevron-down"></span></a>
+      <ul class="nav child_menu">
+        <li id="manage-courier"><a href="{{URL::route('backend_manage_courier')}}"> Courier </a></li>
+        <li id="manage-courier-package"><a href="{{URL::route('backend_manage_courier_package')}}"> Courier Package </a></li>
+        <li><a> Internal <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li id="manage-courier-internal-delivery-price"><a href="{{URL::route('backend_manage_courier_internal_delivery_price')}}">Delivery Price</a></li>
+          </ul>
+        </li>
+        <li><a> GED <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li id="manage-courier-ged-price-category"><a href="{{URL::route('backend_manage_courier_ged_price_category')}}"> Manage Price Category </a></li>
+            <li id="manage-courier-ged-delivery-price"><a href="{{URL::route('backend_manage_courier_ged_delivery_price')}}">Delivery Price</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>

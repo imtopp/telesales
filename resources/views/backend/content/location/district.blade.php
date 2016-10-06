@@ -30,8 +30,9 @@
         <table id="datatable" class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Province</th>
               <th>City</th>
+              <th>Name</th>
               <th>Status</th>
               <th class="text-center"> Action </th>
             </tr>
@@ -74,16 +75,22 @@
         <div class="form-group">
           {!! Form::hidden('id',null,['id'=>'id']) !!}
         </div>
-        <div class="form-group">
+        <div class="form-group province">
           <div class="controls">
-            {!! Form::label("name", "Nama") !!}
-            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
+            {!! Form::label("province_id", "Provinsi") !!}
+            {!! Form::select('province_id', [''=>'Harap Pilih Provinsi'], null, ["class"=>"form-control","required","id"=>"province_id"]); !!}
+          </div>
+        </div>
+        <div class="form-group city" style="display:none">
+          <div class="controls">
+            {!! Form::label("city_id", "Kota") !!}
+            {!! Form::select('city_id', [''=>'Harap Pilih Kota'], null, ["class"=>"form-control","required","id"=>"city_id"]); !!}
           </div>
         </div>
         <div class="form-group">
           <div class="controls">
-            {!! Form::label("city_id", "Provinsi") !!}
-            {!! Form::select('city_id', $city, null, ["class"=>"form-control","required","id"=>"city_id"]); !!}
+            {!! Form::label("name", "Nama") !!}
+            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
           </div>
         </div>
         <div class="form-group">
@@ -133,10 +140,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-location-district").addClass("current-page");
-      $("#manage-location-district").parent().show();
-      $("#manage-location-district").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -157,11 +160,14 @@
         },
         pageLength : 10,
         "columns": [{
-          "data": "name",
-          "title": "Name"
+          "data": "province",
+          "title": "Provinsi"
         },{
           "data": "city",
           "title": "Kota"
+        },{
+          "data": "name",
+          "title": "Name"
         },{
           "data": "status",
           "title": "Status"
@@ -173,7 +179,7 @@
      });
     });
 
-    function initializeModal(element,title,id,name,city_id,status){
+    function initializeModal(element,title,id,name,province_id,city_id,status){
       $("#modal-content").html(element);
       $("#title").html(title);
       if(typeof id != 'undefined'){
@@ -185,6 +191,54 @@
         }else{
           $("#name").html(name);
         }
+      }
+      if($("#province_id").is("select")){
+        $(function(){
+          $.ajax({
+            url : '{{URL::route('backend_manage_location_district_get_province')}}',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {"_token":"{{ csrf_token() }}"},
+            success : function(data){
+              $.each(data,function(key,value){
+                $("#province_id").append('<option value="'+key+'">'+value+'</option>');
+              });
+              if(typeof province_id != 'undefined'){
+                $("#province_id").val(province_id);
+                $("#province_id").change();
+              }
+            }
+          });
+        });
+
+        $("#province_id").change(function(){
+          if($("#province_id").val()!=""){
+            $.ajax({
+              url : '{{URL::route('backend_manage_location_district_get_city')}}',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"_token":"{{ csrf_token() }}","province_id":$("#province_id").val()},
+              success : function(data){
+                $("#city_id").empty();
+                $("#city_id").append('<option value="">Harap Pilih Kota</option>');
+
+                $.each(data,function(key,value){
+                  $("#city_id").append('<option value="'+key+'">'+value+'</option>');
+                });
+
+                if(typeof city_id != 'undefined'){
+                  $("#city_id").val(city_id);
+                }
+
+                $(".city").show();
+              }
+            });
+          }else{
+            $(".city").hide();
+            $("#city_id").empty();
+            $("#city_id").append('<option value="">Harap Pilih Kota</option>');
+          }
+        });
       }
       if(typeof city_id != 'undefined'){
         $("#city_id").val(city_id);
@@ -244,7 +298,7 @@
     }
 
     function edit(e) {
-      initializeModal($("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('city_id'),$(e).data('status'));
+      initializeModal($("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('province_id'),$(e).data('city_id'),$(e).data('status'));
       showModal();
       $('#modal_view').on('hidden.bs.modal',function(){
         resetModal();

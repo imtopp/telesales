@@ -32,8 +32,8 @@
         <table id="datatable" class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Nama</th>
               <th>Category</th>
+              <th>Nama</th>
               <th>Description</th>
               <th>Image</th>
               <th>Hit Count</th>
@@ -83,14 +83,14 @@
         </div>
         <div class="form-group">
           <div class="controls">
-            {!! Form::label("name", "Nama") !!}
-            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
+            {!! Form::label("category_id", "Category") !!}
+            {!! Form::select('category_id', [''=>'Harap Pilih Category'], null, ["class"=>"form-control","required","id"=>"category_id"]); !!}
           </div>
         </div>
         <div class="form-group">
           <div class="controls">
-            {!! Form::label("category_id", "Category") !!}
-            {!! Form::select('category_id', $category, null, ["class"=>"form-control","required","id"=>"category_id"]); !!}
+            {!! Form::label("name", "Nama") !!}
+            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
           </div>
         </div>
         <div class="form-group">
@@ -204,10 +204,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-product-product").addClass("current-page");
-      $("#manage-product-product").parent().show();
-      $("#manage-product-product").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -228,11 +224,11 @@
         },
         pageLength : 10,
         "columns": [{
-          "data": "name",
-          "title": "Name"
-        },{
           "data": "category",
           "title": "Category"
+        },{
+          "data": "name",
+          "title": "Name"
         },{
           "data": "description",
           "title": "Description"
@@ -280,8 +276,23 @@
             $("#name").html(name);
           }
         }
-        if(typeof category_id != 'undefined'){
-          $("#category_id").val(category_id);
+        if($("#category_id").is("select")){
+          $(function(){
+            $.ajax({
+              url : '{{URL::route('backend_manage_product_product_get_category')}}',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"_token":"{{ csrf_token() }}"},
+              success : function(data){
+                $.each(data,function(key,value){
+                  $("#category_id").append('<option value="'+key+'">'+value+'</option>');
+                });
+                if(typeof category_id != 'undefined'){
+                  $("#category_id").val(category_id);
+                }
+              }
+            });
+          });
         }
         if(typeof hit_count != 'undefined'){
           $("#hit_count").val(hit_count);

@@ -30,8 +30,9 @@
         <table id="datatable" class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Nama</th>
+              <th>Category</th>
               <th>Produk</th>
+              <th>Nama</th>
               <th class="text-center"> Image </th>
               <th>Status</th>
               <th class="text-center"> Action </th>
@@ -77,14 +78,20 @@
         </div>
         <div class="form-group">
           <div class="controls">
-            {!! Form::label("name", "Nama") !!}
-            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
+            {!! Form::label("category_id", "Category") !!}
+            {!! Form::select('category_id', [''=>'Harap Pilih Category'], null, ["class"=>"form-control","required","id"=>"category_id"]); !!}
+          </div>
+        </div>
+        <div class="form-group product" style="display:none">
+          <div class="controls">
+            {!! Form::label("product_id", "Produk") !!}
+            {!! Form::select('product_id', [''=>'Harap Pilih Produk'], null, ["class"=>"form-control","required","id"=>"product_id"]); !!}
           </div>
         </div>
         <div class="form-group">
           <div class="controls">
-            {!! Form::label("product_id", "Produk") !!}
-            {!! Form::select('product_id', $product, null, ["class"=>"form-control","required","id"=>"product_id"]); !!}
+            {!! Form::label("name", "Nama") !!}
+            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
           </div>
         </div>
         <div class="form-group">
@@ -165,10 +172,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-product-colour").addClass("current-page");
-      $("#manage-product-colour").parent().show();
-      $("#manage-product-colour").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -189,11 +192,14 @@
         },
         pageLength : 10,
         "columns": [{
-          "data": "name",
-          "title": "Name"
+          "data": "category",
+          "title": "Category"
         },{
           "data": "product",
           "title": "Product"
+        },{
+          "data": "name",
+          "title": "Name"
         },{
           "data": "image_url",
           "title": "Image"
@@ -205,7 +211,7 @@
           "title": "Action"
         }],
         "columnDefs": [{
-          "targets": 2,
+          "targets": 3,
           "data": "image_url",
           "render": function ( data, type, full, meta ) {
             return '<td><center><a href="#" data-src="'+data+'" data-toggle="tooltip" title="View Image" class="btn btn-sm btn-primary" onClick="view(this)"> <i class="fa fa-eye"></i> View</a></td></center>';
@@ -215,7 +221,7 @@
      });
     });
 
-    function initializeModal(type,element,title,id,name,product_id,status){
+    function initializeModal(type,element,title,id,name,category_id,product_id,status){
       $("#modal-content").html(element);
       $("#title").html(title);
       if(type=="data"){
@@ -228,6 +234,58 @@
           }else{
             $("#name").html(name);
           }
+        }
+        if($("#category_id").is("select")){
+          $(function(){
+            $.ajax({
+              url : '{{URL::route('backend_manage_product_colour_get_category')}}',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"_token":"{{ csrf_token() }}"},
+              success : function(data){
+                $("#category_id").empty();
+                $("#category_id").append('<option value="">Harap Pilih Category</option>')
+
+                $.each(data,function(key,value){
+                  $("#category_id").append('<option value="'+key+'">'+value+'</option>');
+                });
+
+                if(typeof category_id != 'undefined'){
+                  $("#category_id").val(category_id);
+                  $("#category_id").change();
+                }
+              }
+            });
+          });
+
+          $("#category_id").change(function(){
+            if($("#category_id").val()!=""){
+              $.ajax({
+                url : '{{URL::route('backend_manage_product_colour_get_product')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {"_token":"{{ csrf_token() }}","category_id":$("#category_id").val()},
+                success : function(data){
+                  $("#product_id").empty();
+                  $("#product_id").append('<option value="">Harap Pilih Produk</option>');
+
+                  $.each(data,function(key,value){
+                    $("#product_id").append('<option value="'+key+'">'+value+'</option>');
+                  });
+
+                  if(typeof product_id != 'undefined'){
+                    $("#product_id").val(product_id);
+                  }
+
+                  $(".product").show();
+                }
+              });
+            }else{
+              $(".product").hide();
+              $("#product_id").empty();
+              $("#product_id").append('<option value="">Harap Pilih Produk</option>');
+            }
+          });
         }
         if(typeof product_id != 'undefined'){
           $("#product_id").val(product_id);
@@ -304,7 +362,7 @@
     }
 
     function edit(e) {
-      initializeModal('data',$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('product_id'),$(e).data('status'));
+      initializeModal('data',$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('category_id'),$(e).data('product_id'),$(e).data('status'));
       showModal();
       $('#modal_view').on('hidden.bs.modal',function(){
         resetModal();

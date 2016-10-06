@@ -15,7 +15,6 @@ class PaymentMethod extends Model
 
     protected $fillable = [
         'name',
-        'redirect_url',
         'status',
         'input_date',
         'input_by',
@@ -25,5 +24,5 @@ class PaymentMethod extends Model
 
     protected $guarded = [];
 
-        
+
 }

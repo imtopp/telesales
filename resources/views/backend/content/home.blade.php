@@ -25,11 +25,3 @@
   </div>
 </div>
 @endsection
-
-@section('page-js-script')
-  <script>
-    $(document).ready(function() {
-      $("#home").addClass("current-page");
-    });
-  </script>
-@stop

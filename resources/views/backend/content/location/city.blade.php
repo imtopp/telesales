@@ -133,10 +133,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-location-city").addClass("current-page");
-      $("#manage-location-city").parent().show();
-      $("#manage-location-city").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,

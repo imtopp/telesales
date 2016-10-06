@@ -13,9 +13,9 @@ use App\Models\Product as ProductModel;
 use App\Models\ProductCategory as ProductCategoryModel;
 use App\Models\CustomerInfo as CustomerInfoModel;
 use App\Models\Transaction as TransactionModel;
-use App\Models\CustomerLocationProvince as CustomerLocationProvinceModel;
-use App\Models\CustomerLocationCity as CustomerLocationCityModel;
-use App\Models\CustomerLocationDistrict as CustomerLocationDistrictModel;
+use App\Models\LocationProvince as LocationProvinceModel;
+use App\Models\LocationCity as LocationCityModel;
+use App\Models\LocationDistrict as LocationDistrictModel;
 use App\Models\PaymentMethodLocationMapping as PaymentMethodLocationMappingModel;
 use App\Models\PaymentMethod as PaymentMethodModel;
 use App\Models\TotalPriceCategory as TotalPriceCategoryModel;
@@ -160,7 +160,7 @@ class ProductController extends BaseController
     $province_list = array();
     $district_list = array();
     $mapping = PaymentMethodLocationMappingModel::get();
-    $districts = CustomerLocationDistrictModel::get();
+    $districts = LocationDistrictModel::get();
     foreach($mapping as $map){
       foreach($districts as $district){
         if($map->location_district_id==$district->id){
@@ -170,9 +170,9 @@ class ProductController extends BaseController
     }
     $district_list = array_unique($district_list,SORT_REGULAR);
     foreach($district_list as $district){
-      $cities = CustomerLocationCityModel::where(["id"=>$district['city_id']])->get();
+      $cities = LocationCityModel::where(["id"=>$district['city_id']])->get();
       foreach($cities as $city){
-        $provinces = CustomerLocationProvinceModel::where(["id"=>$city->province_id])->get();
+        $provinces = LocationProvinceModel::where(["id"=>$city->province_id])->get();
         foreach($provinces as $province){
           $province_list[$province->id] = $province->name;
         }
@@ -187,7 +187,7 @@ class ProductController extends BaseController
       $city_list = array();
       $district_list = array();
       $mapping = PaymentMethodLocationMappingModel::get();
-      $districts = CustomerLocationDistrictModel::get();
+      $districts = LocationDistrictModel::get();
       foreach($mapping as $map){
         foreach($districts as $district){
           if($map->location_district_id==$district->id){
@@ -197,9 +197,9 @@ class ProductController extends BaseController
       }
       $district_list = array_unique($district_list,SORT_REGULAR);
       foreach($district_list as $district){
-        $cities = CustomerLocationCityModel::where(["id"=>$district['city_id']])->get();
+        $cities = LocationCityModel::where(["id"=>$district['city_id']])->get();
         foreach($cities as $city){
-          $provinces = CustomerLocationProvinceModel::where(["id"=>$city->province_id])->get();
+          $provinces = LocationProvinceModel::where(["id"=>$city->province_id])->get();
           foreach($provinces as $province){
             if($province->id==$_POST['province_id'])
               $city_list[$city->id] = $city->name;
@@ -217,7 +217,7 @@ class ProductController extends BaseController
     if(isset($_POST['city_id'])){
       $district_list = array();
       $mapping = PaymentMethodLocationMappingModel::get();
-      $districts = CustomerLocationDistrictModel::where(["city_id"=>$_POST['city_id']])->get();
+      $districts = LocationDistrictModel::where(["city_id"=>$_POST['city_id']])->get();
       foreach($mapping as $map){
         foreach($districts as $district){
           if($map->location_district_id==$district->id){
@@ -336,9 +336,9 @@ class ProductController extends BaseController
         $item = ProductFgCodeModel::where(["id"=>$transaction->product_fg_code_id])->first();
         $colour = ProductColourModel::where(['id'=>$item->product_colour_id])->first();
         $product = ProductModel::where(['id'=>$colour->product_id])->first();
-        $district = CustomerLocationDistrictModel::where(['id'=>$info->location_district_id])->first();
-        $city = CustomerLocationCityModel::where(['id'=>isset($district->city_id)?$district->city_id:null])->first();
-        $province = CustomerLocationProvinceModel::where(['id'=>isset($city->province_id)?$city->province_id:null])->first();
+        $district = LocationDistrictModel::where(['id'=>$info->location_district_id])->first();
+        $city = LocationCityModel::where(['id'=>isset($district->city_id)?$district->city_id:null])->first();
+        $province = LocationProvinceModel::where(['id'=>isset($city->province_id)?$city->province_id:null])->first();
         $payment_method = PaymentMethodModel::where(['id'=>$transaction->payment_method_id])->first();
         $mapping = PaymentMethodLocationMappingModel::where(['payment_method_id'=>isset($payment_method->id)?$payment_method->id:null,'location_district_id'=>isset($district->id)?$district->id:null])->first();
         $total_price_category = TotalPriceCategoryModel::where('min_price','<=',$item->price*$transaction->qty)->where(function($query)use($item,$transaction){return $query->where('max_price','>=',$item->price*$transaction->qty)->orWhere('max_price','=','0');})->first();

@@ -126,10 +126,6 @@
   <script>
   var table;
     $(document).ready(function() {
-      $("#manage-location-province").addClass("current-page");
-      $("#manage-location-province").parent().show();
-      $("#manage-location-province").parent().parent().addClass("active");
-
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,

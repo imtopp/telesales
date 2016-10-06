@@ -17,7 +17,7 @@
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "xethron/migrations-generator": "dev-l5",
         "way/generators": "dev-feature/laravel-five-stable",
-		"ignasbernotas/laravel-model-generator" : "^1"
+		    "ignasbernotas/laravel-model-generator" : "^1"
     },
     "autoload": {
         "classmap": [

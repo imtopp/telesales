@@ -11,16 +11,28 @@
 |
 */
 Route::controller('/auth','Auth\AuthController');
-Route::get('/', ["as"=>"show_all_product","uses"=>"Frontend\ProductController@showAllProduct"]);
-Route::get('/product_detail', ["as"=>"product_detail","uses"=>"Frontend\ProductController@showProductDetail"]);
-Route::post('/buy_product', ["as"=>"buy_product","uses"=>"Frontend\ProductController@showCustomerForm"]);
-Route::post('/checkout', ["as"=>"checkout","uses"=>"Frontend\ProductController@storeCustomerForm"]);
-Route::post('/get_province_dropdown', ["as"=>"get_province_dropdown","uses"=>"Frontend\ProductController@getProvinceDropdown"]);
-Route::post('/get_city_dropdown', ["as"=>"get_city_dropdown","uses"=>"Frontend\ProductController@getCityDropdown"]);
-Route::post('/get_district_dropdown', ["as"=>"get_district_dropdown","uses"=>"Frontend\ProductController@getDistrictDropdown"]);
-Route::post('/get_payment_method', ["as"=>"get_payment_method","uses"=>"Frontend\ProductController@getPaymentMethodDropdown"]);
-Route::post('/get_delivery_price', ["as"=>"get_delivery_price","uses"=>"Frontend\ProductController@getDeliveryPrice"]);
-Route::get('/check_data', ["as"=>"check_data","uses"=>"Frontend\ProductController@checkData"]);
+
+//Frontend Route
+
+//Product
+//List Product
+Route::get('/', ["as"=>"show_all_product","uses"=>"Frontend\Product\ListProductController@index"]);
+//Detail Product
+Route::get('/product_detail', ["as"=>"product_detail","uses"=>"Frontend\Product\DetailProductController@index"]);
+
+//Transaction
+//Order
+Route::get('/order', ["as"=>"order","uses"=>"Frontend\Transaction\OrderController@index"]);
+Route::post('/checkout', ["as"=>"checkout","uses"=>"Frontend\Transaction\OrderController@checkout"]);
+Route::post('/get_province_dropdown', ["as"=>"order_get_province_dropdown","uses"=>"Frontend\Transaction\OrderController@getProvinceDropdown"]);
+Route::post('/get_city_dropdown', ["as"=>"order_get_city_dropdown","uses"=>"Frontend\Transaction\OrderController@getCityDropdown"]);
+Route::post('/get_district_dropdown', ["as"=>"order_get_district_dropdown","uses"=>"Frontend\Transaction\OrderController@getDistrictDropdown"]);
+Route::post('/get_courier', ["as"=>"order_get_courier_dropdown","uses"=>"Frontend\Transaction\OrderController@getCourierDropdown"]);
+Route::post('/get_courier_package', ["as"=>"order_get_courier_package_dropdown","uses"=>"Frontend\Transaction\OrderController@getCourierPackageDropdown"]);
+Route::post('/get_payment_method', ["as"=>"order_get_payment_method_dropdown","uses"=>"Frontend\Transaction\OrderController@getPaymentMethodDropdown"]);
+Route::post('/get_delivery_price', ["as"=>"order_get_delivery_price","uses"=>"Frontend\Transaction\OrderController@getDeliveryPrice"]);
+
+//Route::get('/check_data', ["as"=>"check_data","uses"=>"Frontend\ProductController@checkData"]);
 
 //Backend Route Group
 Route::group(['middleware' => ['auth.admin']], function(){

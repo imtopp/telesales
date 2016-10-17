@@ -35,7 +35,7 @@ Route::post('/get_delivery_price', ["as"=>"order_get_delivery_price","uses"=>"Fr
 //Route::get('/check_data', ["as"=>"check_data","uses"=>"Frontend\ProductController@checkData"]);
 
 //Backend Route Group
-Route::group(['middleware' => ['auth.admin']], function(){
+Route::group(['middleware' => ['auth.administrator']], function(){
 
   //Administrator Dashboard
   Route::get('/administrator', ["as"=>"backend_home","uses"=>"Backend\MainController@administrator"]);

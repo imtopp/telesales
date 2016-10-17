@@ -35,9 +35,13 @@ class Kernel extends HttpKernel
             'throttle:60,1',
         ],
 
-        'auth.admin' => [
+        'auth.administrator' => [
             \App\Http\Middleware\Authenticate::class,
             \App\Http\Middleware\Administrator::class,
+        ],
+        'auth.telesales' => [
+            \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\Telesales::class,
         ],
     ];
 

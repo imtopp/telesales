@@ -41,61 +41,50 @@ class DeliveryPriceController extends BaseController
         4 => 'courier_package',
         5 => 'status'
     );
+    
+    $model = DB::table('courier_delivery_price')
+              ->select('courier_location_mapping.id', 'location_province.name AS province', 'location_province.id AS province_id', 'location_city.name AS city', 'location_city.id AS city_id', 'location_district.name AS district', 'location_district.id AS district_id', 'courier.name AS courier', 'courier.id AS courier_id', 'courier_package.name AS courier_package', 'courier_package.id AS courier_package_id', 'courier_location_mapping.status')
+              ->join('courier_price_category','courier_price_category.id','=','courier_delivery_price.courier_price_category_id')
+              ->join('courier_location_mapping','courier_location_mapping.id','=','courier_delivery_price.courier_location_mapping_id')
+              ->join('location_district','location_district.id','=','courier_location_mapping.location_district_id')
+              ->join('location_city','location_city.id','=','location_district.city_id')
+              ->join('location_province','location_province.id','=','location_city.province_id')
+              ->join('courier_package','courier_package.id','=','courier_location_mapping.courier_package_id')
+              ->join('courier','courier.id','=','courier_package.courier_id')
+              ->where('courier_price_category.status','=','active')
+              ->groupBy('location_province.name')
+              ->groupBy('location_city.name')
+              ->groupBy('location_district.name')
+              ->groupBy('courier.name')
+              ->groupBy('courier_package.name')
+              ->groupBy('courier_location_mapping.status');
 
-    $totalData = DeliveryPriceModel::count();
-    $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
+    $totalData = $model->count();
 
     if( !empty($requestData['search']['value']) ) {
+      $totalFiltered = $model->count();
+
       // if there is a search parameter
-      $model = DB::table('courier_delivery_price')
-                ->select('courier_location_mapping.id', 'location_province.name AS province', 'location_province.id AS province_id', 'location_city.name AS city', 'location_city.id AS city_id', 'location_district.name AS district', 'location_district.id AS district_id', 'courier.name AS courier', 'courier.id AS courier_id', 'courier_package.name AS courier_package', 'courier_package.id AS courier_package_id', 'courier_location_mapping.status')
-                ->join('courier_price_category','courier_price_category.id','=','courier_delivery_price.courier_price_category_id')
-                ->join('courier_location_mapping','courier_location_mapping.id','=','courier_delivery_price.courier_location_mapping_id')
-                ->join('location_district','location_district.id','=','courier_location_mapping.location_district_id')
-                ->join('location_city','location_city.id','=','location_district.city_id')
-                ->join('location_province','location_province.id','=','location_city.province_id')
-                ->join('courier_package','courier_package.id','=','courier_location_mapping.courier_package_id')
-                ->join('courier','courier.id','=','courier_package.courier_id')
-                ->where('courier_price_category.status','=','active')
+      $query = $model
                 ->where('location_province.name','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('location_city.name','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('location_district.name','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('courier.name','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('courier_package.name','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('courier_location_mapping.status','LIKE',$requestData['search']['value'].'%')
-                ->groupBy('province')
-                ->groupBy('city')
-                ->groupBy('district')
-                ->groupBy('courier')
-                ->groupBy('courier_package')
-                ->groupBy('status');
-      $totalFiltered = $model->count();
-      $query = $model
                 ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
                 ->skip($requestData['start'])
                 ->take($requestData['length'])
                 ->get();
     } else {
-      $query = DB::table('courier_delivery_price')
-                ->select('courier_location_mapping.id', 'location_province.name AS province', 'location_province.id AS province_id', 'location_city.name AS city', 'location_city.id AS city_id', 'location_district.name AS district', 'location_district.id AS district_id', 'courier.name AS courier', 'courier.id AS courier_id', 'courier_package.name AS courier_package', 'courier_package.id AS courier_package_id', 'courier_location_mapping.status')
-                ->join('courier_price_category','courier_price_category.id','=','courier_delivery_price.courier_price_category_id')
-                ->join('courier_location_mapping','courier_location_mapping.id','=','courier_delivery_price.courier_location_mapping_id')
-                ->join('location_district','location_district.id','=','courier_location_mapping.location_district_id')
-                ->join('location_city','location_city.id','=','location_district.city_id')
-                ->join('location_province','location_province.id','=','location_city.province_id')
-                ->join('courier_package','courier_package.id','=','courier_location_mapping.courier_package_id')
-                ->join('courier','courier.id','=','courier_package.courier_id')
-                ->where('courier_price_category.status','=','active')
-                ->groupBy('province')
-                ->groupBy('city')
-                ->groupBy('district')
-                ->groupBy('courier')
-                ->groupBy('courier_package')
-                ->groupBy('status')
+      $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
+
+      $query = $model
                 ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
                 ->skip($requestData['start'])
                 ->take($requestData['length'])
                 ->get();
+
     }
 
     $data = array();

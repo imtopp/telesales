@@ -32,17 +32,7 @@
       <ul class="nav child_menu">
         <li id="manage-courier"><a href="{{URL::route('backend_manage_courier')}}"> Courier </a></li>
         <li id="manage-courier-package"><a href="{{URL::route('backend_manage_courier_package')}}"> Courier Package </a></li>
-        <li><a> Internal <span class="fa fa-chevron-down"></span></a>
-          <ul class="nav child_menu">
-            <li id="manage-courier-internal-delivery-price"><a href="{{URL::route('backend_manage_courier_internal_delivery_price')}}">Delivery Price</a></li>
-          </ul>
-        </li>
-        <li><a> GED <span class="fa fa-chevron-down"></span></a>
-          <ul class="nav child_menu">
-            <li id="manage-courier-ged-price-category"><a href="{{URL::route('backend_manage_courier_ged_price_category')}}"> Manage Price Category </a></li>
-            <li id="manage-courier-ged-delivery-price"><a href="{{URL::route('backend_manage_courier_ged_delivery_price')}}">Delivery Price</a></li>
-          </ul>
-        </li>
+        <li id="manage-courier-delivery-price"><a href="{{URL::route('backend_manage_courier_delivery_price')}}"> Courier Delivery Price </a></li>
       </ul>
     </li>
   </ul>

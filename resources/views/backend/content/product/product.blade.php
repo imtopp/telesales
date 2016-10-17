@@ -249,13 +249,13 @@
           "targets": 2,
           "data": "description",
           "render": function ( data, type, full, meta ) {
-            return '<td><center><a href="#" data-toggle="tooltip" title="Edit Description" class="btn btn-sm btn-primary" onClick="description(this)"> <i class="fa fa-file-text-o"></i> View</a><span id="description_content" style="display:none">'+data+'</span></td></center>';
+            return '<td><center><a data-toggle="tooltip" title="Edit Description" class="btn btn-sm btn-primary" onClick="description(this)"> <i class="fa fa-file-text-o"></i> View</a><span id="description_content" style="display:none">'+data+'</span></td></center>';
           }
         },{
           "targets": 3,
           "data": "image_url",
           "render": function ( data, type, full, meta ) {
-            return '<td><center><a href="#" data-src="'+data+'" data-toggle="tooltip" title="View Image" class="btn btn-sm btn-primary" onClick="view(this)"> <i class="fa fa-eye"></i> View</a></td></center>';
+            return '<td><center><a data-src="'+data+'" data-toggle="tooltip" title="View Image" class="btn btn-sm btn-primary" onClick="view(this)"> <i class="fa fa-eye"></i> View</a></td></center>';
           }
         }],
         deferRender: true,

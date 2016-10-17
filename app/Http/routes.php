@@ -130,48 +130,26 @@ Route::group(['middleware' => ['auth.admin']], function(){
   //Courier
   Route::get('/administrator/manage-courier/courier', ["as"=>"backend_manage_courier","uses"=>"Backend\Content\ManageCourier\CourierController@index"]);
   Route::post('/administrator/manage-courier/courier-read', ["as"=>"backend_manage_courier_read","uses"=>"Backend\Content\ManageCourier\CourierController@read"]);
+  Route::post('/administrator/manage-courier/courier-create', ["as"=>"backend_manage_courier_create","uses"=>"Backend\Content\ManageCourier\CourierController@create"]);
   Route::post('/administrator/manage-courier/courier-update', ["as"=>"backend_manage_courier_update","uses"=>"Backend\Content\ManageCourier\CourierController@update"]);
+  Route::post('/administrator/manage-courier/courier-destroy', ["as"=>"backend_manage_courier_destroy","uses"=>"Backend\Content\ManageCourier\CourierController@destroy"]);
+  Route::post('/administrator/manage-courier/courier-price-category', ["as"=>"backend_manage_courier_price_category","uses"=>"Backend\Content\ManageCourier\CourierController@priceCategory"]);
   //Courier Package
   Route::get('/administrator/manage-courier/courier_package', ["as"=>"backend_manage_courier_package","uses"=>"Backend\Content\ManageCourier\CourierPackageController@index"]);
   Route::post('/administrator/manage-courier/courier_package-read', ["as"=>"backend_manage_courier_package_read","uses"=>"Backend\Content\ManageCourier\CourierPackageController@read"]);
+  Route::post('/administrator/manage-courier/courier_package-create', ["as"=>"backend_manage_courier_package_create","uses"=>"Backend\Content\ManageCourier\CourierPackageController@create"]);
   Route::post('/administrator/manage-courier/courier_package-update', ["as"=>"backend_manage_courier_package_update","uses"=>"Backend\Content\ManageCourier\CourierPackageController@update"]);
+  Route::post('/administrator/manage-courier/courier_package-destroy', ["as"=>"backend_manage_courier_package_destroy","uses"=>"Backend\Content\ManageCourier\CourierPackageController@destroy"]);
   Route::post('/administrator/manage-courier/courier_package-get-courier', ["as"=>"backend_manage_courier_package_get_courier","uses"=>"Backend\Content\ManageCourier\CourierPackageController@getCourier"]);
-  //Courier Location Mapping
-  Route::get('/administrator/manage-courier/courier_location_mapping', ["as"=>"backend_manage_courier_location_mapping","uses"=>"Backend\Content\ManageCourier\LocationMappingController@index"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-read', ["as"=>"backend_manage_courier_location_mapping_read","uses"=>"Backend\Content\ManageCourier\LocationMappingController@read"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-create', ["as"=>"backend_manage_courier_location_mapping_create","uses"=>"Backend\Content\ManageCourier\LocationMappingController@create"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-destroy', ["as"=>"backend_manage_courier_location_mapping_destroy","uses"=>"Backend\Content\ManageCourier\LocationMappingController@destroy"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-update', ["as"=>"backend_manage_courier_location_mapping_update","uses"=>"Backend\Content\ManageCourier\LocationMappingController@update"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-get-province', ["as"=>"backend_manage_courier_location_mapping_get_province","uses"=>"Backend\Content\ManageCourier\LocationMappingController@getProvince"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-get-city', ["as"=>"backend_manage_courier_location_mapping_get_city","uses"=>"Backend\Content\ManageCourier\LocationMappingController@getCity"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-get-district', ["as"=>"backend_manage_courier_location_mapping_get_district","uses"=>"Backend\Content\ManageCourier\LocationMappingController@getDistrict"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-get-courier', ["as"=>"backend_manage_courier_location_mapping_get_courier","uses"=>"Backend\Content\ManageCourier\LocationMappingController@getCourier"]);
-  Route::post('/administrator/manage-courier/courier_location_mapping-get-courier-package', ["as"=>"backend_manage_courier_location_mapping_get_courier_package","uses"=>"Backend\Content\ManageCourier\LocationMappingController@getCourierPackage"]);
-  //Courier Internal
-  //Delivery Price
-  Route::get('/administrator/manage-courier/internal/delivery_price', ["as"=>"backend_manage_courier_internal_delivery_price","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@index"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-read', ["as"=>"backend_manage_courier_internal_delivery_price_read","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@read"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-create', ["as"=>"backend_manage_courier_internal_delivery_price_create","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@create"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-destroy', ["as"=>"backend_manage_courier_internal_delivery_price_destroy","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@destroy"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-update', ["as"=>"backend_manage_courier_internal_delivery_price_update","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@update"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-get-province', ["as"=>"backend_manage_courier_internal_delivery_price_get_province","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@getProvince"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-get-city', ["as"=>"backend_manage_courier_internal_delivery_price_get_city","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@getCity"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-get-district', ["as"=>"backend_manage_courier_internal_delivery_price_get_district","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@getDistrict"]);
-  Route::post('/administrator/manage-courier/internal/delivery_price-get-courier-package', ["as"=>"backend_manage_courier_internal_delivery_price_get_courier_package","uses"=>"Backend\Content\ManageCourier\Internal\DeliveryPriceController@getCourierPackage"]);
-  //GED
-  //Price Category
-  Route::get('/administrator/manage-courier/ged/price_category', ["as"=>"backend_manage_courier_ged_price_category","uses"=>"Backend\Content\ManageCourier\GED\PriceCategoryController@index"]);
-  Route::post('/administrator/manage-courier/ged/price_category-read', ["as"=>"backend_manage_courier_ged_price_category_read","uses"=>"Backend\Content\ManageCourier\GED\PriceCategoryController@read"]);
-  Route::post('/administrator/manage-courier/ged/price_category-update', ["as"=>"backend_manage_courier_ged_price_category_update","uses"=>"Backend\Content\ManageCourier\GED\PriceCategoryController@update"]);
-  //Delivery Price
-  Route::get('/administrator/manage-courier/ged/delivery_price', ["as"=>"backend_manage_courier_ged_delivery_price","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@index"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-read', ["as"=>"backend_manage_courier_ged_delivery_price_read","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@read"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-create', ["as"=>"backend_manage_courier_ged_delivery_price_create","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@create"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-destroy', ["as"=>"backend_manage_courier_ged_delivery_price_destroy","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@destroy"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-update', ["as"=>"backend_manage_courier_ged_delivery_price_update","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@update"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-get-province', ["as"=>"backend_manage_courier_ged_delivery_price_get_province","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@getProvince"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-get-city', ["as"=>"backend_manage_courier_ged_delivery_price_get_city","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@getCity"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-get-district', ["as"=>"backend_manage_courier_ged_delivery_price_get_district","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@getDistrict"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-get-courier-package', ["as"=>"backend_manage_courier_ged_delivery_price_get_courier_package","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@getCourierPackage"]);
-  Route::post('/administrator/manage-courier/ged/delivery_price-get-courier-price-category', ["as"=>"backend_manage_courier_ged_delivery_price_get_price_category","uses"=>"Backend\Content\ManageCourier\GED\DeliveryPriceController@getPriceCategory"]);
+  //Courier Delivery Price
+  Route::get('/administrator/manage-courier/courier_delivery_price', ["as"=>"backend_manage_courier_delivery_price","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@index"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-read', ["as"=>"backend_manage_courier_delivery_price_read","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@read"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-create', ["as"=>"backend_manage_courier_delivery_price_create","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@create"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-update', ["as"=>"backend_manage_courier_delivery_price_update","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@update"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-province', ["as"=>"backend_manage_courier_delivery_price_get_province","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getProvince"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-city', ["as"=>"backend_manage_courier_delivery_price_get_city","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getCity"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-district', ["as"=>"backend_manage_courier_delivery_price_get_district","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getDistrict"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-courier', ["as"=>"backend_manage_courier_delivery_price_get_courier","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getCourier"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-courier-package', ["as"=>"backend_manage_courier_delivery_price_get_courier_package","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getCourierPackage"]);
+  Route::post('/administrator/manage-courier/courier_delivery_price-get-courier-price-category', ["as"=>"backend_manage_courier_delivery_price_get_price_category","uses"=>"Backend\Content\ManageCourier\DeliveryPriceController@getPriceCategory"]);
 });

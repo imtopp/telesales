@@ -77,13 +77,13 @@
         <div class="form-group">
           <div class="controls">
             {!! Form::label("courier_id", "Courier") !!}
-            {!! Form::select('courier_id', [''=>'Harap Pilih Courier'], null, ["class"=>"form-control","required","readonly","id"=>"courier_id"]); !!}
+            {!! Form::select('courier_id', [''=>'Harap Pilih Courier'], null, ["class"=>"form-control","required","id"=>"courier_id"]); !!}
           </div>
         </div>
         <div class="form-group">
           <div class="controls">
             {!! Form::label("name", "Nama") !!}
-            {!! Form::text("name",null,["class"=>"form-control","required","readonly","id"=>"name"]) !!}
+            {!! Form::text("name",null,["class"=>"form-control","required","id"=>"name"]) !!}
           </div>
         </div>
         <div class="form-group">
@@ -105,13 +105,42 @@
     {!!Form::close()!!}
   </script>
 
+  <script type = "text/template" id="modal-template-delete">
+    {!!Form::open(["id"=>"popup_form","class"=>"form form-horizontal"])!!}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 id="title" class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+      <div id="message">
+        <div class="form-group">
+          {!! Form::hidden('id',null,['id'=>'id']) !!}
+        </div>
+        <h4>Apakah anda yakin menghapus <span id="name"></span> ?</h4>
+      </div>
+    </div>
+    <div id="footer" class="modal-footer">
+      <div class="form-group">
+        <div class="controls">
+          {!!Form::submit("Ya",["class"=>"btn btn-primary submit"])!!}
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+        </div>
+      </div>
+    </div>
+    {!!Form::close()!!}
+  </script>
+
   <script>
   var table;
     $(document).ready(function() {
       table = $('#datatable').dataTable({
-        dom: 'frtipl',
+        dom: 'Bfrtipl',
         "processing": true,
         "serverSide": true,
+        buttons: [{
+          text: 'Tambah Baru',
+          action: create,
+        }],
         ajax: {
           data: {"_token":"{{ csrf_token() }}"},
           url: "{{URL::route('backend_manage_courier_package_read')}}",
@@ -215,6 +244,16 @@
       });
     }
 
+    function create(e) {
+      initializeModal($("#modal-template").html(),"Tambah Data Baru");
+      showModal();
+      $('#modal_view').on('hidden.bs.modal',function(){
+        resetModal();
+      });
+
+      setSubmitModalEvent('{{URL::route('backend_manage_courier_package_create')}}');
+    }
+
     function edit(e) {
       initializeModal($("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('courier_id'),$(e).data('status'));
       showModal();
@@ -223,6 +262,16 @@
       });
 
       setSubmitModalEvent('{{URL::route('backend_manage_courier_package_update')}}');
+    }
+
+    function destroy(e) {
+      initializeModal($("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
+      showModal();
+      $('#modal_view').on('hidden.bs.modal',function(){
+        resetModal();
+      });
+
+      setSubmitModalEvent('{{URL::route('backend_manage_courier_package_destroy')}}');
     }
   </script>
 @stop

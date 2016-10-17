@@ -74,8 +74,8 @@ class ManageUsersController extends BaseController
         $nestedData[$columns[2]] = $row->status;
         if($row->role!="Customer"){
           $nestedData['action'] = '<td><center>
-                           <a href="#" data-id="'.$row->id.'" data-email="'.$row->email.'" data-role="'.$row->role.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
-                           <a href="#" data-id="'.$row->id.'" data-email="'.$row->email.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
+                           <a data-id="'.$row->id.'" data-email="'.$row->email.'" data-role="'.$row->role.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-email="'.$row->email.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
         }else{
           $nestedData['action'] = "";

@@ -77,8 +77,8 @@ class DistrictController extends BaseController
         $nestedData[$columns[2]] = $row->city;
         $nestedData[$columns[3]] = $row->status;
         $nestedData['action'] = '<td><center>
-                           <a href="#" data-id="'.$row->id.'" data-name="'.$row->name.'" data-province_id="'.$row->province_id.'" data-city_id="'.$row->city_id.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
-                           <a href="#" data-id="'.$row->id.'" data-name="'.$row->name.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-province_id="'.$row->province_id.'" data-city_id="'.$row->city_id.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
 
         $data[] = $nestedData;

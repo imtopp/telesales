@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCourierInternalDeliveryPriceTable extends Migration {
+class CreateTransactionStatusTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,11 @@ class CreateCourierInternalDeliveryPriceTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('courier_internal_delivery_price', function(Blueprint $table)
+		Schema::create('transaction_status', function(Blueprint $table)
 		{
-			$table->integer('id', true);
-			$table->integer('courier_location_mapping_id')->nullable();
-			$table->integer('price')->nullable();
+			$table->bigInteger('id', true);
+			$table->bigInteger('transaction_id')->index('transaction_status');
+			$table->string('status')->nullable();
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();
 			$table->timestamp('update_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -32,7 +32,7 @@ class CreateCourierInternalDeliveryPriceTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('courier_internal_delivery_price');
+		Schema::drop('transaction_status');
 	}
 
 }

@@ -81,8 +81,8 @@ class ColourController extends BaseController
         $nestedData[$columns[3]] = URL::asset($row->image_url);
         $nestedData[$columns[4]] = $row->status;
         $nestedData['action'] = '<td><center>
-                           <a href="#" data-id="'.$row->id.'" data-name="'.$row->name.'" data-product_id="'.$row->product_id.'" data-category_id="'.$row->category_id.'" data-image_url="'.$row->image_url.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
-                           <a href="#" data-id="'.$row->id.'" data-name="'.$row->name.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-product_id="'.$row->product_id.'" data-category_id="'.$row->category_id.'" data-image_url="'.$row->image_url.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
 
         $data[] = $nestedData;

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCourierGedPriceCategoryTable extends Migration {
+class CreateCourierDeliveryPriceTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,12 @@ class CreateCourierGedPriceCategoryTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('courier_ged_price_category', function(Blueprint $table)
+		Schema::create('courier_delivery_price', function(Blueprint $table)
 		{
-			$table->integer('id', true);
-			$table->string('name')->nullable();
-			$table->integer('min_price')->nullable();
-			$table->integer('max_price')->nullable();
+			$table->bigInteger('id', true);
+			$table->bigInteger('courier_location_mapping_id')->nullable()->index('courier_delivery_price_courier_location_mapping');
+			$table->bigInteger('courier_price_category_id')->nullable()->index('courier_delivery_price_courier_price_category_id');
+			$table->bigInteger('price')->nullable();
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();
 			$table->timestamp('update_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -33,7 +33,7 @@ class CreateCourierGedPriceCategoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('courier_ged_price_category');
+		Schema::drop('courier_delivery_price');
 	}
 
 }

@@ -18,9 +18,8 @@ use App\Models\LocationDistrict as LocationDistrictModel;
 use App\Models\Courier as CourierModel;
 use App\Models\CourierPackage as CourierPackageModel;
 use App\Models\CourierLocationMapping as CourierLocationMappingModel;
-use App\Models\CourierInternalDeliveryPrice as CourierInternalDeliveryPriceModel;
-use App\Models\CourierGedPriceCategory as CourierGedPriceCategoryModel;
-use App\Models\CourierGedDeliveryPrice as CourierGEDDeliveryPriceModel;
+use App\Models\CourierPriceCategory as CourierPriceCategoryModel;
+use App\Models\CourierDeliveryPrice as CourierDeliveryPriceModel;
 use App\Models\PaymentMethod as PaymentMethodModel;
 use App\Models\PaymentMethodLocationMapping as PaymentMethodLocationMappingModel;
 use App\Models\ViewActiveProduct as ViewActiveProductModel;
@@ -99,7 +98,7 @@ class OrderController extends BaseController
                             ->join('courier_location_mapping','courier_location_mapping.courier_package_id','=','courier_package.id')
                             ->join('view_active_location','view_active_location.district_id','=','courier_location_mapping.location_district_id')
                             ->where(['view_active_location.district_id'=>$_POST['district_id']])
-                            ->whereRaw($payment_method->name=='COD'?'courier.name="Internal"':'courier.name<>"Internal"')
+                            ->whereRaw($payment_method->id=='1'?'courier.id="1"':'courier.id<>"1"')
                             ->lists('courier.name','courier.id');
     }else{
       $courier = null;
@@ -134,21 +133,12 @@ class OrderController extends BaseController
     if(isset($data['courier_package_id']) && isset($data['district_id']) && isset($data['fg_code'])){
       $courier_location_mapping = CourierLocationMappingModel::where(['courier_package_id'=>$data['courier_package_id'],'location_district_id'=>$data['district_id']])->first();
 
-      $courier = CourierModel::select('courier.*')
-                            ->join('courier_package','courier_package.courier_id','=','courier.id')
-                            ->where(['courier_package.id'=>$data['courier_package_id']])
-                            ->first();
-
-      if($courier->name == "Internal"){
-        $delivery_price = CourierInternalDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id])->first();
-      }else if($courier->name == "GED"){
-        $product = ProductFgCodeModel::where(['fg_code'=>$data['fg_code']])->first();
-        $price_category = CourierGedPriceCategoryModel::where('min_price','<=',$product->price)
-                                                      ->whereRaw('max_price >= "'.$product->price.'" OR max_price = "0"')
-                                                      ->first();
-        $delivery_price = CourierGEDDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id,'courier_ged_price_category_id'=>$price_category->id])
-                                                      ->first();
-      }
+      $product = ProductFgCodeModel::where(['fg_code'=>$data['fg_code']])->first();
+      $price_category = CourierPriceCategoryModel::where('status','=','active')
+                                                    ->whereRaw('min_price <='.$product->price.' AND (max_price >= '.$product->price.' OR max_price = 0)')
+                                                    ->first();
+      $delivery_price = CourierDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id,'courier_price_category_id'=>$price_category->id])
+                                                    ->first();
 
       return response()->json(["delivery_price"=>isset($delivery_price->price)?$delivery_price->price:"Null"]);
     }else{
@@ -233,7 +223,9 @@ class OrderController extends BaseController
 
         $transaction_status->transaction_id = $transaction->id;
         $transaction_status->status = "Order Received";
+        $transaction_status->input_date = $date->format("Y-m-d H:i:s");
         $transaction_status->input_by = "Self Order";
+        $transaction_status->update_date = $date->format("Y-m-d H:i:s");
         $transaction_status->update_by = "Self Order";
         try {
           $success = $transaction_status->save();

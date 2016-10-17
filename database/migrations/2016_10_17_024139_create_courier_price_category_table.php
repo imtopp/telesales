@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCourierLocationMappingTable extends Migration {
+class CreateCourierPriceCategoryTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,13 @@ class CreateCourierLocationMappingTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('courier_location_mapping', function(Blueprint $table)
+		Schema::create('courier_price_category', function(Blueprint $table)
 		{
-			$table->integer('id', true);
-			$table->integer('courier_package_id')->nullable()->index('courier_mapping_courier_package_id');
-			$table->integer('location_district_id')->nullable()->index('courier_mapping_location_district_id');
+			$table->bigInteger('id', true);
+			$table->integer('courier_id')->nullable()->index('courier_price_category_courier_id');
+			$table->string('name')->nullable();
+			$table->string('min_price')->nullable();
+			$table->string('max_price')->nullable();
 			$table->enum('status', array('inactive','active'))->nullable()->default('active');
 			$table->timestamp('input_date')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('input_by')->nullable();
@@ -33,7 +35,7 @@ class CreateCourierLocationMappingTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('courier_location_mapping');
+		Schema::drop('courier_price_category');
 	}
 
 }

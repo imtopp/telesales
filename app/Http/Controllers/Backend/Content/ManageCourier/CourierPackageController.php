@@ -70,7 +70,8 @@ class CourierPackageController extends BaseController
         $nestedData[$columns[1]] = $row->province;
         $nestedData[$columns[2]] = $row->status;
         $nestedData['action'] = '<td><center>
-                           <a href="#" data-id="'.$row->id.'" data-name="'.$row->name.'" data-courier_id="'.$row->courier_id.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-courier_id="'.$row->courier_id.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-name="'.$row->name.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
 
         $data[] = $nestedData;
@@ -84,6 +85,30 @@ class CourierPackageController extends BaseController
     );
 
     return response()->json($json_data);
+  }
+
+  //Create New Courier
+  public function create(){
+    $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    $model = new CourierPackageModel;
+
+    $model->name = $_POST['name'];
+    $model->courier_id = $_POST['courier_id'];
+    $model->status = $_POST['status'];
+    $model->input_date = $date->format('Y-m-d H:i:s');
+    $model->input_by = Auth::User()->email;
+    $model->update_date = $date->format('Y-m-d H:i:s');
+    $model->update_by = Auth::User()->email;
+
+    try {
+      $success = $model->save();
+      $message = 'Create new data is success!';
+    } catch (\Exception $ex) {
+      $success = false;
+      $message = $ex->getMessage();
+    }
+
+    return response()->json(['success'=>$success,'message'=>$message]);
   }
 
   //Update Existing Courier Package
@@ -103,6 +128,25 @@ class CourierPackageController extends BaseController
     } catch (\Exception $ex) {
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    return response()->json(['success'=>$success,'message'=>$message]);
+  }
+
+  //Destroy Existing Courier
+  public function destroy(){
+    try {
+      $success = CourierPackageModel::destroy($_POST['id']);
+      $message = 'Delete data is success!';
+      $error_message = null;
+    } catch (\Exception $ex) {
+      $success = false;
+      $error_message = $ex->getMessage();
+      if($ex->getCode()=="23000"){
+        $message = "Maaf data tidak dapat dihapus karena masih memiliki relasi dengan data lain.";
+      }else{
+        $message = $error_message;
+      }
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

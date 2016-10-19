@@ -5,13 +5,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}" type="image/x-icon" />
+
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <title>Order Page</title>
+
+  <title>{{ config('settings.app_name') }} | Order Page</title>
 
   <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ URL::asset('assets/css/font.css') }}" rel="stylesheet" type="text/css">
@@ -114,32 +117,32 @@
           {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Nomor Kontak Anda dalam format 088xxxxxxxxx','onkeypress'=>'return isNumberKey(event);')) !!}
         </div>
         <div class='form-group'>
-        {!! Form::label('Provinsi') !!}
-        {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control','placeholder'=>'Provinsi lokasi pengiriman Anda')) !!}
+          {!! Form::label('Provinsi') !!}
+          {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control','placeholder'=>'Provinsi lokasi pengiriman Anda')) !!}
         </div>
         <div class='form-group city' style="display:none">
-        {!! Form::label('Kota') !!}
-        {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Kota lokasi pengiriman Anda')) !!}
+          {!! Form::label('Kota') !!}
+          {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Kota lokasi pengiriman Anda')) !!}
         </div>
         <div class='form-group district' style="display:none">
-        {!! Form::label('Kecamatan') !!}
-        {!! Form::select('district_id',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district_id','class'=>'form-control','placeholder'=>'Kecamatan lokasi pengiriman Anda')) !!}
+          {!! Form::label('Kecamatan') !!}
+          {!! Form::select('district_id',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district_id','class'=>'form-control','placeholder'=>'Kecamatan lokasi pengiriman Anda')) !!}
         </div>
-        <div class='form-group'>
-        {!! Form::label('Alamat Pengiriman') !!}
-        {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
+        <div class='form-group address' style="display:none">
+          {!! Form::label('Alamat Pengiriman') !!}
+          {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Alamat Pengiriman Anda')) !!}
         </div>
         <div class='form-group payment_method' style="display:none">
           {!! Form::label('Metode Pembayaran') !!}
           {!! Form::select('payment_method_id',[''=>'Silahkan Pilih Metode Pembayaran'],null,array('required','id'=>'payment_method_id','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
         </div>
         <div class='form-group courier' style="display:none">
-        {!! Form::label('Kurir') !!}
-        {!! Form::select('courier_id',[''=>'Silahkan Pilih Kurir'],null,array('required','id'=>'courier_id','class'=>'form-control','placeholder'=>'Kurir Pengiriman')) !!}
+          {!! Form::label('Kurir') !!}
+          {!! Form::select('courier_id',[''=>'Silahkan Pilih Kurir'],null,array('required','id'=>'courier_id','class'=>'form-control','placeholder'=>'Kurir Pengiriman')) !!}
         </div>
         <div class='form-group courier_package' style="display:none">
-        {!! Form::label('Paket Pengiriman') !!}
-        {!! Form::select('courier_package_id',[''=>'Silahkan Pilih Paket Pengiriman'],null,array('required','id'=>'courier_package_id','class'=>'form-control','placeholder'=>'Paket Pengiriman Kurir')) !!}
+          {!! Form::label('Paket Pengiriman') !!}
+          {!! Form::select('courier_package_id',[''=>'Silahkan Pilih Paket Pengiriman'],null,array('required','id'=>'courier_package_id','class'=>'form-control','placeholder'=>'Paket Pengiriman Kurir')) !!}
         </div>
         <div class='form-group' style="text-align:left">
           <h4>Harga Barang : Rp {{ number_format($product['price'],0,",",".") }}</h4>
@@ -273,6 +276,7 @@
             });
             $(".city").show();
             $(".district").hide();
+            $(".address").hide();
             $(".payment_method").hide();
             $(".courier").hide();
             $(".courier_package").hide();
@@ -292,6 +296,7 @@
       }else{
         $(".city").hide();
         $(".district").hide();
+        $(".address").hide();
         $(".payment_method").hide();
         $(".courier").hide();
         $(".courier_package").hide();
@@ -325,6 +330,7 @@
               $("#district_id").append('<option value="'+key+'">'+value+'</option>');
             });
             $(".district").show();
+            $(".address").hide();
             $(".payment_method").hide();
             $(".courier").hide();
             $(".courier_package").hide();
@@ -341,6 +347,7 @@
         });
       }else{
         $(".district").hide();
+        $(".address").hide();
         $(".payment_method").hide();
         $(".courier").hide();
         $(".courier_package").hide();
@@ -366,6 +373,7 @@
           dataType: 'JSON',
           data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val()},
           success : function(data){
+            $(".address").show();
             $("#payment_method_id").empty();
             $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
             $.each(data,function(key,value){
@@ -384,6 +392,7 @@
           }
         });
       }else{
+        $(".address").hide();
         $(".payment_method").hide();
         $(".courier").hide();
         $(".courier_package").hide();

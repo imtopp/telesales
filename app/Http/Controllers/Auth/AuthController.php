@@ -71,7 +71,7 @@ class AuthController extends Controller {
         $this->user->save();
 
         //$this->auth->login($this->user);
-        return redirect('/auth/login');
+        return \Redirect::route('login');
     }
 
     /**
@@ -98,12 +98,14 @@ class AuthController extends Controller {
         {
             if($this->auth->user()->userRole->name=="Customer"){
               return redirect('/');
-            }else{
-              return \Redirect::route('backend_home');
+            }else if($this->auth->user()->userRole->name=="Administrator"){
+              return \Redirect::route('administrator_home');
+            }else if($this->auth->user()->userRole->name=="Telesales"){
+              return \Redirect::route('telesales_home');
             }
         }
 
-        return redirect('/auth/login')->withErrors([
+        return \Redirect::route('login')->withErrors([
             'email' => 'Maaf user/password salah. Silahkan coba kembali.',
         ]);
     }
@@ -117,6 +119,6 @@ class AuthController extends Controller {
     {
         $this->auth->logout();
 
-        return redirect('/auth/login');
+        return \Redirect::route('login');
     }
 }

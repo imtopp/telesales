@@ -199,10 +199,12 @@ class OrderController extends BaseController
         $transaction->product_name = $product->product;
         $transaction->product_colour = $product->colour;
         $transaction->product_fg_code = $product->fg_code;
+        $transaction->product_price = $product->price;
         $transaction->payment_method = $payment_method->name;
         $transaction->courier = $courier->name;
         $transaction->courier_package = $courier_package->name;
         $transaction->delivery_price = $delivery->delivery_price;
+        $transaction->total_price = $product->price+$delivery->delivery_price;
         $transaction->refference_number = $date->format("ymd").++$total_transaction;
         $transaction->input_date = $date->format("Y-m-d H:i:s");
         $transaction->input_by = "Self Order";
@@ -237,12 +239,12 @@ class OrderController extends BaseController
 
       if($success){
         Mail::send('frontend.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
-           $msg->from('administrator-'.strtolower(config('settings.app_name')).'@smartfren.com', "Administrator - ".config('settings.app_name'));
+           $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
            $msg->to("taufiq.putra@smartfren.com", 'taufiq okta pratama putra')->subject('Transaction notifications');
         });
 
         Mail::send('frontend.emails.transaction_notification_customer', [], function($msg) {
-          $msg->from('administrator-'.strtolower(config('settings.app_name')).'@smartfren.com', "Administrator - ".config('settings.app_name'));
+          $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
           $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
         });
       }

@@ -5,7 +5,10 @@
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="language" content="en">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}" type="image/x-icon" />
 
     <title>{{ config('settings.app_name') }} | @yield('title')</title>
 
@@ -34,7 +37,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="{{URL::route('backend_home')}}" class="site_title"><i class="fa {{ config('settings.fa_icon') }}"></i> <span>{{ config('settings.app_name') }}</span></a>
+              <a href="{{URL::route('administrator_home')}}" class="site_title"><i class="fa {{ config('settings.fa_icon') }}"></i> <span>{{ config('settings.app_name') }}</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -61,12 +64,7 @@
 
             <!-- /menu footer buttons -->
             <div class="sidebar-footer hidden-small">
-              <a href="{{URL::route('backend_settings_application_properties')}}" data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <a href="{{URL::to('auth/logout')}}" data-toggle="tooltip" data-placement="top" title="Log Out">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
+              @yield('sidebar-footer')
             </div>
             <!-- /menu footer buttons -->
           </div>

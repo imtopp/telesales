@@ -117,16 +117,16 @@
           {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Nomor Kontak Anda dalam format 088xxxxxxxxx','onkeypress'=>'return isNumberKey(event);')) !!}
         </div>
         <div class='form-group'>
-          {!! Form::label('Provinsi') !!}
-          {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control','placeholder'=>'Provinsi lokasi pengiriman Anda')) !!}
+          {!! Form::label('Provinsi Pengiriman') !!}
+          {!! Form::select('province',[''=>'Silahkan Pilih Provinsi'],null,array('required','id'=>'province','class'=>'form-control')) !!}
         </div>
         <div class='form-group city' style="display:none">
-          {!! Form::label('Kota') !!}
-          {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Kota lokasi pengiriman Anda')) !!}
+          {!! Form::label('Kota Pengiriman') !!}
+          {!! Form::select('city',[''=>'Silahkan Pilih Kota'],null,array('required','id'=>'city','class'=>'form-control')) !!}
         </div>
         <div class='form-group district' style="display:none">
-          {!! Form::label('Kecamatan') !!}
-          {!! Form::select('district_id',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district_id','class'=>'form-control','placeholder'=>'Kecamatan lokasi pengiriman Anda')) !!}
+          {!! Form::label('Kecamatan Pengiriman') !!}
+          {!! Form::select('district_id',[''=>'Silahkan Pilih Kecamatan'],null,array('required','id'=>'district_id','class'=>'form-control')) !!}
         </div>
         <div class='form-group address' style="display:none">
           {!! Form::label('Alamat Pengiriman') !!}
@@ -134,15 +134,15 @@
         </div>
         <div class='form-group payment_method' style="display:none">
           {!! Form::label('Metode Pembayaran') !!}
-          {!! Form::select('payment_method_id',[''=>'Silahkan Pilih Metode Pembayaran'],null,array('required','id'=>'payment_method_id','class'=>'form-control','placeholder'=>'Metode Pembayaran Anda')) !!}
+          {!! Form::select('payment_method_id',[''=>'Silahkan Pilih Metode Pembayaran'],null,array('required','id'=>'payment_method_id','class'=>'form-control')) !!}
         </div>
         <div class='form-group courier' style="display:none">
           {!! Form::label('Kurir') !!}
-          {!! Form::select('courier_id',[''=>'Silahkan Pilih Kurir'],null,array('required','id'=>'courier_id','class'=>'form-control','placeholder'=>'Kurir Pengiriman')) !!}
+          {!! Form::select('courier_id',[''=>'Silahkan Pilih Kurir'],null,array('required','id'=>'courier_id','class'=>'form-control')) !!}
         </div>
         <div class='form-group courier_package' style="display:none">
-          {!! Form::label('Paket Pengiriman') !!}
-          {!! Form::select('courier_package_id',[''=>'Silahkan Pilih Paket Pengiriman'],null,array('required','id'=>'courier_package_id','class'=>'form-control','placeholder'=>'Paket Pengiriman Kurir')) !!}
+          {!! Form::label('Paket Pengiriman Kurir') !!}
+          {!! Form::select('courier_package_id',[''=>'Silahkan Pilih Paket Pengiriman'],null,array('required','id'=>'courier_package_id','class'=>'form-control')) !!}
         </div>
         <div class='form-group' style="text-align:left">
           <h4>Harga Barang : Rp {{ number_format($product['price'],0,",",".") }}</h4>
@@ -171,7 +171,7 @@
             <span id="message"></span>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" id="close_dialog" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -506,7 +506,7 @@
         data[$(this).attr('name')]=$(this).val();
       });
       data["_token"]="{{ csrf_token() }}";
-
+/*
       $.ajax({
         url : '{{URL::route('checkout')}}',
         type: 'POST',
@@ -523,6 +523,13 @@
             });
           }
         }
+      });*/
+      $.spin('hide');
+      $("#title").html("Pesan");
+      $("#message").html("testing");
+      $('#modal_view').modal('show');
+      $('#modal_view').on('hidden.bs.modal',function(){
+        window.location.href = "{{ URL::route('show_all_product') }}";
       });
     });
   });

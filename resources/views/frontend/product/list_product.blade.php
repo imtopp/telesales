@@ -13,7 +13,7 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  
+
   <title>{{ config('settings.app_name') }} | List Product</title>
 
   <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -78,24 +78,25 @@
   <div class="container">
     <div class="content">
       @foreach($data as $category => $products)
-      <div class="col-md-12" data-toggle="collapse" data-target="#{{str_replace(' ','_',$category)}}" style="cursor: pointer;">
-        <h1><b>{{$category}}</b></h1><hr/></a>
+      <div class="row" data-toggle="collapse" data-target="#{{str_replace(' ','_',$category)}}" style="cursor: pointer;">
+        <h1><b>{{$category}}</b></h1>
+        <hr/>
       </div>
-      <div id="{{str_replace(' ','_',$category)}}" class="collapse">
+      <div id="{{str_replace(' ','_',$category)}}" class="collapse row">
         @foreach($products as $product)
           <div class="product col-xs-12 col-md-2" data-id="{{$product['id']}}">
             <div class="img_thumbnail row product-image-block">
               <img src="{{$product['image_url']}}" class="product-image"/>
             </div>
-            <span class="product-name">{{$product['name']}}</span>
-            Rp {{ number_format($product['price'],0,",",".") }}
-            <div class="col-xs-6 col-md-12 product-action">
-              {!! Form::button('Beli',array('class'=>'btn btn-danger btn-block')) !!}
+            <span class="row product-name">{{$product['name']}}</span>
+            <div class="row">Rp {{ number_format($product['price'],0,",",".") }}</div>
+            <div class="col-xs-5 col-md-12 product-action">
+              {!! Form::button('Beli',array('class'=>'btn btn-danger btn-block','style'=>'width:100%')) !!}
             </div>
           </div>
+        @endforeach
+      </div>
       @endforeach
-    </div>
-    @endforeach
     </div>
   </div>
 

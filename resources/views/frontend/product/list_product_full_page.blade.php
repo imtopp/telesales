@@ -34,7 +34,7 @@
       <iframe id="left-panel" src="{{ URL::route('show_all_product').'?isMicrosite=true' }}" frameborder="0" style="overflow:hidden;height:100vh;width:100%" height="100vh" width="100%">Sorry your browser is not supported.</iframe>
     </div>
     <div class="col-md-8" style="float:right; min-height: 100vh; padding: 0;">
-      <img id="logo-smartfren" src="{{ URL::asset('assets/img/logo_smartfren.jpg') }}" style="height:100vh">
+      <img id="logo-smartfren" src="{{ URL::asset('assets/img/logo_smartfren.jpg') }}" style="max-height:100vh; max-width:100%;">
       <iframe id="right-panel" src="" frameborder="0" style="overflow:hidden;height:100vh;width:100%;display:none;" height="100vh" width="100%">Sorry your browser is not supported.</iframe>
     </div>
   </div>

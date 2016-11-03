@@ -41,7 +41,7 @@ class DeliveryPriceController extends BaseController
         4 => 'courier_package',
         5 => 'status'
     );
-    
+
     $model = DB::table('courier_delivery_price')
               ->select('courier_location_mapping.id', 'location_province.name AS province', 'location_province.id AS province_id', 'location_city.name AS city', 'location_city.id AS city_id', 'location_district.name AS district', 'location_district.id AS district_id', 'courier.name AS courier', 'courier.id AS courier_id', 'courier_package.name AS courier_package', 'courier_package.id AS courier_package_id', 'courier_location_mapping.status')
               ->join('courier_price_category','courier_price_category.id','=','courier_delivery_price.courier_price_category_id')
@@ -120,10 +120,12 @@ class DeliveryPriceController extends BaseController
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
 
+    DB::beginTransaction();
     $location_mapping = LocationMappingModel::where(['location_district_id'=>$_POST['district_id'],'courier_package_id'=>$_POST['courier_package_id']])->first();
 
     if(!isset($location_mapping)){
       $location_mapping = new LocationMappingModel;
+
       $location_mapping->courier_package_id = $_POST['courier_package_id'];
       $location_mapping->location_district_id = $_POST['district_id'];
       $location_mapping->status = $_POST['status'];
@@ -139,6 +141,7 @@ class DeliveryPriceController extends BaseController
     try {
       $success = $location_mapping->save();
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
     }
@@ -160,11 +163,18 @@ class DeliveryPriceController extends BaseController
             $success = $model->save();
             $message = 'Create new data is success!';
           } catch (\Exception $ex) {
+            DB::rollback();
             $success = false;
             $message = $ex->getMessage();
           }
+        }else{
+          break;
         }
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -173,6 +183,7 @@ class DeliveryPriceController extends BaseController
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
 
+    DB::beginTransaction();
     if(isset($_POST['id']) && isset($_POST['courier_package_id']) && isset($_POST['district_id']) && isset($_POST['status'])){
       $location_mapping = LocationMappingModel::where(['id'=>$_POST['id']])->first();
 
@@ -186,6 +197,7 @@ class DeliveryPriceController extends BaseController
         $success = $location_mapping->save();
         $message = "Edit data is success";
       } catch (\Exception $ex) {
+        DB::rollback();
         $success = false;
         $message = $ex->getMessage();
       }
@@ -204,11 +216,16 @@ class DeliveryPriceController extends BaseController
             $success = $model->save();
             $message = "Change data is success";
           } catch (\Exception $ex) {
+            DB::rollback();
             $success = false;
             $message = $ex->getMessage();
           }
         }
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

@@ -91,8 +91,9 @@ class CityController extends BaseController
   //Create New City
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-
+    DB::beginTransaction();
     $model = new CityModel;
+
     $model->name = $_POST['name'];
     $model->province_id = $_POST['province_id'];
     $model->status = $_POST['status'];
@@ -105,8 +106,13 @@ class CityController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -115,6 +121,7 @@ class CityController extends BaseController
   //Update Existing City
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = CityModel::where(['id'=>$_POST['id']])->first();
 
     $model->name = $_POST['name'];
@@ -127,8 +134,13 @@ class CityController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -136,11 +148,14 @@ class CityController extends BaseController
 
   //Destroy Existing City
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = CityModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -148,6 +163,10 @@ class CityController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

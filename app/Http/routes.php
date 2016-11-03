@@ -11,9 +11,16 @@
 |
 */
 //Authentication Route
-Route::controller('/auth','Auth\AuthController');
 Route::get('/login', ["as"=>"login","uses"=>"Auth\AuthController@getLogin"]);
+Route::post('/login', ["as"=>"login","uses"=>"Auth\AuthController@postLogin"]);
 Route::get('/logout', ["as"=>"logout","uses"=>"Auth\AuthController@getLogout"]);
+Route::post('/logout', ["as"=>"logout","uses"=>"Auth\AuthController@postLogout"]);
+Route::get('/registation', ["as"=>"register","uses"=>"Auth\AuthController@getRegister"]);
+Route::post('/registation', ["as"=>"register","uses"=>"Auth\AuthController@postRegister"]);
+Route::get('/forget-password', ["as"=>"forget_password","uses"=>"Auth\PasswordController@getForgetPassword"]);
+Route::post('/forget-password', ["as"=>"forget_password","uses"=>"Auth\PasswordController@postForgetPassword"]);
+Route::get('/reset-password', ["as"=>"reset_password","uses"=>"Auth\PasswordController@getResetPassword"]);
+Route::post('/reset-password', ["as"=>"reset_password","uses"=>"Auth\PasswordController@postResetPassword"]);
 
 //Frontend Route
 
@@ -128,6 +135,7 @@ Route::group(['middleware' => ['auth.administrator']], function(){
   Route::post('/administrator/manage-payment/payment_method_location_mapping-get-province', ["as"=>"administrator_manage_payment_method_location_mapping_get_province","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getProvince"]);
   Route::post('/administrator/manage-payment/payment_method_location_mapping-get-city', ["as"=>"administrator_manage_payment_method_location_mapping_get_city","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getCity"]);
   Route::post('/administrator/manage-payment/payment_method_location_mapping-get-district', ["as"=>"administrator_manage_payment_method_location_mapping_get_district","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getDistrict"]);
+  Route::post('/administrator/manage-payment/payment_method_location_mapping-get-payment-method', ["as"=>"administrator_manage_payment_method_location_mapping_get_payment_method","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getPaymentMethod"]);
 
   //Manage Courier
   //Courier

@@ -21,8 +21,7 @@ class LocationMappingController extends BaseController
 
   //Render Page
   public function index(){
-    $payment_method = PaymentMethodModel::lists('name','id');
-    return view('backend/administrator/content/payment/location_mapping',['payment_method'=>$payment_method]); //display list_product view with all_category and all_product
+    return view('backend/administrator/content/payment/location_mapping'); //display list_product view with all_category and all_product
   }
 
   //Read All Payment Method Location Mapping
@@ -104,8 +103,9 @@ class LocationMappingController extends BaseController
   //Create New Payment Method Location Mapping
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-
+    DB::beginTransaction();
     $model = new LocationMappingModel;
+
     $model->location_district_id = $_POST['district_id'];
     $model->payment_method_id = $_POST['payment_method_id'];
     $model->status = $_POST['status'];
@@ -118,8 +118,13 @@ class LocationMappingController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -128,6 +133,7 @@ class LocationMappingController extends BaseController
   //Update Existing Payment Method Location Mapping
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = LocationMappingModel::where(['id'=>$_POST['id']])->first();
 
     $model->location_district_id = $_POST['district_id'];
@@ -140,8 +146,13 @@ class LocationMappingController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -149,11 +160,14 @@ class LocationMappingController extends BaseController
 
   //Destroy Existing Payment Method Location Mapping
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = LocationMappingModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -163,26 +177,82 @@ class LocationMappingController extends BaseController
       }
     }
 
+    if($success){
+      DB::commit();
+    }
+
     return response()->json(['success'=>$success,'message'=>$message]);
   }
 
   public function getProvince(){
-    return ViewLocationModel::lists('province','province_id');
+    $isset_province = "";
+    if(isset($_POST['province_id'])){
+      $isset_province = ' OR location_payment_method.province_id='.$_POST['province_id'];
+    }
+
+    return DB::table(DB::raw('(SELECT	view_location.*, payment_method.id AS payment_method_id, payment_method.`name` AS payment_method FROM `view_location`,	payment_method WHERE payment_method.status="active") location_payment_method'))
+              ->leftJoin('payment_method_location_mapping',function($join){
+                                                   $join->on('payment_method_location_mapping.location_district_id','=','location_payment_method.district_id');
+                                                   $join->on('payment_method_location_mapping.payment_method_id','=','location_payment_method.payment_method_id');
+                                                 })
+              ->whereRaw('(payment_method_location_mapping.payment_method_id IS NULL'.$isset_province.')')
+              ->lists('location_payment_method.province','location_payment_method.province_id');
   }
 
   public function getCity(){
+    $isset_city = "";
+    if(isset($_POST['city_id'])){
+      $isset_city = ' OR location_payment_method.city_id='.$_POST['city_id'];
+    }
+
     if(isset($_POST['province_id']))
-      $city = ViewLocationModel::where(['province_id'=>$_POST['province_id']])->lists('city','city_id');
+      $city = DB::table(DB::raw('(SELECT	view_location.*, payment_method.id AS payment_method_id, payment_method.`name` AS payment_method FROM `view_location`,	payment_method WHERE payment_method.status="active" AND view_location.province_id = "'.$_POST['province_id'].'") location_payment_method'))
+                ->leftJoin('payment_method_location_mapping',function($join){
+                                                     $join->on('payment_method_location_mapping.location_district_id','=','location_payment_method.district_id');
+                                                     $join->on('payment_method_location_mapping.payment_method_id','=','location_payment_method.payment_method_id');
+                                                   })
+                ->whereRaw('(payment_method_location_mapping.payment_method_id IS NULL'.$isset_city.')')
+                ->lists('location_payment_method.city','location_payment_method.city_id');
     else
       $city = null;
     return $city;
   }
 
   public function getDistrict(){
+    $isset_district = "";
+    if(isset($_POST['district_id'])){
+      $isset_district = ' OR location_payment_method.district_id='.$_POST['district_id'];
+    }
+
     if(isset($_POST['city_id']))
-      $district = ViewLocationModel::where(['city_id'=>$_POST['city_id']])->lists('district','district_id');
+      $district = DB::table(DB::raw('(SELECT	view_location.*, payment_method.id AS payment_method_id, payment_method.`name` AS payment_method FROM `view_location`,	payment_method WHERE payment_method.status="active" AND view_location.city_id = "'.$_POST['city_id'].'") location_payment_method'))
+                ->leftJoin('payment_method_location_mapping',function($join){
+                                                     $join->on('payment_method_location_mapping.location_district_id','=','location_payment_method.district_id');
+                                                     $join->on('payment_method_location_mapping.payment_method_id','=','location_payment_method.payment_method_id');
+                                                   })
+                ->whereRaw('(payment_method_location_mapping.payment_method_id IS NULL'.$isset_district.')')
+                ->lists('location_payment_method.district','location_payment_method.district_id');
     else
       $district = null;
     return $district;
+  }
+
+  public function getPaymentMethod(){
+    $isset_payment_method = "";
+    if(isset($_POST['payment_method_id'])){
+      $isset_payment_method = ' OR location_payment_method.payment_method_id='.$_POST['payment_method_id'];
+    }
+
+    if(isset($_POST['district_id']))
+      $payment_method = DB::table(DB::raw('(SELECT	view_location.*, payment_method.id AS payment_method_id, payment_method.`name` AS payment_method FROM `view_location`,	payment_method WHERE payment_method.status="active" AND view_location.district_id = "'.$_POST['district_id'].'") location_payment_method'))
+                ->leftJoin('payment_method_location_mapping',function($join){
+                                                     $join->on('payment_method_location_mapping.location_district_id','=','location_payment_method.district_id');
+                                                     $join->on('payment_method_location_mapping.payment_method_id','=','location_payment_method.payment_method_id');
+                                                   })
+                ->whereRaw('(payment_method_location_mapping.payment_method_id IS NULL'.$isset_payment_method.')')
+                ->lists('location_payment_method.payment_method','location_payment_method.payment_method_id');
+    else
+      $payment_method = null;
+    return $payment_method;
   }
 }

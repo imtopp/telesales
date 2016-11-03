@@ -56,6 +56,8 @@
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
 <!-- datatables boostrap buttons -->
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+<!-- spinner -->
+<script src="{{ URL::asset('assets/js/spin.min.js') }}"></script>
 @endsection
 
 @section('page-js-script')
@@ -76,12 +78,12 @@
             {!! Form::email("email",null,["class"=>"form-control","required","id"=>"email"]) !!}
           </div>
         </div>
-        <!--<div class="form-group">
+        <div class="form-group">
           <div class="controls">
-            {!! Form::label("role", "Role") !!}
-            {!! Form::select('role', $user_role,'1',["class"=>"form-control","required","id"=>"role"]); !!}
+            {!! Form::label("role_id", "Role") !!}
+            {!! Form::select('role_id', $user_role,'1',["class"=>"form-control","required","id"=>"role_id"]); !!}
           </div>
-        </div>-->
+        </div>
         <div class="form-group">
           <div class="controls">
             {!! Form::label("status", "Status") !!}
@@ -130,7 +132,52 @@
     var table;
 
     $(document).ready(function() {
-      $("#manage_user").addClass("current-page");
+      (function($) {
+        $.extend({
+          spin: function(spin, opts) {
+            if (opts === undefined) {
+              opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 56, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+              };
+            }
+
+            var data = $('body').data();
+
+            if (data.spinner) {
+              data.spinner.stop();
+              delete data.spinner;
+              $("#spinner_modal").remove();
+              return this;
+            }
+
+            if (spin=="show") {
+              var spinElem = this;
+
+              $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+              spinElem = $("#spinner_modal")[0];
+
+              data.spinner = new Spinner($.extend({
+                color: $('body').css('color')
+              }, opts)).spin(spinElem);
+            }
+          }
+        });
+      })(jQuery);
 
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
@@ -154,49 +201,48 @@
         "scrollX": true,
         "columns": [{
           "data": "email",
-          "title": "Email"
+          "title": "Email",
+          "width": "310px"
         },{
           "data": "role",
-          "title": "Role"
+          "title": "Role",
+          "width": "160px"
         },{
           "data": "status",
-          "title": "Status"
+          "title": "Status",
+          "width": "160px"
         },{
           "data": "action",
-          "title": "Action"
+          "title": "Action",
+          "width": "160px"
         }],
        deferRender: true,
      });
     });
 
-    function initializeModal(element,title,id,email,status,role){
+    function initializeModal(mode,element,title,id,email,status,role_id){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
-      if(typeof id != 'undefined'){
+
+      if(mode == "update" || mode == "delete"){
         $("#id").val(id);
         $("#email").prop('readonly', true);
-      }
-      if(typeof email != 'undefined'){
-        if($("#email").is("input")){
+
+        if(mode == "update"){
           $("#email").val(email);
-        }else{
+          $("#role_id").val(role_id);
+          $("#status").val(status);
+        }else if(mode == "delete"){
           $("#email").html(email);
         }
       }
-      if(typeof role != 'undefined'){
-        $("#role option:contains(" + role + ")").attr('selected', 'selected');
-      }
-      if(typeof status != 'undefined'){
-        $("#status").val(status);
-      }
-    }
 
-    function showModal(){
+      $.spin("hide");
       $('#modal_view').modal('show');
-    }
-
-    function resetModal(){
-      $("#modal-content").html("");
+      $('#modal_view').on('hidden.bs.modal',function(){
+        $("#modal-content").html("");
+      });
     }
 
     function getModalFormData(){
@@ -210,6 +256,7 @@
     function setSubmitModalEvent(url){
       $("#popup_form").submit(function(e) {
         e.preventDefault();
+        $.spin("show");
 
         $.ajax({
           url : url,
@@ -220,10 +267,13 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
             $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
+              $("#modal-content").html("");
             });
+
             table.fnReloadAjax();
           }
         });
@@ -231,31 +281,19 @@
     }
 
     function create(){
-      initializeModal($("#modal-template").html(),"Tambah User Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("create",$("#modal-template").html(),"Tambah User Baru");
 
       setSubmitModalEvent('{{URL::route('administrator_settings_manage_users_create')}}');
     }
 
     function edit(e) {
-      initializeModal($("#modal-template").html(),"Edit User",$(e).data('id'),$(e).data('email'),$(e).data('status'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("update",$("#modal-template").html(),"Edit User",$(e).data('id'),$(e).data('email'),$(e).data('status'),$(e).data('role_id'));
 
       setSubmitModalEvent('{{URL::route('administrator_settings_manage_users_update')}}');
     }
 
     function destroy(e) {
-      initializeModal($("#modal-template-delete").html(),"Delete User",$(e).data('id'),$(e).data('email'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("delete",$("#modal-template-delete").html(),"Delete User",$(e).data('id'),$(e).data('email'));
 
       setSubmitModalEvent('{{URL::route('administrator_settings_manage_users_destroy')}}');
     }

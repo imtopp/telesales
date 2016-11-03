@@ -84,8 +84,9 @@ class ProvinceController extends BaseController
   //Create New Province
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-
+    DB::beginTransaction();
     $model = new ProvinceModel;
+
     $model->name = $_POST['name'];
     $model->status = $_POST['status'];
     $model->input_date = $date->format('Y-m-d H:i:s');
@@ -97,8 +98,13 @@ class ProvinceController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -107,6 +113,7 @@ class ProvinceController extends BaseController
   //Update Exsiting Province
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = ProvinceModel::where(['id'=>$_POST['id']])->first();
 
     $model->name = $_POST['name'];
@@ -118,8 +125,13 @@ class ProvinceController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -127,11 +139,14 @@ class ProvinceController extends BaseController
 
   //Destroy Existing Province
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = ProvinceModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -139,6 +154,10 @@ class ProvinceController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

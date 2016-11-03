@@ -98,6 +98,7 @@ class ProductController extends BaseController
   //Create New Product
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
 
     $model = new ProductModel;
     $model->name = $_POST['name'];
@@ -112,8 +113,13 @@ class ProductController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -122,6 +128,7 @@ class ProductController extends BaseController
   //Update Existing Product
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = ProductModel::where(['id'=>$_POST['id']])->first();
 
     if($model->name!=$_POST['name']){
@@ -145,8 +152,13 @@ class ProductController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -154,11 +166,14 @@ class ProductController extends BaseController
 
   //Destroy Existing Product
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = ProductModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -166,6 +181,10 @@ class ProductController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -180,6 +199,7 @@ class ProductController extends BaseController
 
   //Upload Product Image
   public function upload(){
+    DB::beginTransaction();
     $product = ProductModel::where(['id'=>$_POST['id']])->first();
 
     // check image is valid and store it
@@ -205,14 +225,18 @@ class ProductController extends BaseController
           $success=$product->save();
           $message="Upload file sukses!";
         } catch (\Exception $ex) {
+          DB::rollback();
           $success = false;
           $message = $ex->getMessage();
         }
       }
-    }
-    else {
+    }else{
       $success=false;
       $message='file yang di upload tidak valid';
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -220,6 +244,7 @@ class ProductController extends BaseController
 
   //Update Product Description
   public function description(){
+    DB::beginTransaction();
     $product = ProductModel::where(['id'=>$_POST['id']])->first();
 
     $product->description = $_POST['description'];
@@ -228,8 +253,13 @@ class ProductController extends BaseController
       $success=$product->save();
       $message="Update description sukses!";
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

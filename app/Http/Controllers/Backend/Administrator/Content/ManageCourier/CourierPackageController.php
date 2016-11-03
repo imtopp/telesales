@@ -90,6 +90,7 @@ class CourierPackageController extends BaseController
   //Create New Courier
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = new CourierPackageModel;
 
     $model->name = $_POST['name'];
@@ -104,8 +105,13 @@ class CourierPackageController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -114,6 +120,7 @@ class CourierPackageController extends BaseController
   //Update Existing Courier Package
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = CourierPackageModel::where(['id'=>$_POST['id']])->first();
 
     $model->name = $_POST['name'];
@@ -126,8 +133,13 @@ class CourierPackageController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -135,11 +147,14 @@ class CourierPackageController extends BaseController
 
   //Destroy Existing Courier
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = CourierPackageModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -147,6 +162,10 @@ class CourierPackageController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

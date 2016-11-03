@@ -64,6 +64,8 @@
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
 <!-- datatables boostrap buttons -->
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+<!-- spinner -->
+<script src="{{ URL::asset('assets/js/spin.min.js') }}"></script>
 @endsection
 
 @section('page-js-script')
@@ -137,6 +139,53 @@
   <script>
   var table;
     $(document).ready(function() {
+      (function($) {
+        $.extend({
+          spin: function(spin, opts) {
+            if (opts === undefined) {
+              opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 56, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+              };
+            }
+
+            var data = $('body').data();
+
+            if (data.spinner) {
+              data.spinner.stop();
+              delete data.spinner;
+              $("#spinner_modal").remove();
+              return this;
+            }
+
+            if (spin == "show") {
+              var spinElem = this;
+
+              $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+              spinElem = $("#spinner_modal")[0];
+
+              data.spinner = new Spinner($.extend({
+                color: $('body').css('color')
+              }, opts)).spin(spinElem);
+            }
+          }
+        });
+      })(jQuery);
+
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -159,63 +208,73 @@
         "scrollX": true,
         "columns": [{
           "data": "courier",
-          "title": "Courier"
+          "title": "Courier",
+          "width": "240px"
         },{
           "data": "name",
-          "title": "Name"
+          "title": "Name",
+          "width": "200px"
         },{
           "data": "status",
-          "title": "Status"
+          "title": "Status",
+          "width": "150px"
         },{
           "data": "action",
-          "title": "Action"
+          "title": "Action",
+          "width": "200px"
         }],
         deferRender: true,
      });
     });
 
-    function initializeModal(element,title,id,name,courier_id,status){
+    function initializeModal(mode,element,title,id,name,courier_id,status){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
-      if(typeof id != 'undefined'){
+
+      if(mode == "update" || mode == "delete"){
         $("#id").val(id);
-      }
-      if(typeof name != 'undefined'){
-        if($("#name").is("input")){
+
+        if(mode == "update"){
           $("#name").val(name);
-        }else{
+          $("#status").val(status);
+        }else if(mode == "delete"){
           $("#name").html(name);
+
+          $.spin("hide");
+          $('#modal_view').modal('show');
+          $('#modal_view').on('hidden.bs.modal',function(){
+            $("#modal-content").html("");
+          });
         }
       }
-      if($("#courier_id").is("select")){
-        $(function(){
-          $.ajax({
-            url : '{{URL::route('administrator_manage_courier_package_get_courier')}}',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {"_token":"{{ csrf_token() }}"},
-            success : function(data){
-              $.each(data,function(key,value){
-                $("#courier_id").append('<option value="'+key+'">'+value+'</option>');
-              });
-              if(typeof courier_id != 'undefined'){
-                $("#courier_id").val(courier_id);
+
+      if(mode == "create" || mode == "update"){
+          $(function(){
+            $.ajax({
+              url : '{{URL::route('administrator_manage_courier_package_get_courier')}}',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"_token":"{{ csrf_token() }}"},
+              success : function(data){
+                $.each(data,function(key,value){
+                  $("#courier_id").append('<option value="'+key+'">'+value+'</option>');
+                });
+
+                if(mode == "update"){
+                  $("#courier_id").val(courier_id);
+                }
+
+                $.spin("hide");
+
+                $('#modal_view').modal('show');
+                $('#modal_view').on('hidden.bs.modal',function(){
+                  $("#modal-content").html("");
+                });
               }
-            }
+            });
           });
-        });
-      }
-      if(typeof status != 'undefined'){
-        $("#status").val(status);
-      }
-    }
-
-    function showModal(){
-      $('#modal_view').modal('show');
-    }
-
-    function resetModal(){
-      $("#modal-content").html("");
+        }
     }
 
     function getModalFormData(){
@@ -229,6 +288,7 @@
     function setSubmitModalEvent(url){
       $("#popup_form").submit(function(e) {
         e.preventDefault();
+        $.spin("show");
 
         $.ajax({
           url : url,
@@ -239,10 +299,13 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
             $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
+              $("#modal-content").html("");
             });
+
             table.fnReloadAjax();
           }
         });
@@ -250,31 +313,19 @@
     }
 
     function create(e) {
-      initializeModal($("#modal-template").html(),"Tambah Data Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("create",$("#modal-template").html(),"Tambah Data Baru");
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_package_create')}}');
     }
 
     function edit(e) {
-      initializeModal($("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('courier_id'),$(e).data('status'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('courier_id'),$(e).data('status'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_package_update')}}');
     }
 
     function destroy(e) {
-      initializeModal($("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("delete",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_package_destroy')}}');
     }

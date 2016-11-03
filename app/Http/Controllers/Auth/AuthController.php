@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use DB;
 
 class AuthController extends Controller {
 
@@ -59,6 +60,7 @@ class AuthController extends Controller {
     {
         $role = UserRoleModel::where(['name'=>'customer'])->first();
         $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+        DB::beginTransaction();
 
         $this->user->email = $request->email;
         $this->user->password = Hash::make($request->password);
@@ -68,10 +70,22 @@ class AuthController extends Controller {
         $this->user->update_date = $date->format('Y-m-d H:i:s');
         $this->user->update_by = 'Self Registration';
 
-        $this->user->save();
+        try {
+          $success = $this->user->save();
+          $message = "Registrasi Berhasil Silahkan Login Menggunakan User Anda.";
+        } catch (Exception $ex) {
+          DB::rollback();
+          $success = false;
+          $message = $ex->getMessage();
+        }
 
-        //$this->auth->login($this->user);
-        return \Redirect::route('login');
+        if($success){
+          DB::commit();
+        }
+
+        return \Redirect::route('login')->withErrors([
+            'email' => $message,
+        ]);
     }
 
     /**

@@ -41,5 +41,9 @@
         </div>
       </div>
     </div>
+
+    @yield('page-js-file')
+
+    @yield('page-js-script')
   </body>
 </html>

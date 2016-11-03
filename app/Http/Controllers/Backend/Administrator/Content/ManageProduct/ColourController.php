@@ -101,6 +101,7 @@ class ColourController extends BaseController
   //Create New Colour
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
 
     $model = new ProductColourModel;
     $model->name = $_POST['name'];
@@ -116,8 +117,13 @@ class ColourController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -126,6 +132,7 @@ class ColourController extends BaseController
   //Update Existing Colour
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = ProductColourModel::where(['id'=>$_POST['id']])->first();
 
     if($model->product_id!=$_POST['product_id']){
@@ -150,8 +157,13 @@ class ColourController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -159,6 +171,8 @@ class ColourController extends BaseController
 
   //Destroy Existing Colour
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $colour = ProductColourModel::where(['id'=>$_POST['id']])->first();
       $success = ProductColourModel::destroy($_POST['id']);
@@ -168,6 +182,7 @@ class ColourController extends BaseController
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -175,6 +190,10 @@ class ColourController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

@@ -113,6 +113,7 @@ class FgcodeController extends BaseController
   //Create New FGCODE
   public function create(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
 
     $model = new ProductFgCodeModel;
     $model->fg_code = $_POST['fg_code'];
@@ -128,8 +129,13 @@ class FgcodeController extends BaseController
       $success = $model->save();
       $message = 'Create new data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -138,6 +144,7 @@ class FgcodeController extends BaseController
   //Update Exsiting FGCODE
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = ProductFgCodeModel::where(['id'=>$_POST['id']])->first();
 
     $model->fg_code = $_POST['fg_code'];
@@ -151,8 +158,13 @@ class FgcodeController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);
@@ -160,11 +172,14 @@ class FgcodeController extends BaseController
 
   //Destroy Existing FGCODE
   public function destroy(){
+    DB::beginTransaction();
+
     try {
       $success = ProductFgCodeModel::destroy($_POST['id']);
       $message = 'Delete data is success!';
       $error_message = null;
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $error_message = $ex->getMessage();
       if($ex->getCode()=="23000"){
@@ -172,6 +187,10 @@ class FgcodeController extends BaseController
       }else{
         $message = $error_message;
       }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

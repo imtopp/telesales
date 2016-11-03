@@ -278,6 +278,8 @@ class OrderController extends BaseController
     $transaction_status = new TransactionStatusModel;
     $transaction_status->transaction_id = $_POST['id'];
     $transaction_status->status = "Order Canceled";
+    $transaction_status->input_date = $date->format('Y-m-d H:i:s');
+    $transaction_status->input_by = Auth::User()->email;
     $transaction_status->update_date = $date->format('Y-m-d H:i:s');
     $transaction_status->update_by = Auth::User()->email;
 

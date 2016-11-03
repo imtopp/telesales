@@ -1,35 +1,20 @@
 @extends('layout\login_template')
 
-@section('title','Reset Password')
+@section('title','Forget Password')
 
 @section('content')
 @foreach($errors->all() as $error)
     <p class="alert alert-danger">{!!$error!!}</p>
 @endforeach
-{!!Form::open(['url'=>URL::route('reset_password'),'id'=>"reset_password_form",'class'=>'form form-horizontal'])!!}
-<h1>Reset Password</h1>
+{!!Form::open(['url'=>URL::route('forget_password'),'id'=>"forget_password_form",'class'=>'form form-horizontal'])!!}
+<h1>Forget Password</h1>
 <div class="form-group">
     <div class="controls">
-        {!! Form::hidden('id',$id,['id'=>'id']) !!}
-    </div>
-</div>
-<div class="form-group">
-    <div class="controls">
-        {!! Form::email('email',$email,['class'=>'form-control','placeholder'=>'Email','required','readonly']) !!}
-    </div>
-</div>
-<div class="form-group">
-    <div class="controls">
-        {!! Form::password('password',['class'=>'form-control','placeholder'=>'Password','required']) !!}
-    </div>
-</div>
-<div class="form-group">
-    <div class="controls">
-        {!! Form::password('password_confirmation',['class'=>'form-control','placeholder'=>'Confirm Password','required']) !!}
+        {!! Form::email('email',Input::old('email'),['class'=>'form-control','placeholder'=>'Email','required']) !!}
     </div>
 </div>
 <div>
-    {!!Form::submit('Reset Password',['class'=>'btn btn-default submit','style'=>'float: initial; margin-left: initial;'])!!}
+    {!!Form::submit('Send Reset Password Link',['class'=>'btn btn-default submit','style'=>'float: initial; margin-left: initial;'])!!}
 </div>
 
 <div class="clearfix"></div>
@@ -107,7 +92,7 @@
       });
     })(jQuery);
 
-    $("#reset_password_form").submit(function(e) {
+    $("#forget_password_form").submit(function(e) {
       $.spin("show");
     });
 

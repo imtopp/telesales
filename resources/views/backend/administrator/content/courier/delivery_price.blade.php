@@ -68,6 +68,8 @@
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
 <!-- datatables boostrap buttons -->
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+<!-- spinner -->
+<script src="{{ URL::asset('assets/js/spin.min.js') }}"></script>
 @endsection
 
 @section('page-js-script')
@@ -160,6 +162,53 @@
   <script>
   var table;
     $(document).ready(function() {
+      (function($) {
+        $.extend({
+          spin: function(spin, opts) {
+            if (opts === undefined) {
+              opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 56, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+              };
+            }
+
+            var data = $('body').data();
+
+            if (data.spinner) {
+              data.spinner.stop();
+              delete data.spinner;
+              $("#spinner_modal").remove();
+              return this;
+            }
+
+            if (spin=="show") {
+              var spinElem = this;
+
+              $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+              spinElem = $("#spinner_modal")[0];
+
+              data.spinner = new Spinner($.extend({
+                color: $('body').css('color')
+              }, opts)).spin(spinElem);
+            }
+          }
+        });
+      })(jQuery);
+
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -182,283 +231,309 @@
         "scrollX": true,
         "columns": [{
           "data": "province",
-          "title": "Provinsi"
+          "title": "Provinsi",
+          "width": "150px"
         },{
           "data": "city",
-          "title": "Kota"
+          "title": "Kota",
+          "width": "150px"
         },{
           "data": "district",
-          "title": "Kecamatan"
+          "title": "Kecamatan",
+          "width": "150px"
         },{
           "data": "courier",
-          "title": "Kurir"
+          "title": "Kurir",
+          "width": "150px"
         },{
           "data": "courier_package",
-          "title": "Paket Pengiriman"
+          "title": "Paket Pengiriman",
+          "width": "150px"
         },{
           "data": "delivery_price",
-          "title": "Delivery Price"
+          "title": "Delivery Price",
+          "width": "150px"
         },{
           "data": "status",
-          "title": "Status"
+          "title": "Status",
+          "width": "100px"
         },{
           "data": "action",
-          "title": "Action"
+          "title": "Action",
+          "width": "100px"
         }],
         deferRender: true,
      });
     });
 
-    function initializeModal(type,element,title,id,province_id,city_id,district_id,courier_id,courier_package_id,status){
+    function initializeModal(type,mode,element,title,id,province_id,city_id,district_id,courier_id,courier_package_id,status){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
 
       var data = {"_token":"{{ csrf_token() }}"};
+
       if(type == "mapping"){
-        if(typeof id != "undefined" && typeof province_id != "undefined" && typeof city_id != "undefined" && typeof courier_id != "undefined" && typeof courier_package_id != "undefined" && typeof status != "undefined"){
-          flag = "edit";
-        }else{
-          flag = "new";
-        }
+        if(mode == "update" || mode == "create"){
+          if(mode == "update"){
+            $("#id").val(id);
+            $("#status").val(status);
 
-        if(flag == "edit"){
-          $("#id").val(id);
-          $("#status").val(status);
-          data.province_id = province_id;
-          data.city_id = city_id;
-          data.district_id = district_id;
-          data.courier_id = courier_id;
-          data.courier_package_id = courier_package_id;
-        }
+            data.province_id = province_id;
+            data.city_id = city_id;
+            data.district_id = district_id;
+            data.courier_id = courier_id;
+            data.courier_package_id = courier_package_id;
+          }
 
-        if($("#province_id").is("select")){
-          $.ajax({
-            url : '{{URL::route('administrator_manage_courier_delivery_price_get_province')}}',
-            type: 'POST',
-            dataType: 'JSON',
-            data: data,
-            success : function(data){
-              $.each(data,function(key,value){
-                $("#province_id").append('<option value="'+key+'">'+value+'</option>');
-              });
-              if(flag == "edit"){
-                $("#province_id").val(province_id);
-                $("#province_id").change();
+          $(function(){
+            $.ajax({
+              url : '{{URL::route('administrator_manage_courier_delivery_price_get_province')}}',
+              type: 'POST',
+              dataType: 'JSON',
+              data: data,
+              success : function(data){
+                $.each(data,function(key,value){
+                  $("#province_id").append('<option value="'+key+'">'+value+'</option>');
+                });
+
+                if(mode == "update"){
+                  $("#province_id").val(province_id);
+                  $("#province_id").change();
+                }else if(mode == "create"){
+                  $.spin("hide");
+                  $('#modal_view').modal('show');
+                  $('#modal_view').on('hidden.bs.modal',function(){
+                    $("#modal-content").html("");
+                  });
+                }
               }
+            });
+          }
+
+          $("#province_id").change(function(){
+            if($("#province_id").val()!=""){
+              data.province_id = $("#province_id").val();
+
+              $.ajax({
+                url : '{{URL::route('administrator_manage_courier_delivery_price_get_city')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success : function(data){
+                  $("#city_id").empty();
+                  $("#city_id").append('<option value="">Harap Pilih Kota</option>');
+
+                  $.each(data,function(key,value){
+                    $("#city_id").append('<option value="'+key+'">'+value+'</option>');
+                  });
+
+                  if(mode == "update" && $("#province_id").val() == province_id){
+                    $("#city_id").val(city_id);
+                    $("#city_id").change();
+                  }
+
+                  $(".city").show();
+                  $(".district").hide();
+                  $("#district_id").empty();
+                  $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
+                  $(".courier").hide();
+                  $("#courier_id").empty();
+                  $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+                  $(".courier_package").hide();
+                  $("#courier_package_id").empty();
+                  $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+                  $(".price_category").hide();
+                  $(".price_category").empty();
+                }
+              });
+            }else{
+              $(".city").hide();
+              $("#city_id").empty();
+              $("#city_id").append('<option value="">Harap Pilih Kota</option>');
+              $(".district").hide();
+              $("#district_id").empty();
+              $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
+              $(".courier").hide();
+              $("#courier_id").empty();
+              $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".courier_package").hide();
+              $("#courier_package_id").empty();
+              $(".price_category").hide();
+              $(".price_category").empty();
             }
           });
+
+          $("#city_id").change(function(){
+            if($("#city_id").val()!=""){
+              data.city_id = $("#city_id").val();
+
+              $.ajax({
+                url : '{{URL::route('administrator_manage_courier_delivery_price_get_district')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success : function(data){
+                  $("#district_id").empty();
+                  $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
+
+                  $.each(data,function(key,value){
+                    $("#district_id").append('<option value="'+key+'">'+value+'</option>');
+                  });
+
+                  if(mode == "update" && $("#city_id").val() == city_id){
+                    $("#district_id").val(district_id);
+                    $("#district_id").change();
+                  }
+
+                  $(".district").show();
+                  $(".courier").hide();
+                  $("#courier_id").empty();
+                  $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+                  $(".courier_package").hide();
+                  $("#courier_package_id").empty();
+                  $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+                  $(".price_category").hide();
+                  $(".price_category").empty();
+                }
+              });
+            }else{
+              $(".district").hide();
+              $("#district").empty();
+              $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
+              $(".courier").hide();
+              $("#courier_id").empty();
+              $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".courier_package").hide();
+              $("#courier_package_id").empty();
+              $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".price_category").hide();
+              $(".price_category").empty();
+            }
+          });
+
+          $("#district_id").change(function(){
+            if($("#district_id").val()!=""){
+              data.district_id = $("#district_id").val();
+
+              $.ajax({
+                url : '{{URL::route('administrator_manage_courier_delivery_price_get_courier')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success : function(data){
+                  $("#courier_id").empty();
+                  $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
+
+                  $.each(data,function(key,value){
+                    $("#courier_id").append('<option value="'+key+'">'+value+'</option>');
+                  });
+
+                  if(mode == "update" && $("#district_id").val() == district_id){
+                    $("#courier_id").val(courier_id);
+                    $("#courier_id").change();
+                  }
+
+                  $(".courier").show();
+                  $(".courier_package").hide();
+                  $("#courier_package_id").empty();
+                  $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+                  $(".price_category").hide();
+                  $(".price_category").empty();
+                }
+              });
+            }else{
+              $(".courier").hide();
+              $("#courier_id").empty();
+              $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".courier_package").hide();
+              $("#courier_package_id").empty();
+              $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".price_category").hide();
+              $(".price_category").empty();
+            }
+          });
+
+          $("#courier_id").change(function(){
+            if($("#courier_id").val()!=""){
+              data.courier_id = $("#courier_id").val();
+              data.district_id = $("#district_id").val();
+
+              $.ajax({
+                url : '{{URL::route('administrator_manage_courier_delivery_price_get_courier_package')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success : function(data){
+                  $("#courier_package_id").empty();
+                  $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+
+                  $.each(data,function(key,value){
+                    $("#courier_package_id").append('<option value="'+key+'">'+value+'</option>');
+                  });
+
+                  if(mode == "update" && $("#courier_id").val() == courier_id && $("#district_id").val() == district_id){
+                    $("#courier_package_id").val(courier_package_id);
+                  }
+
+                  $(".courier_package").show();
+                  $(".price_category").hide();
+                  $(".price_category").empty();
+
+                  if(mode == "update"){
+                    $.spin("hide");
+                    $('#modal_view').modal('show');
+                    $('#modal_view').on('hidden.bs.modal',function(){
+                      $("#modal-content").html("");
+                    });
+                  }
+                }
+              });
+            }else{
+              $(".courier_package").hide();
+              $("#courier_package_id").empty();
+              $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
+              $(".price_category").hide();
+              $(".price_category").empty();
+            }
+          });
+
+          $("#courier_package_id").change(function(){
+            if($("#courier_package_id").val()!="" && mode == "create"){
+              data.courier_id = $("#courier_id").val();
+
+              $.ajax({
+                url : '{{URL::route('administrator_manage_courier_delivery_price_get_price_category')}}',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success : function(data){
+                  $(".price_category").empty();
+
+                  String.prototype.capitalizeFirstLetter = function() {
+                      return this.charAt(0).toUpperCase() + this.slice(1);
+                  }
+
+                  $.each(data,function(key,value){
+                    $(".price_category").append('<div class="controls">'
+                                                +'<label for="price_'+key+'">'+value.replace(/_/g," ").capitalizeFirstLetter()+'</label>'
+                                                +'<input class="form-control" required="required" id="price_'+key+'" min="1" name="price_'+key+'" type="number" value="1">'
+                                                +'</div>');
+                  });
+
+                  $(".price_category").show();
+                }
+              });
+            }else{
+              $(".price_category").hide();
+              $(".price_category").empty();
+            }
+          });
+
         }
-
-        $("#province_id").change(function(){
-          if($("#province_id").val()!=""){
-            data.province_id = $("#province_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_courier_delivery_price_get_city')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#city_id").empty();
-                $("#city_id").append('<option value="">Harap Pilih Kota</option>');
-
-                $.each(data,function(key,value){
-                  $("#city_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                if(flag == "edit" && $("#province_id").val() == province_id){
-                  $("#city_id").val(city_id);
-                  $("#city_id").change();
-                }
-
-                $(".city").show();
-                $(".district").hide();
-                $("#district_id").empty();
-                $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
-                $(".courier").hide();
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $(".courier_package").hide();
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $(".price_category").hide();
-                $(".price_category").empty();
-              }
-            });
-          }else{
-            $(".city").hide();
-            $("#city_id").empty();
-            $("#city_id").append('<option value="">Harap Pilih Kota</option>');
-            $(".district").hide();
-            $("#district_id").empty();
-            $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
-            $(".courier").hide();
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".courier_package").hide();
-            $("#courier_package_id").empty();
-            $(".price_category").hide();
-            $(".price_category").empty();
-          }
-        });
-
-        $("#city_id").change(function(){
-          if($("#city_id").val()!=""){
-            data.city_id = $("#city_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_courier_delivery_price_get_district')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#district_id").empty();
-                $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
-
-                $.each(data,function(key,value){
-                  $("#district_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                if(flag == "edit" && $("#city_id").val() == city_id){
-                  $("#district_id").val(district_id);
-                  $("#district_id").change();
-                }
-
-                $(".district").show();
-                $(".courier").hide();
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $(".courier_package").hide();
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $(".price_category").hide();
-                $(".price_category").empty();
-              }
-            });
-          }else{
-            $(".district").hide();
-            $("#district").empty();
-            $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
-            $(".courier").hide();
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".courier_package").hide();
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".price_category").hide();
-            $(".price_category").empty();
-          }
-        });
-
-        $("#district_id").change(function(){
-          if($("#district_id").val()!=""){
-            data.district_id = $("#district_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_courier_delivery_price_get_courier')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-
-                $.each(data,function(key,value){
-                  $("#courier_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                if(flag == "edit" && $("#district_id").val() == district_id){
-                  $("#courier_id").val(courier_id);
-                  $("#courier_id").change();
-                }
-
-                $(".courier").show();
-                $(".courier_package").hide();
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $(".price_category").hide();
-                $(".price_category").empty();
-              }
-            });
-          }else{
-            $(".courier").hide();
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".courier_package").hide();
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".price_category").hide();
-            $(".price_category").empty();
-          }
-        });
-
-        $("#courier_id").change(function(){
-          if($("#courier_id").val()!=""){
-            data.courier_id = $("#courier_id").val();
-            data.district_id = $("#district_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_courier_delivery_price_get_courier_package')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-
-                $.each(data,function(key,value){
-                  $("#courier_package_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                if(flag == "edit" && $("#courier_id").val() == courier_id && $("#district_id").val() == district_id){
-                  $("#courier_package_id").val(courier_package_id);
-                }
-
-                $(".courier_package").show();
-                $(".price_category").hide();
-                $(".price_category").empty();
-              }
-            });
-          }else{
-            $(".courier_package").hide();
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $(".price_category").hide();
-            $(".price_category").empty();
-          }
-        });
-
-        $("#courier_package_id").change(function(){
-          if($("#courier_package_id").val()!="" && flag == "new"){
-            data.courier_id = $("#courier_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_courier_delivery_price_get_price_category')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                String.prototype.capitalizeFirstLetter = function() {
-                    return this.charAt(0).toUpperCase() + this.slice(1);
-                }
-
-                $.each(data,function(key,value){
-                  $(".price_category").append('<div class="controls">'
-                                              +'<label for="price_'+key+'">'+value.replace(/_/g," ").capitalizeFirstLetter()+'</label>'
-                                              +'<input class="form-control" required="required" id="price_'+key+'" min="1" name="price_'+key+'" type="number" value="1">'
-                                              +'</div>');
-                });
-
-                $(".price_category").show();
-              }
-            });
-          }else{
-            $(".price_category").hide();
-            $(".price_category").empty();
-          }
-        });
       }else if(type == "delivery_price"){
         $("#id").val(id);
+
         data.id = id;
         data.courier_id = courier_id;
 
@@ -478,17 +553,15 @@
                                           +'<input class="form-control" required="required" id="price_'+this.price_category_id+'" min="1" name="price_'+this.price_category_id+'" type="number" value="'+this.price+'">'
                                           +'</div>');
             });
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
+            $('#modal_view').on('hidden.bs.modal',function(){
+              $("#modal-content").html("");
+            });
           }
         });
       }
-    }
-
-    function showModal(){
-      $('#modal_view').modal('show');
-    }
-
-    function resetModal(){
-      $("#modal-content").html("");
     }
 
     function getModalFormData(){
@@ -510,6 +583,7 @@
     function setSubmitModalEvent(url){
       $("#popup_form").submit(function(e) {
         e.preventDefault();
+        $.spin("show");
 
         $.ajax({
           url : url,
@@ -520,10 +594,13 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
             $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
+              $("#modal-content").html("");
             });
+
             table.fnReloadAjax();
           }
         });
@@ -531,31 +608,19 @@
     }
 
     function create(){
-      initializeModal("mapping",$("#modal-template").html(),"Tambah Data Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("mapping","create",$("#modal-template").html(),"Tambah Data Baru");
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_delivery_price_create')}}');
     }
 
     function edit(e) {
-      initializeModal("mapping",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('province_id'),$(e).data('city_id'),$(e).data('district_id'),$(e).data('courier_id'),$(e).data('courier_package_id'),/*$(e).data('price_category_id'),$(e).data('price'),*/$(e).data('status'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("mapping","update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('province_id'),$(e).data('city_id'),$(e).data('district_id'),$(e).data('courier_id'),$(e).data('courier_package_id'),/*$(e).data('price_category_id'),$(e).data('price'),*/$(e).data('status'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_delivery_price_update')}}');
     }
 
     function delivery_price(e){
-      initializeModal("delivery_price",$("#modal-template-delivery-price").html(),"Change Delivery Price",$(e).data('id'),null,null,null,$(e).data('courier_id'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("delivery_price","update",$("#modal-template-delivery-price").html(),"Change Delivery Price",$(e).data('id'),null,null,null,$(e).data('courier_id'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_delivery_price_update')}}');
     }

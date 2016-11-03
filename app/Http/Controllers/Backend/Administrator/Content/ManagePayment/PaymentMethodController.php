@@ -84,6 +84,7 @@ class PaymentMethodController extends BaseController
   //Update Existing Payment Method
   public function update(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    DB::beginTransaction();
     $model = PaymentMethodModel::where(['id'=>$_POST['id']])->first();
 
     $model->name = $_POST['name'];
@@ -95,8 +96,13 @@ class PaymentMethodController extends BaseController
       $success = $model->save();
       $message = 'Edit data is success!';
     } catch (\Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

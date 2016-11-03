@@ -22,7 +22,7 @@ class ManageUsersController extends BaseController
 
   //Render Page
   public function index(){
-    $user_role = UserRoleModel::lists('name','id');
+    $user_role = UserRoleModel::where('name','<>','Customer')->lists('name','id');
     return view('backend/administrator/settings/manage_users',['user_role'=>$user_role]);
   }
 
@@ -44,7 +44,7 @@ class ManageUsersController extends BaseController
     if( !empty($requestData['search']['value']) ) {
       // if there is a search parameter
       $model = DB::table('users')
-                ->select('users.id', 'users.email', 'user_roles.name AS role', 'users.status')
+                ->select('users.id', 'users.email', 'user_roles.name AS role', 'user_roles.id AS role_id', 'users.status')
                 ->join('user_roles', 'user_roles.id', '=', 'users.role_id')
                 ->where('users.email','LIKE',$requestData['search']['value'].'%')
                 ->orWhere('users.status','LIKE',$requestData['search']['value'].'%')
@@ -57,7 +57,7 @@ class ManageUsersController extends BaseController
                 ->get();
     } else {
       $query = DB::table('users')
-                ->select('users.id', 'users.email', 'user_roles.name AS role', 'users.status')
+                ->select('users.id', 'users.email', 'user_roles.name AS role', 'user_roles.id AS role_id', 'users.status')
                 ->join('user_roles', 'user_roles.id', '=', 'users.role_id')
                 ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
                 ->skip($requestData['start'])
@@ -72,9 +72,9 @@ class ManageUsersController extends BaseController
         $nestedData[$columns[0]] = $row->email;
         $nestedData[$columns[1]] = $row->role;
         $nestedData[$columns[2]] = $row->status;
-        if($row->role!="Customer"){
+        if($row->role!="Customer" && $row->email!=Auth::User()->email){
           $nestedData['action'] = '<td><center>
-                           <a data-id="'.$row->id.'" data-email="'.$row->email.'" data-role="'.$row->role.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-email="'.$row->email.'" data-role_id="'.$row->role_id.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
                            <a data-id="'.$row->id.'" data-email="'.$row->email.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
         }else{
@@ -102,7 +102,7 @@ class ManageUsersController extends BaseController
     $user = new UserModel;
     $user->email = $_POST['email'];
     $user->password = Hash::make(substr(md5(uniqid(mt_rand(), true)), 0, 8));
-    $user->role_id = $user_role->id;
+    $user->role_id = $_POST['role_id'];
     $user->status = $_POST['status'];
     $user->input_date = $date->format('Y-m-d H:i:s');
     $user->input_by = Auth::User()->email;
@@ -126,6 +126,7 @@ class ManageUsersController extends BaseController
     $user = UserModel::where(['id'=>$_POST['id']])->first();
 
     $user->email = $_POST['email'];
+    $user->role_id = $_POST['role_id'];
     $user->status = $_POST['status'];
     $user->update_date = $date->format('Y-m-d H:i:s');
     $user->update_by = Auth::User()->email;

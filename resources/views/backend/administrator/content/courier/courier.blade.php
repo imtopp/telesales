@@ -81,6 +81,8 @@
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
 <!-- datatables boostrap buttons -->
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+<!-- spinner -->
+<script src="{{ URL::asset('assets/js/spin.min.js') }}"></script>
 @endsection
 
 @section('page-js-script')
@@ -196,6 +198,53 @@
   <script>
   var table;
     $(document).ready(function() {
+      (function($) {
+        $.extend({
+          spin: function(spin, opts) {
+            if (opts === undefined) {
+              opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 56, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+              };
+            }
+
+            var data = $('body').data();
+
+            if (data.spinner) {
+              data.spinner.stop();
+              delete data.spinner;
+              $("#spinner_modal").remove();
+              return this;
+            }
+
+            if (spin == "show") {
+              var spinElem = this;
+
+              $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+              spinElem = $("#spinner_modal")[0];
+
+              data.spinner = new Spinner($.extend({
+                color: $('body').css('color')
+              }, opts)).spin(spinElem);
+            }
+          }
+        });
+      })(jQuery);
+
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -218,96 +267,107 @@
         "scrollX": true,
         "columns": [{
           "data": "name",
-          "title": "Name"
+          "title": "Name",
+          "width": "240px"
         },{
           "data": "status",
-          "title": "Status"
+          "title": "Status",
+          "width": "150px"
         },{
           "data": "price_category",
-          "title": "Kategori Harga"
+          "title": "Kategori Harga",
+          "width": "200px"
         },{
           "data": "action",
-          "title": "Action"
+          "title": "Action",
+          "width": "200px"
         }],
         deferRender: true,
      });
     });
 
-    function initializeModal(type,element,title,id,name,status){
+    function initializeModal(type,mode,element,title,id,name,status){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
-      if(typeof id != 'undefined'){
-        $("#id").val(id);
-      }
-      if(type=="courier"){
-        if(typeof name != 'undefined'){
-          if($("#name").is("input")){
+
+      if(type == "courier"){
+        if(mode == "update" || mode == "delete"){
+          $("#id").val(id);
+
+          if(mode == "update"){
             $("#name").val(name);
-          }else{
+            $("#status").val(status);
+          }else if(mode == "delete"){
             $("#name").html(name);
           }
         }
-        if(typeof status != 'undefined'){
-          $("#status").val(status);
-        }
-      }else if(type=="price_category"){
-        $("#add_price_category").click(function(){
-          var min,id;
 
-          $("#price-category-wrapper").find("input[type=text]").each(function() {
-            min = parseInt($(this).parent().parent().parent().prev().prev().find("input[type=number]").attr("min"));
-            id = $(this).attr('id');
-            $("<input type='number' />").attr({ id: $(this).attr('id'), name: $(this).attr('name'), class: $(this).attr('class'), required: $(this).attr('required'), min: min+1, value: min+1}).insertBefore(this);
-          }).remove();
-
-          $("#price-category-wrapper").append('<div class="col-md-5">'
-          +'<div class="form-group">'
-          +'<div class="controls">'
-          +'{!! Form::input("number","min_price",0,["class"=>"form-control","required","min"=>"0","id"=>"min_price"]) !!}'
-          +'</div>'
-          +'</div>'
-          +'</div>'
-          +'<div class="col-md-2 middle-block">'
-          +'<span>-</span>'
-          +'</div>'
-          +'<div class="col-md-5">'
-          +'<div class="form-group">'
-          +'<div class="controls">'
-          +'{!! Form::text("max_price","~",["class"=>"form-control","required","readonly","id"=>"max_price"]) !!}'
-          +'</div>'
-          +'</div>'
-          +'</div>');
-
-          $("#min_price").attr("min",min+2).attr("id","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").attr("name","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(min+2)
-          $("#max_price").attr("id","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").attr("name","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price");
-
-          $("#"+id).change(function(){
-            if(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0]))+"_min_price").val())>=parseInt($("#"+id).val())){
-              $("#"+id).val(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0]))+"_min_price").val())+1);
-            }
-            $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(parseInt($("#"+id).val())+1);
-            $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").change();
-          });
-
-          $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").change(function(){
-            if(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())<=parseInt($("#"+id).val()) || parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())>(parseInt($("#"+id).val())+1)){
-              $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(parseInt($("#"+id).val())+1);
-            }
-            if($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").attr('type')!="text"){
-              $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").val(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())+1);
-              $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").change();
-            }
-          });
+        $.spin("hide");
+        $('#modal_view').modal('show');
+        $('#modal_view').on('hidden.bs.modal',function(){
+          $("#modal-content").html("");
         });
+      }else if(type == "price_category"){
+        if(mode == "update"){
+          $("#id").val(id);
+
+          $("#add_price_category").click(function(){
+            var min,id;
+
+            $("#price-category-wrapper").find("input[type=text]").each(function() {
+              min = parseInt($(this).parent().parent().parent().prev().prev().find("input[type=number]").attr("min"));
+              id = $(this).attr('id');
+              $("<input type='number' />").attr({ id: $(this).attr('id'), name: $(this).attr('name'), class: $(this).attr('class'), required: $(this).attr('required'), min: min+1, value: min+1}).insertBefore(this);
+            }).remove();
+
+            $("#price-category-wrapper").append('<div class="col-md-5">'
+            +'<div class="form-group">'
+            +'<div class="controls">'
+            +'{!! Form::input("number","min_price",0,["class"=>"form-control","required","min"=>"0","id"=>"min_price"]) !!}'
+            +'</div>'
+            +'</div>'
+            +'</div>'
+            +'<div class="col-md-2 middle-block">'
+            +'<span>-</span>'
+            +'</div>'
+            +'<div class="col-md-5">'
+            +'<div class="form-group">'
+            +'<div class="controls">'
+            +'{!! Form::text("max_price","~",["class"=>"form-control","required","readonly","id"=>"max_price"]) !!}'
+            +'</div>'
+            +'</div>'
+            +'</div>');
+
+            $("#min_price").attr("min",min+2).attr("id","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").attr("name","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(min+2)
+            $("#max_price").attr("id","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").attr("name","category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price");
+
+            $("#"+id).change(function(){
+              if(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0]))+"_min_price").val())>=parseInt($("#"+id).val())){
+                $("#"+id).val(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0]))+"_min_price").val())+1);
+              }
+              $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(parseInt($("#"+id).val())+1);
+              $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").change();
+            });
+
+            $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").change(function(){
+              if(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())<=parseInt($("#"+id).val()) || parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())>(parseInt($("#"+id).val())+1)){
+                $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val(parseInt($("#"+id).val())+1);
+              }
+              if($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").attr('type')!="text"){
+                $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").val(parseInt($("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_min_price").val())+1);
+                $("#"+"category_price_"+(parseInt(id.split("category_price_")[1].split("_max_price")[0])+1)+"_max_price").change();
+              }
+            });
+          });
+
+          $.spin("hide");
+          $('#modal_view').modal('show');
+          $('#modal_view').on('hidden.bs.modal',function(){
+            $("#modal-content").html("");
+          });
+        }
       }
-    }
-
-    function showModal(){
-      $('#modal_view').modal('show');
-    }
-
-    function resetModal(){
-      $("#modal-content").html("");
     }
 
     function getModalFormData(){
@@ -328,6 +388,7 @@
     function setSubmitModalEvent(url){
       $("#popup_form").submit(function(e) {
         e.preventDefault();
+        $.spin("show");
 
         $.ajax({
           url : url,
@@ -338,10 +399,13 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
             $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
+              $("#modal-content").html("");
             });
+
             table.fnReloadAjax();
           }
         });
@@ -349,46 +413,31 @@
     }
 
     function create(e) {
-      initializeModal("courier",$("#modal-template").html(),"Tambah Data Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("courier","create",$("#modal-template").html(),"Tambah Data Baru");
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_create')}}');
     }
 
     function edit(e) {
-      initializeModal("courier",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('status'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("courier","update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('status'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_update')}}');
     }
 
     function destroy(e) {
-      initializeModal("courier",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("courier","delete",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_destroy')}}');
     }
 
     function price_category(e) {
-      if($(e).data('reset')==true){
+      if($(e).data('reset') == true){
         if(!confirm('Apakah anda yakin akan melakukan reset price category?')){
           return 0;
         }
       }
-      initializeModal("price_category",$("#modal-template-price-category").html(),"Price Category Data",$(e).data('id'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+
+      initializeModal("price_category","update",$("#modal-template-price-category").html(),"Price Category Data",$(e).data('id'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_courier_price_category')}}');
     }

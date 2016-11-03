@@ -71,6 +71,8 @@
 <script src="{{ URL::asset('assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
 <!-- wsywig editor summernote -->
 <script src="{{ URL::asset('assets/vendors/summernote/dist/summernote.min.js') }}"></script>
+<!-- spinner -->
+<script src="{{ URL::asset('assets/js/spin.min.js') }}"></script>
 @endsection
 
 @section('page-js-script')
@@ -208,6 +210,53 @@
   <script>
   var table;
     $(document).ready(function() {
+      (function($) {
+        $.extend({
+          spin: function(spin, opts) {
+            if (opts === undefined) {
+              opts = {
+                lines: 13, // The number of lines to draw
+                length: 20, // The length of each line
+                width: 10, // The line thickness
+                radius: 30, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1, // Rounds per second
+                trail: 56, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: '50%', // Top position relative to parent
+                left: '50%' // Left position relative to parent
+              };
+            }
+
+            var data = $('body').data();
+
+            if (data.spinner) {
+              data.spinner.stop();
+              delete data.spinner;
+              $("#spinner_modal").remove();
+              return this;
+            }
+
+            if (spin=="show") {
+              var spinElem = this;
+
+              $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+              spinElem = $("#spinner_modal")[0];
+
+              data.spinner = new Spinner($.extend({
+                color: $('body').css('color')
+              }, opts)).spin(spinElem);
+            }
+          }
+        });
+      })(jQuery);
+
       table = $('#datatable').dataTable({
         dom: 'Bfrtipl',
         "processing": true,
@@ -230,25 +279,32 @@
         "scrollX": true,
         "columns": [{
           "data": "category",
-          "title": "Category"
+          "title": "Category",
+          "width": "200px"
         },{
           "data": "name",
-          "title": "Name"
+          "title": "Name",
+          "width": "200px"
         },{
           "data": "description",
-          "title": "Description"
+          "title": "Description",
+          "width": "80px"
         },{
           "data": "image_url",
-          "title": "Image"
+          "title": "Image",
+          "width": "80px"
         },{
           "data": "hit_count",
-          "title": "Hit Count"
+          "title": "Hit Count",
+          "width": "100px"
         },{
           "data": "status",
-          "title": "Status"
+          "title": "Status",
+          "width": "100px"
         },{
           "data": "action",
-          "title": "Action"
+          "title": "Action",
+          "width": "150px"
         }],
         "columnDefs": [{
           "targets": 2,
@@ -267,21 +323,31 @@
      });
     });
 
-    function initializeModal(type,element,title,id,name,category_id,hit_count,status){
+    function initializeModal(type,mode,element,title,id,name,category_id,hit_count,status){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
+
       if(type=="data"){
-        if(typeof id != 'undefined'){
+        if(mode == "update" || mode == "delete"){
           $("#id").val(id);
-        }
-        if(typeof name != 'undefined'){
-          if($("#name").is("input")){
+
+          if(mode == "update"){
             $("#name").val(name);
-          }else{
+            $("#hit_count").val(hit_count);
+            $("#status").val(status);
+          }else if(mode == "delete"){
             $("#name").html(name);
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
+            $('#modal_view').on('hidden.bs.modal',function(){
+              $("#modal-content").html("");
+            });
           }
         }
-        if($("#category_id").is("select")){
+
+        if(mode == "create" || mode == "update"){
           $(function(){
             $.ajax({
               url : '{{URL::route('administrator_manage_product_product_get_category')}}',
@@ -292,46 +358,54 @@
                 $.each(data,function(key,value){
                   $("#category_id").append('<option value="'+key+'">'+value+'</option>');
                 });
-                if(typeof category_id != 'undefined'){
+                if(mode == "update"){
                   $("#category_id").val(category_id);
                 }
+
+                $.spin("hide");
+                $('#modal_view').modal('show');
+                $('#modal_view').on('hidden.bs.modal',function(){
+                  $("#modal-content").html("");
+                });
               }
             });
           });
         }
-        if(typeof hit_count != 'undefined'){
-          $("#hit_count").val(hit_count);
-        }
-        if(typeof status != 'undefined'){
-          $("#status").val(status);
-        }
       }else if(type=="image"){
-        $("#id").val(id);
-        $("#image_url").attr('src',name);
+        if(mode == "read"){
+          $("#id").val(id);
+          $("#image_url").attr('src',name);
+
+          $.spin("hide");
+          $('#modal_view').modal('show');
+          $('#modal_view').on('hidden.bs.modal',function(){
+            $("#modal-content").html("");
+          });
+        }
       }else if(type=="description"){
-        $("#id").val(id);
-        $('#description').html(name);
-        $('#description').summernote({
-          toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['font', ['strikethrough', 'superscript', 'subscript']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-          ],
-          height:300,
-        });
+        if(mode == "update"){
+          $("#id").val(id);
+          $('#description').html(name);
+          $('#description').summernote({
+            toolbar: [
+              // [groupName, [list of button]]
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']]
+            ],
+            height:300,
+          });
+
+          $.spin("hide");
+          $('#modal_view').modal('show');
+          $('#modal_view').on('hidden.bs.modal',function(){
+            $("#modal-content").html("");
+          });
+        }
       }
-    }
-
-    function showModal(){
-      $('#modal_view').modal('show');
-    }
-
-    function resetModal(){
-      $("#modal-content").html("");
     }
 
     function getModalFormData(){
@@ -344,12 +418,14 @@
 
     function setSubmitModalEvent(url){
       $("#popup_form").submit(function(e) {
+        $.spin("show");
         e.preventDefault();
 
         var data = getModalFormData();
 
         if(typeof $("#image_url")!="undefined"){
           if($("#image").val()==""){
+            $.spin("hide");
             alert("Harap pilih gambar yang ingin di upload!");
             return false;
           }
@@ -367,10 +443,13 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
+
+            $.spin("hide");
+            $('#modal_view').modal('show');
             $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
+              $("#modal-content").html("");
             });
+
             table.fnReloadAjax();
             return true;
           }
@@ -379,51 +458,31 @@
     }
 
     function create(){
-      initializeModal("data",$("#modal-template").html(),"Tambah Data Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("data","create",$("#modal-template").html(),"Tambah Data Baru");
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_product_create')}}');
     }
 
     function edit(e) {
-      initializeModal("data",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('category_id'),$(e).data('hit_count'),$(e).data('status'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("data","update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('name'),$(e).data('category_id'),$(e).data('hit_count'),$(e).data('status'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_product_update')}}');
     }
 
     function destroy(e) {
-      initializeModal("data",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("data","delete",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_product_destroy')}}');
     }
 
     function view(e){
-      initializeModal('image',$("#modal-template-image").html(),"View Image",$(e).parent().parent().next().next().next().find("center").find("a").data('id'),$(e).data('src'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal('image',"read",$("#modal-template-image").html(),"View Image",$(e).parent().parent().next().next().next().find("center").find("a").data('id'),$(e).data('src'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_product_upload')}}');
     }
 
     function description(e){
-      initializeModal('description',$("#modal-template-description").html(),"Description",$(e).parent().parent().next().next().next().next().find("center").find("a").data('id'),$(e).next().html());
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal('description',"update",$("#modal-template-description").html(),"Description",$(e).parent().parent().next().next().next().next().find("center").find("a").data('id'),$(e).next().html());
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_product_description')}}');
     }

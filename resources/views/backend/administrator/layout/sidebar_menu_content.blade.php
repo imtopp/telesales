@@ -40,8 +40,8 @@
 <div class="menu_section">
   <h3>Reporting</h3>
   <ul class="nav side-menu">
-    <li><a><i class="fa fa-users"></i> Customer Information </a></li>
-    <li><a><i class="fa fa-calculator"></i> Product Hit Count </a></li>
-    <li><a><i class="fa fa-credit-card"></i> Transaction </a></li>
+    <li id="customer-info"><a href="{{URL::route('administrator_customer_info')}}"><i class="fa fa-users"></i> Customer Information </a></li>
+    <!--<li><a><i class="fa fa-calculator"></i> Product Hit Count </a></li>-->
+    <li id="transaction"><a href="{{URL::route('administrator_transaction_list')}}"><i class="fa fa-credit-card"></i> Transaction </a></li>
   </ul>
 </div>

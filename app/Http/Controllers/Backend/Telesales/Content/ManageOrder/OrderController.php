@@ -42,10 +42,11 @@ class OrderController extends BaseController
     return view('backend/telesales/content/order/order');
   }
 
-  //Read All Courier
+  //Read All Data
   public function read(){
     // storing  request (ie, get/post) global array to a variable
     $requestData= $_REQUEST;
+    $key = "t3rs3r@h"; //key for encryption
 
     $columns = array(
     // datatable column index  => database column name
@@ -81,8 +82,6 @@ class OrderController extends BaseController
     $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
     if( !empty($requestData['search']['value']) ) {
-      $key = "t3rs3r@h";
-
       // if there is a search parameter
       $model = $model
                 ->whereRaw('(decrypt_data("'.$key.'",`customer_name`) LIKE "'.$requestData['search']['value'].'%"')
@@ -120,7 +119,6 @@ class OrderController extends BaseController
     $date = DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d H:i:s")); //initialize date parameter
 
     foreach($query as $row) {  // preparing an array
-        $key = "t3rs3r@h"; //key for encryption
         $nestedData=array();
 
         $nestedData[$columns[0]] = $this->decrypt($key,$row->customer_name);
@@ -145,7 +143,7 @@ class OrderController extends BaseController
         $nestedData[$columns[19]] = "Rp ".number_format($row->total_price,0,",",".");
         $nestedData[$columns[20]] = $row->refference_number;
         $nestedData[$columns[21]] = $row->status;
-        if($date->format("Y-m-d") == date("Y-m-d",strtotime($row->input_date)) && $row->status != "Order Canceled"){
+        if($date->format("Y-m-d") == date("Y-m-d",strtotime($row->input_date)) && $row->status == "Order Received"){
           $nestedData['action'] = '<td><center>
                              <a data-id="'.$row->id.'" data-refference_number="'.$row->refference_number.'" data-toggle="tooltip" title="Cancel Order" class="btn btn-sm btn-primary" onClick="cancel(this)"> <span class="fa-stack fa-lg"><i class="fa fa-cart-plus fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span> </a>
                              </center></td>';
@@ -171,6 +169,7 @@ class OrderController extends BaseController
     $key = "t3rs3r@h"; //key for encryption
 
     if(isset($_POST) && count($_POST)!=0){
+      DB::beginTransaction();
       $customer_info = new CustomerInfoModel; //creating model for customer_info
 
       //fill customer_info model
@@ -190,6 +189,7 @@ class OrderController extends BaseController
       try {
         $success = $customer_info->save(); //save the customer_info model to database
       } catch (Exception $ex) {
+        DB::rollback();
         $success = false;
         $message = $ex->getMessage();
       }
@@ -234,6 +234,7 @@ class OrderController extends BaseController
           $success = $transaction->save();
           $message = "New transaction is created successfully!.";
         } catch (Exception $ex) {
+          DB::rollback();
           $success = false;
           $message = $ex->getMessage();
         }
@@ -251,9 +252,14 @@ class OrderController extends BaseController
         try {
           $success = $transaction_status->save();
         } catch (Exception $ex) {
+          DB::rollback();
           $success = false;
           $message = $ex->getMessage();
         }
+      }
+
+      if($success){
+        DB::commit();
       }
 
       if($success){
@@ -274,8 +280,9 @@ class OrderController extends BaseController
 
   public function cancelOrder(){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-
+    DB::beginTransaction();
     $transaction_status = new TransactionStatusModel;
+
     $transaction_status->transaction_id = $_POST['id'];
     $transaction_status->status = "Order Canceled";
     $transaction_status->input_date = $date->format('Y-m-d H:i:s');
@@ -287,8 +294,13 @@ class OrderController extends BaseController
       $success = $transaction_status->save();
       $message = 'Cancel order is success!';
     } catch (Exception $ex) {
+      DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      DB::commit();
     }
 
     return response()->json(['success'=>$success,'message'=>$message]);

@@ -163,6 +163,15 @@ Route::group(['middleware' => ['auth.administrator']], function(){
   Route::post('/administrator/manage-courier/courier_delivery_price-get-courier', ["as"=>"administrator_manage_courier_delivery_price_get_courier","uses"=>"Backend\Administrator\Content\ManageCourier\DeliveryPriceController@getCourier"]);
   Route::post('/administrator/manage-courier/courier_delivery_price-get-courier-package', ["as"=>"administrator_manage_courier_delivery_price_get_courier_package","uses"=>"Backend\Administrator\Content\ManageCourier\DeliveryPriceController@getCourierPackage"]);
   Route::post('/administrator/manage-courier/courier_delivery_price-get-courier-price-category', ["as"=>"administrator_manage_courier_delivery_price_get_price_category","uses"=>"Backend\Administrator\Content\ManageCourier\DeliveryPriceController@getPriceCategory"]);
+
+  //Customer Info
+  Route::get('/administrator/customer-info', ["as"=>"administrator_customer_info","uses"=>"Backend\Administrator\Content\CustomerInfoController@index"]);
+  Route::post('/administrator/customer-info-read', ["as"=>"administrator_customer_info_read","uses"=>"Backend\Administrator\Content\CustomerInfoController@read"]);
+
+  //Transaction
+  Route::get('/administrator/transction/list', ["as"=>"administrator_transaction_list","uses"=>"Backend\Administrator\Content\TransactionController@index"]);
+  Route::post('/administrator/transction/list-read', ["as"=>"administrator_transaction_list_read","uses"=>"Backend\Administrator\Content\TransactionController@read"]);
+  Route::post('/administrator/transction/list-read-status', ["as"=>"administrator_transaction_list_read_status","uses"=>"Backend\Administrator\Content\TransactionController@readStatus"]);
 });
 
 //Backend Route Group

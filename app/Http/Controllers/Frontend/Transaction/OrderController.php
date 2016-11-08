@@ -152,6 +152,7 @@ class OrderController extends BaseController
     $key = "t3rs3r@h"; //key for encryption
 
     if(isset($_POST) && count($_POST)!=0){
+      DB::beginTransaction();
       $customer_info = new CustomerInfoModel; //creating model for customer_info
 
       //fill customer_info model
@@ -171,6 +172,7 @@ class OrderController extends BaseController
       try {
         $success = $customer_info->save(); //save the customer_info model to database
       } catch (Exception $ex) {
+        DB::rollback();
         $success = false;
         $message = $ex->getMessage();
       }
@@ -215,6 +217,7 @@ class OrderController extends BaseController
           $success = $transaction->save();
           $message = "Tim Kami Akan Mengghubungi anda dalam 1x24 Jam.";
         } catch (Exception $ex) {
+          DB::rollback();
           $success = false;
           $message = $ex->getMessage();
         }
@@ -232,9 +235,14 @@ class OrderController extends BaseController
         try {
           $success = $transaction_status->save();
         } catch (Exception $ex) {
+          DB::rollback();
           $success = false;
           $message = $ex->getMessage();
         }
+      }
+
+      if($success){
+        DB::commit();
       }
 
       if($success){

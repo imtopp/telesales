@@ -101,6 +101,7 @@
             <tr>
               <th>Status</th>
               <th>Date</th>
+              <th>Updated By</th>
             </tr>
           </thead>
         </table>
@@ -292,11 +293,15 @@
           "columns": [{
             "data": "status",
             "title": "Status",
-            "width": "400px"
+            "width": "200px"
           },{
             "data": "date",
             "title": "Date",
             "width": "100px"
+          },{
+            "data": "updated_by",
+            "title": "Updated By",
+            "width": "200px"
           }],
           deferRender: true,
        });

@@ -152,7 +152,8 @@ class TransactionController extends BaseController
     $columns = array(
     // datatable column index  => database column name
         0 => 'status',
-        1 => 'date'
+        1 => 'date',
+        2 => 'updated_by'
     );
 
     $model = TransactionStatusModel::select('transaction_status.*')
@@ -165,7 +166,8 @@ class TransactionController extends BaseController
       // if there is a search parameter
       $model = $model
                 ->Where('status','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('input_date','LIKE',$requestData['search']['value'].'%');
+                ->orWhere('input_date','LIKE',$requestData['search']['value'].'%')
+                ->orWhere('input_by','LIKE',$requestData['search']['value'].'%');
 
       $totalFiltered = $model->count();
     }
@@ -185,6 +187,7 @@ class TransactionController extends BaseController
 
         $nestedData[$columns[0]] = $row->status;
         $nestedData[$columns[1]] = $row->input_date;
+        $nestedData[$columns[2]] = $row->input_by;
 
         $data[] = $nestedData;
     }

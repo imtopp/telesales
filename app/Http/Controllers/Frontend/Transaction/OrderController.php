@@ -30,6 +30,7 @@ use File;
 use DateTime;
 use Mail;
 use Request;
+use DB;
 
 class OrderController extends BaseController
 {
@@ -248,7 +249,7 @@ class OrderController extends BaseController
       if($success){
         Mail::send('frontend.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
            $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
-           $msg->to("taufiq.putra@smartfren.com", 'taufiq okta pratama putra')->subject('Transaction notifications');
+           $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
         });
 
         Mail::send('frontend.emails.transaction_notification_customer', [], function($msg) {

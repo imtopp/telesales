@@ -24,6 +24,10 @@
                 {!! Form::label('Application Name') !!}
                 {!! Form::text('app_name',config('settings.app_name'),array('required','class'=>'form-control','placeholder'=>'Nama Aplikasi')) !!}
               </div>
+              <div class="form-group">
+                {!! Form::label('Digital & IOT Team Email Address') !!}
+                {!! Form::text('digital_iot_email',config('settings.digital_iot_email'),array('required','class'=>'form-control','placeholder'=>'Digital & IOT Team Email Address')) !!}
+              </div>
             </div>
             <div class="col-xs-12 col-md-6">
             </div>

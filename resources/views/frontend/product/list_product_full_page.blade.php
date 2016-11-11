@@ -108,6 +108,8 @@
         $.spin_left('hide');
 
         $("#right-panel").attr("src","");
+        $("#right-panel").hide();
+        $("#logo-smartfren").show();
         $("#left-panel").attr("src","{{ URL::route('show_all_product').'?isMicrosite=true' }}");
       });
     });

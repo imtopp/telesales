@@ -506,7 +506,7 @@
         data[$(this).attr('name')]=$(this).val();
       });
       data["_token"]="{{ csrf_token() }}";
-/*
+
       $.ajax({
         url : '{{URL::route('checkout')}}',
         type: 'POST',
@@ -523,13 +523,6 @@
             });
           }
         }
-      });*/
-      $.spin('hide');
-      $("#title").html("Pesan");
-      $("#message").html("testing");
-      $('#modal_view').modal('show');
-      $('#modal_view').on('hidden.bs.modal',function(){
-        window.location.href = "{{ URL::route('show_all_product') }}";
       });
     });
   });

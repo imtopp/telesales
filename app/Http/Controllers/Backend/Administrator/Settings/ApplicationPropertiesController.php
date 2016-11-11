@@ -27,18 +27,32 @@ class ApplicationPropertiesController extends BaseController
   //Update Application Properties
   public function update(Factory $cache){
     $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-    $app_name = ConfigurationModel::where(["name"=>"app_name"])->first();
+    $success = true;
+    $message = "Setting has been saved successfully.";
+    DB::beginTransaction();
 
-    $app_name->value = $_POST['app_name'];
-    $app_name->update_date = $date->format('Y-m-d H:i:s');
-    $app_name->update_by = Auth::User()->email;
+    foreach($_REQUEST as $key=>$value){
+      if($key != "_token" && $key != "undefined"){
+        $model = ConfigurationModel::where(["name"=>$key])->first();
 
-    try {
-      $success = $app_name->save();
-      $message = "Setting has been saved successfully.";
-    } catch (Exception $ex) {
-      $success = false;
-      $message = $ex->getMessage();
+        if($model->value != $value){
+          $model->value = $value;
+          $model->update_date = $date->format('Y-m-d H:i:s');
+          $model->update_by = Auth::User()->email;
+
+          try {
+            $success = $model->save();
+          } catch (Exception $ex) {
+            DB::rollback();
+            $success = false;
+            $message = $ex->getMessage();
+          }
+        }
+      }
+    }
+
+    if($success){
+      DB::commit();
     }
 
     $cache->forget('settings');

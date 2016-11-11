@@ -309,7 +309,7 @@
                 }
               }
             });
-          }
+          });
 
           $("#province_id").change(function(){
             if($("#province_id").val()!=""){

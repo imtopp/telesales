@@ -116,6 +116,8 @@ class AuthController extends Controller {
               return \Redirect::route('administrator_home');
             }else if($this->auth->user()->userRole->name=="Telesales"){
               return \Redirect::route('telesales_home');
+            }else if($this->auth->user()->userRole->name=="Digital & IOT"){
+              return \Redirect::route('digitaliot_home');
             }
         }
 

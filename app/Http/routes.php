@@ -174,10 +174,10 @@ Route::group(['middleware' => ['auth.administrator']], function(){
   Route::post('/administrator/transction/list-read-status', ["as"=>"administrator_transaction_list_read_status","uses"=>"Backend\Administrator\Content\TransactionController@readStatus"]);
 });
 
-//Backend Route Group
+//Telesales Route Group
 Route::group(['middleware' => ['auth.telesales']], function(){
 
-  //Administrator Dashboard
+  //Dashboard
   Route::get('/telesales', ["uses"=>"Backend\Telesales\MainController@telesales"]);
   Route::get('/telesales/home', ["as"=>"telesales_home","uses"=>"Backend\Telesales\MainController@home"]);
 
@@ -199,4 +199,16 @@ Route::group(['middleware' => ['auth.telesales']], function(){
   Route::post('/telesales/manage-order-get-courier-package', ["as"=>"telesales_manage_order_get_courier_package","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getCourierPackage"]);
   Route::post('/telesales/manage-order-get-payment-method', ["as"=>"telesales_manage_order_get_payment_method","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getPaymentMethod"]);
   Route::post('/telesales/manage-order-get-delivery-price', ["as"=>"telesales_manage_order_get_delivery_price","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getDeliveryPrice"]);
+});
+
+//Digital & IOT Route Group
+Route::group(['middleware' => ['auth.digitaliot']], function(){
+
+  //Dashboard
+  Route::get('/digital-iot', ["uses"=>"Backend\DigitalIOT\MainController@digitaliot"]);
+  Route::get('/digital-iot/home', ["as"=>"digitaliot_home","uses"=>"Backend\DigitalIOT\MainController@home"]);
+
+  //Manage Order
+  Route::get('/digital-iot/manage-order', ["as"=>"digitaliot_manage_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@index"]);
+  Route::post('/digital-iot/manage-order-read', ["as"=>"digitaliot_manage_order_read","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@read"]);
 });

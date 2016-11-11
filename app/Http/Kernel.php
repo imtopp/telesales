@@ -43,6 +43,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\Authenticate::class,
             \App\Http\Middleware\Telesales::class,
         ],
+        'auth.digitaliot' => [
+            \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\DigitalIOT::class,
+        ],
     ];
 
     /**

@@ -153,110 +153,134 @@ class OrderController extends BaseController
     $key = "t3rs3r@h"; //key for encryption
 
     if(isset($_POST) && count($_POST)!=0){
-      DB::beginTransaction();
-      $customer_info = new CustomerInfoModel; //creating model for customer_info
+      try{
+        DB::beginTransaction();
+        $fg_code = ProductFgCodeModel::where(['fg_code'=>$_POST['fg_code']])->lockForUpdate()->first();
+        if($fg_code->stock > 0){
+          $customer_info = new CustomerInfoModel; //creating model for customer_info
 
-      //fill customer_info model
-      $customer_info->name = $this->encrypt($key,$_POST['name']);
-      $customer_info->address = $this->encrypt($key,$_POST['address']);
-      $customer_info->identity_type = $this->encrypt($key,$_POST['identity_type']);
-      $customer_info->identity_number = $this->encrypt($key,$_POST['identity_number']);
-      $customer_info->email = $this->encrypt($key,$_POST['email']);
-      $customer_info->mdn = $this->encrypt($key,$_POST['mdn']);
-      $customer_info->location_district_id = $_POST['district_id'];
-      $customer_info->delivery_address = $this->encrypt($key,$_POST['delivery_address']);
-      $customer_info->input_date = $date->format("Y-m-d H:i:s");
-      $customer_info->input_by = "Self Order";
-      $customer_info->update_date = $date->format("Y-m-d H:i:s");
-      $customer_info->update_by = "Self Order";
+          //fill customer_info model
+          $customer_info->name = $this->encrypt($key,$_POST['name']);
+          $customer_info->address = $this->encrypt($key,$_POST['address']);
+          $customer_info->identity_type = $this->encrypt($key,$_POST['identity_type']);
+          $customer_info->identity_number = $this->encrypt($key,$_POST['identity_number']);
+          $customer_info->email = $this->encrypt($key,$_POST['email']);
+          $customer_info->mdn = $this->encrypt($key,$_POST['mdn']);
+          $customer_info->location_district_id = $_POST['district_id'];
+          $customer_info->delivery_address = $this->encrypt($key,$_POST['delivery_address']);
+          $customer_info->input_date = $date->format("Y-m-d H:i:s");
+          $customer_info->input_by = "Self Order";
+          $customer_info->update_date = $date->format("Y-m-d H:i:s");
+          $customer_info->update_by = "Self Order";
 
-      try {
-        $success = $customer_info->save(); //save the customer_info model to database
+          try {
+            $success = $customer_info->save(); //save the customer_info model to database
+          } catch (Exception $ex) {
+            DB::rollback();
+            $success = false;
+            $message = $ex->getMessage();
+          }
+
+          if($success){
+            $location = ViewActiveLocationModel::where(['district_id'=>$_POST['district_id']])->first();
+            $product = ViewActiveProductModel::where(['fg_code'=>$_POST['fg_code']])->first();
+            $payment_method = PaymentMethodModel::where(['id'=>$_POST['payment_method_id']])->first(); //find payment_method model
+            $courier = CourierModel::where(['id'=>$_POST['courier_id']])->first();
+            $courier_package = CourierPackageModel::where(['id'=>$_POST['courier_package_id']])->first();
+            $delivery = $this->getDeliveryPrice($_POST['courier_package_id'],$_POST['district_id'],$_POST['fg_code'])->getData();
+            $total_transaction = TransactionModel::whereRaw('DATE(input_date)=DATE(CURRENT_TIMESTAMP)')->count();
+            $transaction = new TransactionModel; //creating model for transaction
+
+            $transaction->customer_name = $customer_info->name;
+            $transaction->customer_address = $customer_info->address;
+            $transaction->customer_identity_type = $customer_info->identity_type;
+            $transaction->customer_identity_number = $customer_info->identity_number;
+            $transaction->customer_email = $customer_info->email;
+            $transaction->customer_mdn = $customer_info->mdn;
+            $transaction->customer_location_province = $location->province;
+            $transaction->customer_location_city = $location->city;
+            $transaction->customer_location_district = $location->district;
+            $transaction->customer_delivery_address = $customer_info->delivery_address;
+            $transaction->product_category = $product->category;
+            $transaction->product_name = $product->product;
+            $transaction->product_colour = $product->colour;
+            $transaction->product_fg_code = $product->fg_code;
+            $transaction->product_price = $product->price;
+            $transaction->payment_method = $payment_method->name;
+            $transaction->courier = $courier->name;
+            $transaction->courier_package = $courier_package->name;
+            $transaction->delivery_price = $delivery->delivery_price;
+            $transaction->total_price = $product->price+$delivery->delivery_price;
+            $transaction->refference_number = $date->format("ymd").++$total_transaction;
+            $transaction->input_date = $date->format("Y-m-d H:i:s");
+            $transaction->input_by = "Self Order";
+            $transaction->update_date = $date->format("Y-m-d H:i:s");
+            $transaction->update_by = "Self Order";
+
+            try {
+              $success = $transaction->save();
+              $message = "Tim Kami Akan Mengghubungi anda dalam 1x24 Jam.";
+            } catch (Exception $ex) {
+              DB::rollback();
+              $success = false;
+              $message = $ex->getMessage();
+            }
+          }
+
+          if($success){
+            $transaction_status = new TransactionStatusModel;
+
+            $transaction_status->transaction_id = $transaction->id;
+            $transaction_status->status = "Order Received";
+            $transaction_status->input_date = $date->format("Y-m-d H:i:s");
+            $transaction_status->input_by = "Self Order";
+            $transaction_status->update_date = $date->format("Y-m-d H:i:s");
+            $transaction_status->update_by = "Self Order";
+            try {
+              $success = $transaction_status->save();
+            } catch (Exception $ex) {
+              DB::rollback();
+              $success = false;
+              $message = $ex->getMessage();
+            }
+          }
+
+          if($success){
+            $fg_code->stock -= 1;
+
+            try {
+              $success = $fg_code->save();
+            } catch (Exception $ex) {
+              DB::rollback();
+              $success = false;
+              $message = $ex->getMessage();
+            }
+          }
+
+          if($success){
+            DB::commit();
+          }
+
+          if($success){
+            Mail::send('frontend.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
+               $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
+               $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
+            });
+
+            Mail::send('frontend.emails.transaction_notification_customer', [], function($msg) {
+              $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
+              $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
+            });
+          }
+        }else{
+          $success = false;
+          $message = "Maaf stock barang sudah SOLD OUT.";
+        }
       } catch (Exception $ex) {
-        DB::rollback();
         $success = false;
         $message = $ex->getMessage();
       }
 
-      if($success){
-        $location = ViewActiveLocationModel::where(['district_id'=>$_POST['district_id']])->first();
-        $product = ViewActiveProductModel::where(['fg_code'=>$_POST['fg_code']])->first();
-        $payment_method = PaymentMethodModel::where(['id'=>$_POST['payment_method_id']])->first(); //find payment_method model
-        $courier = CourierModel::where(['id'=>$_POST['courier_id']])->first();
-        $courier_package = CourierPackageModel::where(['id'=>$_POST['courier_package_id']])->first();
-        $delivery = $this->getDeliveryPrice($_POST['courier_package_id'],$_POST['district_id'],$_POST['fg_code'])->getData();
-        $total_transaction = TransactionModel::whereRaw('DATE(input_date)=DATE(CURRENT_TIMESTAMP)')->count();
-        $transaction = new TransactionModel; //creating model for transaction
-
-        $transaction->customer_name = $customer_info->name;
-        $transaction->customer_address = $customer_info->address;
-        $transaction->customer_identity_type = $customer_info->identity_type;
-        $transaction->customer_identity_number = $customer_info->identity_number;
-        $transaction->customer_email = $customer_info->email;
-        $transaction->customer_mdn = $customer_info->mdn;
-        $transaction->customer_location_province = $location->province;
-        $transaction->customer_location_city = $location->city;
-        $transaction->customer_location_district = $location->district;
-        $transaction->customer_delivery_address = $customer_info->delivery_address;
-        $transaction->product_category = $product->category;
-        $transaction->product_name = $product->product;
-        $transaction->product_colour = $product->colour;
-        $transaction->product_fg_code = $product->fg_code;
-        $transaction->product_price = $product->price;
-        $transaction->payment_method = $payment_method->name;
-        $transaction->courier = $courier->name;
-        $transaction->courier_package = $courier_package->name;
-        $transaction->delivery_price = $delivery->delivery_price;
-        $transaction->total_price = $product->price+$delivery->delivery_price;
-        $transaction->refference_number = $date->format("ymd").++$total_transaction;
-        $transaction->input_date = $date->format("Y-m-d H:i:s");
-        $transaction->input_by = "Self Order";
-        $transaction->update_date = $date->format("Y-m-d H:i:s");
-        $transaction->update_by = "Self Order";
-
-        try {
-          $success = $transaction->save();
-          $message = "Tim Kami Akan Mengghubungi anda dalam 1x24 Jam.";
-        } catch (Exception $ex) {
-          DB::rollback();
-          $success = false;
-          $message = $ex->getMessage();
-        }
-      }
-
-      if($success){
-        $transaction_status = new TransactionStatusModel;
-
-        $transaction_status->transaction_id = $transaction->id;
-        $transaction_status->status = "Order Received";
-        $transaction_status->input_date = $date->format("Y-m-d H:i:s");
-        $transaction_status->input_by = "Self Order";
-        $transaction_status->update_date = $date->format("Y-m-d H:i:s");
-        $transaction_status->update_by = "Self Order";
-        try {
-          $success = $transaction_status->save();
-        } catch (Exception $ex) {
-          DB::rollback();
-          $success = false;
-          $message = $ex->getMessage();
-        }
-      }
-
-      if($success){
-        DB::commit();
-      }
-
-      if($success){
-        Mail::send('frontend.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
-           $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
-           $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
-        });
-
-        Mail::send('frontend.emails.transaction_notification_customer', [], function($msg) {
-          $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
-          $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
-        });
-      }
 
       return response()->json(["success"=>$success,"message"=>$message]);
     }

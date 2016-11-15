@@ -69,7 +69,6 @@
     }
 
     .product-action {
-      display: -webkit-inline-box;
       float: initial;
     }
   </style>
@@ -90,8 +89,8 @@
             </div>
             <span class="row product-name">{{$product['name']}}</span>
             <div class="row">Rp {{ number_format($product['price'],0,",",".") }}</div>
-            <div class="col-xs-5 col-md-12 product-action">
-              {!! Form::button('Beli',array('class'=>'btn btn-danger btn-block','style'=>'width:100%')) !!}
+            <div class="row product-action">
+              {!! Form::button('Beli',array('class'=>'btn btn-danger','style'=>'width:50%')) !!}
             </div>
           </div>
         @endforeach

@@ -39,6 +39,8 @@
               <th>Colour</th>
               <th>FG CODE</th>
               <th>Price</th>
+              <th>Stock</th>
+              <th>Minimal Stock Notification</th>
               <th>Status</th>
               <th class="text-center"> Action </th>
             </tr>
@@ -110,7 +112,19 @@
         <div class="form-group">
           <div class="controls">
             {!! Form::label("price", "Price") !!}
-            {!! Form::input('number',"price",0,["class"=>"form-control","required","id"=>"price"]) !!}
+            {!! Form::input('number',"price",0,["class"=>"form-control","required","id"=>"price","min"=>"0"]) !!}
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="controls">
+            {!! Form::label("stock", "Stock") !!}
+            {!! Form::input('number',"stock",0,["class"=>"form-control","required","id"=>"stock","min"=>"0"]) !!}
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="controls">
+            {!! Form::label("min_stock_notif", "Minimal Stock Notification") !!}
+            {!! Form::input('number',"min_stock_notif",0,["class"=>"form-control","required","id"=>"min_stock_notif","min"=>"0"]) !!}
           </div>
         </div>
         <div class="form-group">
@@ -248,6 +262,14 @@
           "title": "Price",
           "width": "150px"
         },{
+          "data": "stock",
+          "title": "Stock",
+          "width": "150px"
+        },{
+          "data": "min_stock_notif",
+          "title": "Minimal Stock Notification",
+          "width": "150px"
+        },{
           "data": "status",
           "title": "Status",
           "width": "100px"
@@ -260,7 +282,7 @@
      });
     });
 
-    function initializeModal(mode,element,title,id,fg_code,category_id,product_id,colour_id,price,status){
+    function initializeModal(mode,element,title,id,fg_code,category_id,product_id,colour_id,price,stock,status){
       $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
@@ -272,6 +294,7 @@
           $("#fg_code").val(fg_code);
           $("#price").val(price);
           $("#status").val(status);
+          $("#stock").val(stock);
         }else if(mode == "delete"){
           $("#fg_code").html(fg_code);
 
@@ -425,7 +448,7 @@
     }
 
     function edit(e) {
-      initializeModal("update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('fg_code'),$(e).data('category_id'),$(e).data('product_id'),$(e).data('colour_id'),$(e).data('price'),$(e).data('status'));
+      initializeModal("update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('fg_code'),$(e).data('category_id'),$(e).data('product_id'),$(e).data('colour_id'),$(e).data('price'),$(e).data('stock'),$(e).data('status'));
 
       setSubmitModalEvent('{{URL::route('administrator_manage_product_fg_code_update')}}');
     }

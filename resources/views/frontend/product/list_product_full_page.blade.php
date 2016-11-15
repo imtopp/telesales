@@ -30,10 +30,10 @@
 </head>
 <body>
   <div id="content">
-    <div class="col-md-4" style="float:left; min-height: 100vh; padding: 0; border-right-style: inset;">
+    <div class="col-md-3" style="float:left; min-height: 100vh; padding: 0; border-right-style: inset;">
       <iframe id="left-panel" src="{{ URL::route('show_all_product').'?isMicrosite=true' }}" frameborder="0" style="overflow:hidden;height:100vh;width:100%" height="100vh" width="100%">Sorry your browser is not supported.</iframe>
     </div>
-    <div class="col-md-8" style="float:right; min-height: 100vh; padding: 0;">
+    <div class="col-md-9" style="float:right; min-height: 100vh; padding: 0;">
       <img id="logo-smartfren" src="{{ URL::asset('assets/img/logo_smartfren.jpg') }}" style="max-height:100vh; max-width:100%;">
       <iframe id="right-panel" src="" frameborder="0" style="overflow:hidden;height:100vh;width:100%;display:none;" height="100vh" width="100%">Sorry your browser is not supported.</iframe>
     </div>

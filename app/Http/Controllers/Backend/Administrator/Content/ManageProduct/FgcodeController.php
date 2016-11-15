@@ -40,47 +40,43 @@ class FgcodeController extends BaseController
 
     $columns = array(
     // datatable column index  => database column name
-        0 => 'fg_code',
-        1 => 'category',
-        2 => 'product',
-        3 => 'colour',
+        0 => 'category',
+        1 => 'product',
+        2 => 'colour',
+        3 => 'fg_code',
         4 => 'price',
-        5 => 'status'
+        5 => 'stock',
+        6 => 'min_stock_notif',
+        7 => 'status'
     );
 
     $totalData = ProductFgCodeModel::count();
     $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
+    $model = DB::table('product_fg_code')
+              ->select('product_fg_code.id', 'product_fg_code.fg_code', 'product_fg_code.stock', 'product_fg_code.min_stock_notif', 'product_category.name AS category', 'product_category.id AS category_id', 'product.name AS product', 'product.id AS product_id', 'product_colour.name AS colour', 'product_colour.id AS colour_id', 'product_fg_code.price', 'product_fg_code.status')
+              ->join('product_colour','product_colour.id','=','product_fg_code.product_colour_id')
+              ->join('product','product.id','=','product_colour.product_id')
+              ->join('product_category','product_category.id','=','product.category_id');
+
     if( !empty($requestData['search']['value']) ) {
       // if there is a search parameter
-      $model = DB::table('product_fg_code')
-                ->select('product_fg_code.id', 'product_fg_code.fg_code', 'product_category.name AS category', 'product_category.id AS category_id', 'product.name AS product', 'product.id AS product_id', 'product_colour.name AS colour', 'product_colour.id AS colour_id', 'product_fg_code.price', 'product_fg_code.status')
-                ->join('product_colour','product_colour.id','=','product_fg_code.product_colour_id')
-                ->join('product','product.id','=','product_colour.product_id')
-                ->join('product_category','product_category.id','=','product.category_id')
-                ->where('product_fg_code.fg_code','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('product_category.name','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('product.name','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('product_colour.name','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('product_fg_code.price','LIKE',$requestData['search']['value'].'%')
-                ->orWhere('product_fg_code.status','LIKE',$requestData['search']['value'].'%');
+      $model = $model
+              ->where('product_fg_code.fg_code','LIKE',$requestData['search']['value'].'%')
+              ->orWhere('product_category.name','LIKE',$requestData['search']['value'].'%')
+              ->orWhere('product.name','LIKE',$requestData['search']['value'].'%')
+              ->orWhere('product_colour.name','LIKE',$requestData['search']['value'].'%')
+              ->orWhere('product_fg_code.price','LIKE',$requestData['search']['value'].'%')
+              ->orWhere('product_fg_code.status','LIKE',$requestData['search']['value'].'%');
+
       $totalFiltered = $model->count();
-      $query = $model
-                ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
-                ->skip($requestData['start'])
-                ->take($requestData['length'])
-                ->get();
-    } else {
-      $query = DB::table('product_fg_code')
-                ->select('product_fg_code.id', 'product_fg_code.fg_code', 'product_category.name AS category', 'product_category.id AS category_id', 'product.name AS product', 'product.id AS product_id', 'product_colour.name AS colour', 'product_colour.id AS colour_id', 'product_fg_code.price', 'product_fg_code.status')
-                ->join('product_colour','product_colour.id','=','product_fg_code.product_colour_id')
-                ->join('product','product.id','=','product_colour.product_id')
-                ->join('product_category','product_category.id','=','product.category_id')
-                ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
-                ->skip($requestData['start'])
-                ->take($requestData['length'])
-                ->get();
     }
+
+    $query = $model
+            ->orderBy($columns[$requestData['order'][0]['column']],$requestData['order'][0]['dir'])
+            ->skip($requestData['start'])
+            ->take($requestData['length'])
+            ->get();
 
     $data = array();
     foreach($query as $row) {  // preparing an array
@@ -91,9 +87,11 @@ class FgcodeController extends BaseController
         $nestedData[$columns[2]] = $row->product;
         $nestedData[$columns[3]] = $row->colour;
         $nestedData[$columns[4]] = $row->price;
-        $nestedData[$columns[5]] = $row->status;
+        $nestedData[$columns[5]] = $row->stock;
+        $nestedData[$columns[6]] = $row->min_stock_notif;
+        $nestedData[$columns[7]] = $row->status;
         $nestedData['action'] = '<td><center>
-                           <a data-id="'.$row->id.'" data-fg_code="'.$row->fg_code.'" data-category_id="'.$row->category_id.'" data-product_id="'.$row->product_id.'" data-colour_id="'.$row->colour_id.'" data-price="'.$row->price.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
+                           <a data-id="'.$row->id.'" data-fg_code="'.$row->fg_code.'" data-stock="'.$row->stock.'" data-category_id="'.$row->category_id.'" data-product_id="'.$row->product_id.'" data-colour_id="'.$row->colour_id.'" data-price="'.$row->price.'" data-status="'.$row->status.'" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-warning edit" onClick="edit(this)"> <i class="fa fa-pencil"></i> </a>
                            <a data-id="'.$row->id.'" data-fg_code="'.$row->fg_code.'" data-toggle="tooltip" title="Hapus" class="btn btn-sm btn-danger destroy" onClick="destroy(this)"> <i class="fa fa-trash"></i> </a>
                            </center></td>';
 
@@ -119,6 +117,8 @@ class FgcodeController extends BaseController
     $model->fg_code = $_POST['fg_code'];
     $model->product_colour_id = $_POST['colour_id'];
     $model->price = $_POST['price'];
+    $model->stock = $_POST['stock'];
+    $model->min_stock_notif = $_POST['min_stock_notif'];
     $model->status = $_POST['status'];
     $model->input_date = $date->format('Y-m-d H:i:s');
     $model->input_by = Auth::User()->email;
@@ -150,6 +150,8 @@ class FgcodeController extends BaseController
     $model->fg_code = $_POST['fg_code'];
     $model->product_colour_id = $_POST['colour_id'];
     $model->price = $_POST['price'];
+    $model->stock = $_POST['stock'];
+    $model->min_stock_notif = $_POST['min_stock_notif'];
     $model->status = $_POST['status'];
     $model->update_date = $date->format('Y-m-d H:i:s');
     $model->update_by = Auth::User()->email;

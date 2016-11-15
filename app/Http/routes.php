@@ -211,4 +211,10 @@ Route::group(['middleware' => ['auth.digitaliot']], function(){
   //Manage Order
   Route::get('/digital-iot/manage-order', ["as"=>"digitaliot_manage_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@index"]);
   Route::post('/digital-iot/manage-order-read', ["as"=>"digitaliot_manage_order_read","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@read"]);
+  Route::post('/digital-iot/manage-order-payment-received', ["as"=>"digitaliot_manage_order_payment_received","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@paymentReceived"]);
+  Route::post('/digital-iot/manage-order-cancel-order', ["as"=>"digitaliot_manage_order_cancel_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@cancelOrder"]);
+  Route::post('/digital-iot/manage-order-deliver-order', ["as"=>"digitaliot_manage_order_deliver_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@deliverOrder"]);
 });
+
+Route::post('/schedule/update-expired-transaction', ["as"=>"update_expired_transaction","uses"=>"Schedule\ScheduleController@updateExpiredTransaction"]);
+Route::post('/schedule/notify-expired-transaction', ["as"=>"notify_expired_transaction","uses"=>"Schedule\ScheduleController@notifyExpiredTransaction"]);

@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50620
-Source Host           : localhost:3307
+Source Server         : Testbed
+Source Server Version : 50621
+Source Host           : localhost:3306
 Source Database       : telesales
 
 Target Server Type    : MYSQL
-Target Server Version : 50620
+Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2016-10-25 16:27:11
+Date: 2016-11-15 10:48:12
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,20 +21,21 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `configuration`;
 CREATE TABLE `configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `value` varchar(255) DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of configuration
 -- ----------------------------
-INSERT INTO `configuration` VALUES ('1', 'app_name', 'Online Shop', '2016-09-16 10:05:50', 'System', '2016-10-17 09:35:38', 'TOPPunofficial@smartfren.com');
+INSERT INTO `configuration` VALUES ('1', 'app_name', 'SmartShop (Smartfren Online Shop)', '2016-09-16 10:05:50', 'System', '2016-11-08 06:31:04', 'TOPPunofficial@smartfren.com');
 INSERT INTO `configuration` VALUES ('2', 'fa_icon', 'fa-phone', '2016-09-16 13:54:58', 'System', '2016-09-16 13:54:58', 'System');
+INSERT INTO `configuration` VALUES ('3', 'digital_iot_email', 'taufiq.putra@smartfren.com', '2016-11-11 09:16:49', 'System', '2016-11-11 02:30:32', 'TOPPunofficial@smartfren.com');
 
 -- ----------------------------
 -- Table structure for courier
@@ -42,20 +43,21 @@ INSERT INTO `configuration` VALUES ('2', 'fa_icon', 'fa-phone', '2016-09-16 13:5
 DROP TABLE IF EXISTS `courier`;
 CREATE TABLE `courier` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `status` enum('inactive','active') DEFAULT 'active',
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `status` enum('inactive','active') CHARACTER SET utf8 DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of courier
 -- ----------------------------
 INSERT INTO `courier` VALUES ('1', 'Internal', 'active', '2016-09-30 13:45:30', 'System', '2016-09-28 10:11:57', 'System');
 INSERT INTO `courier` VALUES ('2', 'GED', 'active', '2016-10-03 19:01:11', 'System', '2016-10-03 12:01:11', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier` VALUES ('3', 'JNE', 'active', '2016-11-09 04:39:26', 'TOPPunofficial@smartfren.com', '2016-11-09 04:39:26', 'TOPPunofficial@smartfren.com');
 
 -- ----------------------------
 -- Table structure for courier_delivery_price
@@ -67,15 +69,15 @@ CREATE TABLE `courier_delivery_price` (
   `courier_price_category_id` bigint(255) DEFAULT NULL,
   `price` bigint(255) DEFAULT NULL,
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `courier_delivery_price_courier_location_mapping` (`courier_location_mapping_id`),
   KEY `courier_delivery_price_courier_price_category_id` (`courier_price_category_id`),
   CONSTRAINT `courier_delivery_price_courier_location_mapping` FOREIGN KEY (`courier_location_mapping_id`) REFERENCES `courier_location_mapping` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `courier_delivery_price_courier_price_category_id` FOREIGN KEY (`courier_price_category_id`) REFERENCES `courier_price_category` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of courier_delivery_price
@@ -118,6 +120,16 @@ INSERT INTO `courier_delivery_price` VALUES ('36', '2698', '42', '1', '2016-10-1
 INSERT INTO `courier_delivery_price` VALUES ('37', '2698', '43', '1', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com');
 INSERT INTO `courier_delivery_price` VALUES ('38', '2698', '44', '1', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com');
 INSERT INTO `courier_delivery_price` VALUES ('39', '2698', '45', '1', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com', '2016-10-17 08:42:50', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('40', '1734', '46', '1000', '2016-11-01 05:07:44', 'TOPPunofficial@smartfren.com', '2016-11-01 05:08:10', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('41', '1734', '47', '3000', '2016-11-01 05:07:44', 'TOPPunofficial@smartfren.com', '2016-11-01 05:08:10', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('42', '1734', '48', '6000', '2016-11-01 05:07:44', 'TOPPunofficial@smartfren.com', '2016-11-01 05:08:10', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('43', '1734', '49', '9000', '2016-11-01 05:07:44', 'TOPPunofficial@smartfren.com', '2016-11-01 05:08:10', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('44', '1734', '50', '18000', '2016-11-01 05:07:44', 'TOPPunofficial@smartfren.com', '2016-11-01 05:08:10', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('45', '1715', '46', '1500', '2016-11-01 10:48:00', 'TOPPunofficial@smartfren.com', '2016-11-01 10:50:42', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('46', '1715', '47', '2500', '2016-11-01 10:48:00', 'TOPPunofficial@smartfren.com', '2016-11-01 10:50:42', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('47', '1715', '48', '3500', '2016-11-01 10:48:00', 'TOPPunofficial@smartfren.com', '2016-11-01 10:50:42', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('48', '1715', '49', '4500', '2016-11-01 10:48:00', 'TOPPunofficial@smartfren.com', '2016-11-01 10:50:42', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_delivery_price` VALUES ('49', '1715', '50', '5500', '2016-11-01 10:48:00', 'TOPPunofficial@smartfren.com', '2016-11-01 10:50:42', 'TOPPunofficial@smartfren.com');
 
 -- ----------------------------
 -- Table structure for courier_location_mapping
@@ -127,11 +139,11 @@ CREATE TABLE `courier_location_mapping` (
   `id` bigint(255) NOT NULL AUTO_INCREMENT,
   `courier_package_id` int(255) DEFAULT NULL,
   `location_district_id` int(255) DEFAULT NULL,
-  `status` enum('inactive','active') DEFAULT 'active',
+  `status` enum('inactive','active') CHARACTER SET utf8 DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `courier_mapping_location_district_id` (`location_district_id`),
   KEY `courier_mapping_courier_package_id` (`courier_package_id`),
@@ -1856,7 +1868,7 @@ INSERT INTO `courier_location_mapping` VALUES ('1711', '1', '1711', 'active', '2
 INSERT INTO `courier_location_mapping` VALUES ('1712', '1', '1712', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1713', '1', '1713', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1714', '1', '1714', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
-INSERT INTO `courier_location_mapping` VALUES ('1715', '1', '1715', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
+INSERT INTO `courier_location_mapping` VALUES ('1715', '1', '1715', 'active', '2016-10-10 16:23:43', null, '2016-11-01 10:51:03', 'TOPPunofficial@smartfren.com');
 INSERT INTO `courier_location_mapping` VALUES ('1716', '1', '1716', 'active', '2016-10-10 16:23:43', null, '2016-10-14 07:25:24', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_location_mapping` VALUES ('1717', '1', '1717', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1718', '1', '1718', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
@@ -1875,7 +1887,7 @@ INSERT INTO `courier_location_mapping` VALUES ('1730', '1', '1730', 'active', '2
 INSERT INTO `courier_location_mapping` VALUES ('1731', '1', '1731', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1732', '1', '1732', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1733', '1', '1733', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
-INSERT INTO `courier_location_mapping` VALUES ('1734', '1', '1741', 'active', '2016-10-10 16:23:43', null, '2016-10-14 10:48:50', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_location_mapping` VALUES ('1734', '1', '1741', 'active', '2016-10-10 16:23:43', null, '2016-11-01 06:26:10', 'TOPPunofficial@smartfren.com');
 INSERT INTO `courier_location_mapping` VALUES ('1735', '1', '1735', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1736', '1', '1736', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
 INSERT INTO `courier_location_mapping` VALUES ('1737', '1', '1737', 'active', '2016-10-10 16:23:43', null, '2016-10-10 16:23:43', null);
@@ -5880,13 +5892,13 @@ INSERT INTO `courier_location_mapping` VALUES ('5731', '1', '201', 'active', '20
 DROP TABLE IF EXISTS `courier_package`;
 CREATE TABLE `courier_package` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `courier_id` int(255) NOT NULL,
-  `status` enum('inactive','active') DEFAULT 'active',
+  `status` enum('inactive','active') CHARACTER SET utf8 DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `courier_package_courier_id` (`courier_id`),
   CONSTRAINT `courier_package_courier_id` FOREIGN KEY (`courier_id`) REFERENCES `courier` (`id`) ON UPDATE CASCADE
@@ -5905,26 +5917,26 @@ DROP TABLE IF EXISTS `courier_price_category`;
 CREATE TABLE `courier_price_category` (
   `id` bigint(255) NOT NULL AUTO_INCREMENT,
   `courier_id` int(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `min_price` varchar(255) DEFAULT NULL,
-  `max_price` varchar(255) DEFAULT NULL,
-  `status` enum('inactive','active') DEFAULT 'active',
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `min_price` bigint(255) DEFAULT NULL,
+  `max_price` bigint(255) DEFAULT NULL,
+  `status` enum('inactive','active') CHARACTER SET utf8 DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `courier_price_category_courier_id` (`courier_id`),
   CONSTRAINT `courier_price_category_courier_id` FOREIGN KEY (`courier_id`) REFERENCES `courier` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of courier_price_category
 -- ----------------------------
 INSERT INTO `courier_price_category` VALUES ('1', '2', 'category_1', '1', '2', 'inactive', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('2', '2', 'category_2', '3', '4', 'inactive', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('3', '2', 'category_3', '5', '~', 'inactive', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('4', '2', 'category_1', '1', '~', 'inactive', '2016-10-13 03:18:45', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:45', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('3', '2', 'category_3', '5', '0', 'inactive', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:07', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('4', '2', 'category_1', '1', '0', 'inactive', '2016-10-13 03:18:45', 'taufiq.putra@smartfren.com', '2016-10-13 03:18:45', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('5', '2', 'category_1', '1', '2', 'inactive', '2016-10-13 03:23:02', 'taufiq.putra@smartfren.com', '2016-10-13 03:23:02', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('6', '2', 'category_2', '3', '0', 'inactive', '2016-10-13 03:23:02', 'taufiq.putra@smartfren.com', '2016-10-13 03:23:02', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('7', '2', 'category_1', '1', '2', 'inactive', '2016-10-13 03:23:24', 'taufiq.putra@smartfren.com', '2016-10-13 03:23:24', 'taufiq.putra@smartfren.com');
@@ -5962,10 +5974,21 @@ INSERT INTO `courier_price_category` VALUES ('38', '2', 'category_price_1', '1',
 INSERT INTO `courier_price_category` VALUES ('39', '2', 'category_price_2', '3', '4', 'inactive', '2016-10-14 04:11:21', 'taufiq.putra@smartfren.com', '2016-10-14 04:11:21', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('40', '2', 'category_price_3', '5', '0', 'inactive', '2016-10-14 04:11:21', 'taufiq.putra@smartfren.com', '2016-10-14 04:11:21', 'taufiq.putra@smartfren.com');
 INSERT INTO `courier_price_category` VALUES ('41', '2', 'category_price_1', '1', '0', 'inactive', '2016-10-14 10:26:59', 'taufiq.putra@smartfren.com', '2016-10-14 10:26:59', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('42', '2', 'category_price_1', '1', '2', 'active', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('43', '2', 'category_price_2', '3', '4', 'active', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('44', '2', 'category_price_3', '5', '6', 'active', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
-INSERT INTO `courier_price_category` VALUES ('45', '2', 'category_price_4', '7', '0', 'active', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('42', '2', 'category_price_1', '1', '2', 'inactive', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('43', '2', 'category_price_2', '3', '4', 'inactive', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('44', '2', 'category_price_3', '5', '6', 'inactive', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('45', '2', 'category_price_4', '7', '0', 'inactive', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com', '2016-10-14 10:45:49', 'taufiq.putra@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('46', '2', 'category_price_1', '1', '10000', 'active', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('47', '2', 'category_price_2', '10001', '100000', 'active', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('48', '2', 'category_price_3', '100001', '1000000', 'active', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('49', '2', 'category_price_4', '1000001', '10000000', 'active', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('50', '2', 'category_price_5', '10000001', '0', 'active', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com', '2016-11-01 04:34:58', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('51', '3', 'category_price_1', '1', '1000000', 'inactive', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('52', '3', 'category_price_2', '1000001', '2000000', 'inactive', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('53', '3', 'category_price_3', '2000001', '0', 'inactive', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com', '2016-11-09 04:40:12', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('54', '3', 'category_price_1', '1', '1000000', 'active', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('55', '3', 'category_price_2', '1000001', '2999999', 'active', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com');
+INSERT INTO `courier_price_category` VALUES ('56', '3', 'category_price_3', '3000000', '0', 'active', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com', '2016-11-09 04:41:02', 'TOPPunofficial@smartfren.com');
 
 -- ----------------------------
 -- Table structure for customer_info
@@ -5988,7 +6011,7 @@ CREATE TABLE `customer_info` (
   PRIMARY KEY (`id`),
   KEY `customer_info_location_district_id` (`location_district_id`),
   CONSTRAINT `customer_info_location_district_id` FOREIGN KEY (`location_district_id`) REFERENCES `location_district` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of customer_info
@@ -6002,6 +6025,14 @@ INSERT INTO `customer_info` VALUES ('6', 0x66306A63436245357368433257594C4D46385
 INSERT INTO `customer_info` VALUES ('7', 0x387A755348434462416574384B6E4A59764D6E35346330626966675849522B48314C4541614454647862633D, 0x6C4454354D34564172456F6C736E564543593159356B773673305661335677557A394D7A5A6A35624476513D, 0x6E636F342B63504A4364356F70334870564567347A446F52727634553764575A6C77624D595546325851773D, 0x426B366878344D6B7A2F30666A673148334762766D4A655A47584672344A356272544B476B4D5A7850486B3D, 0x5A336B4141667A5148512B6A36622B43752B6D544A4463677054414E5A6B30484C366A2B32414A684355734E366F41456C42364541506E6F484B582B63326B70, 0x4B395854734D594D74614271346C7138452F743249344B33566362415A626B73337556396A6A46506C6C733D, '201', 0x5055786156526B642F376E78726E7137764143414A4D4A664855776B707868585863504F424870504D4D53747655664A505A4873506343554349717233684A31, '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com');
 INSERT INTO `customer_info` VALUES ('8', 0x4962476E6F7448444578366D4E595771457A6172336338484C3344714448474630727963453066742B31413D, 0x307242455677796C2F68696F4D6B7975772F4A547837356E4D63434A446D374F53414342383978705766513D, 0x4A4F34432F4C7A676E66515A7162436F683465324539577434326333563758612F5157575A4D736D7537593D, 0x633349594B797A504D64776348613647615A39337065666A6F2F514F526A2F53536B4D6B5742395231616B3D, 0x4934774B44446E5330734D32646467326C306F55623730714964764366742B57356B616E64456F326A4C43303445704879356D4571575539396231543447516C, 0x6365482B364677676E347165516F454531712F544D364B4750366667655850775337505546634C4F7147343D, '201', 0x477973394958314A566C76466F6E2F5256505762775A434E4D4E715455725136383471326C5551614156453D, '2016-10-21 09:48:13', 'Self Order', '2016-10-21 09:48:13', 'Self Order');
 INSERT INTO `customer_info` VALUES ('9', 0x544B374546657144446146416F496374414A4E5131417267756D376F43657252617662344242575A672F305968426D327A4E452F2B4C63653472724668327358, 0x562F414137413943507977744B744B6D46434471556A50357036624D3757726A6934526865486C46586D4966534D41726674664F65446B7354327A366E62592B544F31626C444E556151694D744531575055766C4D513D3D, 0x435166646F684C3936705951446730304C593354543450486648657A307A756A5867414F6B6562354A726B3D, 0x6249484A4E64696D712B39764C4869313970796941454539346A6A7A5335547737317669427A474336796867656C647556494A5870705A6F614A6F7478334B61, 0x39396369685A52334B69497A733747754F4B39766A4A42746D484A454836596C68686745706F5A424E4D736E517043432F53485A326E57697532793158306D4D, 0x43684B6F586D3844356C48767231486346395679316253417250436D2B73526E6D344178514D42366D6D413D, '201', 0x53315530675343683835363334705876716F4F663446536A2B574E72514741344C6A3058366141347348383D, '2016-10-21 10:16:36', 'Self Order', '2016-10-21 10:16:36', 'Self Order');
+INSERT INTO `customer_info` VALUES ('10', 0x676F355534746D426F7A707A4D6B36794F76645937514872685A6D363250757970664B4B7166517538507659786969324C6D4F61727161496277554749395731, 0x6F6D5933386132524A3976506D562B4F4F6B46534F454F63647544697451697277712B476A57557A514A733D, 0x457042675462793638643474706B693874767866454F39346B6B4C6D317A436C7233586A34462B675A6A4D3D, 0x693730304E336F73626B4A6E464C644A50706565503652386D4C53786865412B663171532B7730416952383D, 0x7679437171546C353471594865373063576F6F417A47707A735677633151374837746461574F52456E4B4461504C4554437748383034617272307774576C4776, 0x775A704E412F6F796C6A482F752B4A494B3076784153584E6977344F396E7A686273396742664F33334C513D, '2698', 0x4D4434526838477A6F665446544B4A4E7634744A565561533556326368745652756C43496F7658357357413D, '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com', '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com');
+INSERT INTO `customer_info` VALUES ('11', 0x64527666676E5150764E637477626C784754586B324B6A3054775665753636577770454F75616435645272614C786A6F3441486467643779316E355574382F5A, 0x75394545526A634150673736434D486C62314E2B4351535744764A6976704C725A7434382F512F685777673D, 0x494E7564706638676A652F58385279744C4C2B7A316B456762502F5842705A484F6365664F2B66516533773D, 0x615A4B705275384C48575A797235734F6450317859736F6943683446796935636747416C4A323330776F733D, 0x6B726F6F384B2F656641504C74636E683268577A31594239654C474A5672713677724A316967644A505071713074505751336C704B45622F656E64715A6B4F35, 0x485148776354654C5666366F55534338346A4A66716C4C4B3742786E414E6F6748496D617052657754426F3D, '2698', 0x4E63716E324B334941482F616D616A4F6839586E4B4F4170746369327A49766F586D314F32746154455A493D, '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com', '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com');
+INSERT INTO `customer_info` VALUES ('12', 0x736F717173547748432F6165306F6259586E5554723647724138504567724A4A6D57396D467842567055355255496B5A59416B78756C4C386E644F6F674F3952, 0x52485358356A627874764359566F5536304A776A7A7A776D6138392F554B415A2B6955517974334C482F553D, 0x784D6C39672B397959467861735370553077612B507763646D61746F49503247495049674D35614342636B3D, 0x7078757076776C416D684C3871666667504F4C316B544D51794B424A6D5936486D50642F724A645A3850673D, 0x54566F623664434C79777A6E344A513279745477537273707947504F6D786443527139456F7253756F2F3574566469455939615043547A526448362F79362F6B, 0x6E624643564C43734952672B622F795174497241466C612F756C4867794B5231436C562B4B6E4F42772B453D, '2698', 0x2F397064386733524F50374875414B2B78776E34663530707A4A72716F566B326E706846346E6A776E72553D, '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com', '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `customer_info` VALUES ('13', 0x6B715567725A3564337954356D39466879324836692B38316D6F6F6969662F514C536F56545737466D6F553D, 0x547165456F494E6F34343447416547566352336A6863414B49685552394B3558492B6A7134782F6F2F59553D, 0x426E52646163364C7A547254763873702B38366278447858497247736F65694F6451314A654B6876536E593D, 0x3354473767462B39706936615733794D594F656B494D745338365155796C4F72526471563935794F3862343D, 0x6E632F4136776C333673426B6176543562566B6F755768464E5A70477A59702F774359483773764B6476772B6E726E624E47686A32634C32353968364777684A, 0x67303649452F3747634B69587767416158426E7358692B7A7773674D716F32434B5733774F68614A6153673D, '1715', 0x7652683858414235507A547077764961503354437866724E45694268507749614366346276574F386730553D, '2016-11-11 02:41:55', 'Self Order', '2016-11-11 02:41:55', 'Self Order');
+INSERT INTO `customer_info` VALUES ('14', 0x42784731555A67747234624B2B316352336B6C2F5730584D7A736263756D525245784255316A737A3044593D, 0x31684E6A557967422F48617831713442373549487571706476614D7A7374316B57516171756E70526368553D, 0x3879772F564E66397735567457675733694E475A4E2F7A6F38574954312F764155544F564F63487A4572733D, 0x37316A3767654E2B5A313439584F634D613776786C5572574D794D58304468557763354A62626F684B31413D, 0x53334262375264333243785161576F37503276776A4D65396D6150373139494C74686A72716D515773576D38796270736B383247536B4379756C50434D475972, 0x722F57514475534168594F396A2B6B494878394F4C43575A5634614C417A4F503041532F6F6352454943303D, '1741', 0x2B2B6C476B37303252323378725278724C7A426D456B385244344D58677043394F3942544865476A3433513D, '2016-11-11 02:47:45', 'Self Order', '2016-11-11 02:47:45', 'Self Order');
+INSERT INTO `customer_info` VALUES ('15', 0x39536C2B75504F36485452483350576362623657376B6F51333350422F622B2B50576F48734147737576462F686F4149347242714E68396B4A4C79722B576764, 0x423661756C6D7348483979684A2B4A587A4545716E66744A696E536E7454656F2F2F3367474B5A356D6F383D, 0x676C433275764C306341492F4F726639726978796F3631714C54454F53747135624A624B7A5139596A6D383D, 0x655450424B504165745A4868384C6C4E52662F627273503764354635445055524F4D6E484A684C706164343D, 0x6E726F586F6F725A5A6C6275446563475549783050384132397731786D654B4E506B367442446E415A4D2B4B61673665774654394B32346F5543312F35567366, 0x624E515A727250427A777A4A366E5063703054706C6D683155676D506F666F66536C79464E5656557162303D, '1741', 0x6F2B674E756269377657676F552B2B486959344D786F337444726D4A32314F7234717037423748767172453D, '2016-11-14 02:41:35', 'taufiq.putra@smartfren.com', '2016-11-14 02:41:35', 'taufiq.putra@smartfren.com');
+INSERT INTO `customer_info` VALUES ('16', 0x704248697164446E2F686E443039636352324C436E3774333674647547395967695A7974394C3850333837456C72394B53454770414B39693057744D74597978, 0x7576477A366D69717A796764707936784A4778472F514B736B38714F6336763171784939776D6A6456634D3D, 0x67337464383044476738655A4231473676357448436735386D735177694E6547424F64767A2B68646B4A673D, 0x4146547247744462646D6E3773585468786346505552707348524431556D5941347765584C7648762F74493D, 0x4539487557566A485850796B6F30774F7633504175716F6977366746506D62777459584476526867305969323654574871716859726C2F5A6E4F467352336344, 0x516456646A6658706361445874624944594A444C333566506F7A64374958753767396C674F6E374C4C4F6F3D, '1741', 0x6C784A2B7449466673774F5A4544392B624A4C5165412F6A39686B7672464F706875324C54734A34516B773D, '2016-11-14 06:47:54', 'taufiq.putra@smartfren.com', '2016-11-14 06:47:54', 'taufiq.putra@smartfren.com');
+INSERT INTO `customer_info` VALUES ('17', 0x3077724971623570364448616E5A697341424B694E76716F534F307453316E666451757A427762455078776D6C43774C4C736839656A2B35722F75422B306459, 0x784A55616C66596C6C42385878697371534F4462494F765331724470694671596F4F3674524854413135673D, 0x532B66697558326156323336447A65364F414C54582B3332614672446B4543755034636B412B76793255343D, 0x4B6866366D3261566A48435A6B72523869654A645943514641704A432F31336F6A4F384971636344715A513D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x515944736F50335937784348375A745764497754794656323142526736317970464A64676C4D34646B63773D, '1741', 0x633048352F3672374F2F7747444E32317531564D4252302B77335036473371354476394364654268664A6B3D, '2016-11-14 06:50:11', 'taufiq.putra@smartfren.com', '2016-11-14 06:50:11', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for location_city
@@ -12153,8 +12184,8 @@ CREATE TABLE `payment_method` (
 -- ----------------------------
 -- Records of payment_method
 -- ----------------------------
-INSERT INTO `payment_method` VALUES ('1', 'COD', 'active', '2016-08-24 09:20:06', 'System', '2016-08-24 09:20:06', 'System');
-INSERT INTO `payment_method` VALUES ('2', 'Virtual Account', 'active', '2016-08-26 13:48:37', 'System', '2016-08-26 13:48:37', 'System');
+INSERT INTO `payment_method` VALUES ('1', 'COD', 'active', '2016-08-24 09:20:06', 'System', '2016-11-02 04:32:49', 'TOPPunofficial@smartfren.com');
+INSERT INTO `payment_method` VALUES ('2', 'Virtual Account BSM', 'active', '2016-08-26 13:48:37', 'System', '2016-08-26 13:48:37', 'System');
 
 -- ----------------------------
 -- Table structure for payment_method_location_mapping
@@ -17799,13 +17830,13 @@ CREATE TABLE `product` (
 -- ----------------------------
 -- Records of product
 -- ----------------------------
-INSERT INTO `product` VALUES ('1', 'Andromax A', '1', '<p class=\"MsoNormalCxSpMiddle\" style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Spesifikasi\r\n:</span></b></p>\r\n\r\n<span lang=\"IN\" style=\"font-size:10.0pt;font-family:\r\n\" arial\",\"sans-serif\"\"=\"\">4.</span><span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5”\r\nFWVGA</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Quad\r\nCore 1.1 Ghz </span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Qualcomm\r\nSnapdragon</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">OS\r\n5 (Lollipop)</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1GB\r\nRAM + 8GB ROM</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Dual\r\nCamera</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5MP\r\nAF LED Flash</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">+\r\n5MP Wide Angle</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1950\r\nmAh</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">VOLTE</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Fitur\r\nSVI</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Smart\r\nScreen</span><br>\r\n\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormal\"></p><div style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Benefit\r\n:</span></b></div><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">\r\nBonus Kuota 17 GB*</span><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\"><br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</span><p></p>\r\n\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt\">Note :</span></b><b><span style=\"font-size:8.0pt\"> </span></b><br>\r\n\r\n<span style=\"font-size:8.0pt\">*&nbsp;Bonus didapat dengan\r\nmelakukan isi ulang pertama senilai min 100 Ribu </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota dapat digunakan 24\r\njam <br>\r\ndan berlaku 17 hari sejak pengisian ulang pertama dilakukan </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota hanya berlaku satu\r\nkali <br>\r\ndan tidak dapat diakumulasi dengan kuota lainnya </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Periode promo 10-31 Agustus\r\n2016</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">** Bonus 2 GB + 6 GB (internet\r\nMalam) berlaku 30 hari <br>\r\nsejak pengisian ulang pertama di lakukan.</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Total Bonus yang didapat\r\nsetelah melakukan isi ulang pertama <br>\r\nsenilai min 100 Ribu adalah <br>\r\n17 GB + 2 GB + 6 GB (internet malam)</span></p>', 'assets/img/product/andromax_a/image.png', '52', 'active', '2016-08-22 09:17:26', 'System', '2016-09-27 02:36:24', 'taufiq.putra@smartfren.com');
+INSERT INTO `product` VALUES ('1', 'Andromax A', '1', '<p class=\"MsoNormalCxSpMiddle\" style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Spesifikasi\r\n:</span></b></p>\r\n\r\n<span lang=\"IN\" style=\"font-size:10.0pt;font-family:\r\n\" arial\",\"sans-serif\"\"=\"\">4.</span><span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5”\r\nFWVGA</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Quad\r\nCore 1.1 Ghz </span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Qualcomm\r\nSnapdragon</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">OS\r\n5 (Lollipop)</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1GB\r\nRAM + 8GB ROM</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Dual\r\nCamera</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">5MP\r\nAF LED Flash</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">+\r\n5MP Wide Angle</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">1950\r\nmAh</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">VOLTE</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Fitur\r\nSVI</span><br>\r\n\r\n<span style=\"font-size:10.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Smart\r\nScreen</span><br>\r\n\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">&nbsp;</span></p>\r\n\r\n<p class=\"MsoNormal\"></p><div style=\"text-align: left;\"><b><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">Benefit\r\n:</span></b></div><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\">\r\nBonus Kuota 17 GB*</span><span style=\"font-size:12.0pt;font-family:\" arial\",\"sans-serif\"\"=\"\"><br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</span><p></p>\r\n\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt\">Note :</span></b><b><span style=\"font-size:8.0pt\"> </span></b><br>\r\n\r\n<span style=\"font-size:8.0pt\">*&nbsp;Bonus didapat dengan\r\nmelakukan isi ulang pertama senilai min 100 Ribu </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota dapat digunakan 24\r\njam <br>\r\ndan berlaku 17 hari sejak pengisian ulang pertama dilakukan </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Bonus kuota hanya berlaku satu\r\nkali <br>\r\ndan tidak dapat diakumulasi dengan kuota lainnya </span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Periode promo 10-31 Agustus\r\n2016</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">** Bonus 2 GB + 6 GB (internet\r\nMalam) berlaku 30 hari <br>\r\nsejak pengisian ulang pertama di lakukan.</span><br>\r\n\r\n<span style=\"font-size:8.0pt\">Total Bonus yang didapat\r\nsetelah melakukan isi ulang pertama <br>\r\nsenilai min 100 Ribu adalah <br>\r\n17 GB + 2 GB + 6 GB (internet malam)</span></p>', 'assets/img/product/andromax_a/image.png', '57', 'active', '2016-08-22 09:17:26', 'System', '2016-09-27 02:36:24', 'taufiq.putra@smartfren.com');
 INSERT INTO `product` VALUES ('2', 'Andromax E2', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA Bright LCD</span><br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n<span lang=IN>1GB RAM + 8GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>2000 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + DTS </span><br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2/image.png', '14', 'active', '2016-08-22 09:18:08', 'System', '2016-08-22 09:18:08', 'System');
-INSERT INTO `product` VALUES ('3', 'Andromax E2+', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA </span>IPS OCA <br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n2<span lang=IN>GB RAM + </span>16<span lang=IN>GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n19<span lang=IN>00 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + </span>Dolby + Quick Charge </p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2+/image.png', '17', 'active', '2016-08-22 09:18:53', 'System', '2016-08-22 09:18:53', 'System');
-INSERT INTO `product` VALUES ('13', 'Andromax R2', '1', '<p class=MsoNormal><b>Spesifikasi</b><b> :</b></p>\r\n\r\n<span lang=IN>.5” HD IPS OGS </span><br/>\r\n\r\n<span lang=IN>With Dragron Trail Glass</span><br/>\r\n\r\n<span lang=IN>Octa Core 1.4 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS Lollipop</span><br/>\r\n\r\n<span lang=IN>2GB RAM + 16GB ROM</span><br/>\r\n\r\n<span lang=IN>2320 mAh</span><br/>\r\n\r\n<span lang=IN>Dual Camera Triple LED </span><br/>\r\n\r\n<span lang=IN>13MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>Gyroscope</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Kinetic Selfie + Smart Gesture + Dolby</span></p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_r2/image.png', '5', 'active', '2016-08-26 14:13:54', 'System', '2016-08-26 14:13:54', 'System');
-INSERT INTO `product` VALUES ('14', 'New Andromax M3Y', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\n MySmartfren Apps for checking                  <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlack &amp; White<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note:</b><br/>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3y/image.png', '13', 'active', '2016-08-26 14:14:13', 'System', '2016-08-26 14:14:13', 'System');
-INSERT INTO `product` VALUES ('15', 'New Andromax M3Z', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\nMySmartfren Apps for checking                   <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlue &amp; Brown<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;<br/>\r\n\r\n<p class=MsoNormal><b>Note:</b></p>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3z/image.png', '2', 'active', '2016-08-26 14:14:34', 'System', '2016-08-26 14:14:34', 'System');
-INSERT INTO `product` VALUES ('18', 'Samsung Galaxy S7 Edge', '3', '<b>Spesifikasi:</b></p>\r\n\r\n<span lang=IN>Jaringan GSM / HSPA / LTE Kartu SIM Optional\r\nDual SIM (Nano-SIM, dual stand-by) <br/>Layar Tipe super AMOLED&nbsp;capacitive\r\ntouchscreen 16 juta warna, ukuran 5.5\"<br/>Resolusi 1440 x 2560\r\npixels,&nbsp;Corning Gorilla Glass (unspecified version), <br/>Multitouch Sistem\r\nOperasi Android OS, v6 (Marshmallow) <br/>Chipset Qualcomm MSM8996 Snapdragon 820<br/>\r\nExynos 8890 Octa Prosesor Dual-core 2.15 GHz &amp; dual-core 1.6 GHz<br/>\r\nQuad-core 2.3 GHz + quad-core 1.6 GHz GPU Adreno 530<br/>\r\nMali-T880 MP12 RAM 4 GB Memori Internal 32/64 GB,<br/>\r\nmicroSD, up to 200 GB (dedicated slot) – single SIM model<br/>\r\nmicroSD, up to 200 GB (uses SIM 2 slot) – dual SIM model <br/>Kamera Belakang 12 MP,\r\nf/1.7, 26mm, <br/>phase detection autofocus, OIS, LED flash<br/>\r\nDepan 5 MP, f/1.7, 22mm, dual video call, Auto HDR<br/>\r\nVideo 2160p@30fps, 1080p@60fps, 720p@120fps, HDR, dual-video rec<br/>\r\nFitur: 1/2.6&#8243; sensor size, 1.4 µm pixel size, geo-tagging, touch focus,\r\n<br/>face detection, Auto HDR, panorama <br/>Konektifitas Wi-Fi 802.11 a/b/g/n/ac,\r\ndual-band, Wi-Fi Direct, hotspot<br>\r\nBluetooth v4.2, A2DP, LE, apt-X<br>\r\nA-GPS, GLONASS, BDS<br>\r\nNFC<br>\r\nmicroUSB v2.0, USB Host Baterai Non-removable Li-Ion 3600 mAh battery<b> </b></span></p>\r\n\r\n<p class=MsoNormal><b>&nbsp;</b></p>\r\n\r\n<b>Benefit:</b></p>\r\n\r\n1GB<br/>\r\n\r\n100 Menit telepon ke sesama<br/>', 'assets/img/product/samsung_galaxy_s7_edge/image.png', '12', 'active', '2016-08-26 14:16:04', 'System', '2016-08-26 14:16:04', 'System');
+INSERT INTO `product` VALUES ('3', 'Andromax E2+', '1', '<p class=MsoNormal><b>Spesifikasi :</b></p>\r\n\r\n<span lang=IN>4.5” FWVGA </span>IPS OCA <br/>\r\n\r\n<span lang=IN>Quad Core 1.3 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS 5 (Lollipop)</span><br/>\r\n\r\n2<span lang=IN>GB RAM + </span>16<span lang=IN>GB ROM</span><br/>\r\n\r\n<span lang=IN>Dual Camera Dual LED </span><br/>\r\n\r\n<span lang=IN>5MP AF + 5MP w LED</span><br/>\r\n\r\n19<span lang=IN>00 mAh</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Smart Gesture + </span>Dolby + Quick Charge </p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_e2+/image.png', '17', 'active', '2016-08-22 09:18:53', 'System', '2016-11-03 02:57:25', 'TOPPunofficial@smartfren.com');
+INSERT INTO `product` VALUES ('13', 'Andromax R2', '1', '<p class=MsoNormal><b>Spesifikasi</b><b> :</b></p>\r\n\r\n<span lang=IN>.5” HD IPS OGS </span><br/>\r\n\r\n<span lang=IN>With Dragron Trail Glass</span><br/>\r\n\r\n<span lang=IN>Octa Core 1.4 Ghz </span><br/>\r\n\r\n<span lang=IN>Qualcomm Snapdragon</span><br/>\r\n\r\n<span lang=IN>OS Lollipop</span><br/>\r\n\r\n<span lang=IN>2GB RAM + 16GB ROM</span><br/>\r\n\r\n<span lang=IN>2320 mAh</span><br/>\r\n\r\n<span lang=IN>Dual Camera Triple LED </span><br/>\r\n\r\n<span lang=IN>13MP AF + 5MP w LED</span><br/>\r\n\r\n<span lang=IN>Gyroscope</span><br/>\r\n\r\n<span lang=IN>VOLTE Ready</span><br/>\r\n\r\n<span lang=IN>Kinetic Selfie + Smart Gesture + Dolby</span></p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br>\r\nBonus Kuota 17 GB*<br>\r\nBonus 2GB + 6GB Internet Malam **<br>\r\n10 Menit Nelpon ke semua operator&nbsp; <br>\r\n1000 Menit ke sesama Smartfren <br>\r\n100 SMS ke semua operator</p>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note :</b><b> </b></p>\r\n\r\n*&nbsp;Bonus didapat dengan melakukan isi ulang pertama\r\nsenilai min 100 Ribu <br/>\r\n\r\nBonus kuota dapat digunakan 24 jam dan berlaku 17 hari sejak\r\npengisian ulang pertama dilakukan <br/>\r\n\r\nBonus kuota hanya berlaku satu kali dan tidak dapat\r\ndiakumulasi dengan kuota lainnya <br/>\r\n\r\nPeriode promo 10-31 Agustus 2016<br/>\r\n\r\n** Bonus 2 GB + 6 GB (internet Malam) berlaku 30 hari sejak\r\npengisian ulang pertama di lakukan.<br/>\r\n\r\nTotal Bonus yang didapat setelah melakukan isi ulang pertama\r\nsenilai min 100 Ribu adalah 17 GB + 2 GB + 6 GB (internet malam)</p>', 'assets/img/product/andromax_r2/image.png', '6', 'active', '2016-08-26 14:13:54', 'System', '2016-08-26 14:13:54', 'System');
+INSERT INTO `product` VALUES ('14', 'New Andromax M3Y', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\n MySmartfren Apps for checking                  <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlack &amp; White<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Note:</b><br/>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3y/image.png', '15', 'active', '2016-08-26 14:14:13', 'System', '2016-08-26 14:14:13', 'System');
+INSERT INTO `product` VALUES ('15', 'New Andromax M3Z', '2', '<b>Spesifikasi:</b><br/>\r\n\r\nModem WiFi LTE Cat4<br/>\r\n\r\nChipset Qualcomm MDM 9307<br/>\r\n\r\nWiFi 802.11 b/g/n<br/>\r\n\r\nSupport up to 32 users connections<br/>\r\n\r\nBattery 3000mAH<br/>\r\n\r\nMicroSD Slot, support up to 32GB<br/>\r\n\r\nWireless Storage Function<br/>\r\n\r\nWPS button<br/>\r\n\r\nUser Friendly Apps using MyLink M3Y<br/>\r\n\r\n (available in iOS and Android)<br/>\r\n\r\nMySmartfren Apps for checking                   <br/>\r\n\r\nbalance, quota &amp; active period<br/>\r\n\r\nColor Options:<br/>\r\n\r\nBlue &amp; Brown<br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<p class=MsoNormal><b>Benefit:</b><br/>\r\n\r\nFree Big Quota 30GB valid for 30 Days First Activation<br/>\r\n\r\n<p class=MsoNormal>&nbsp;<br/>\r\n\r\n<p class=MsoNormal><b>Note:</b></p>\r\n\r\nTop up Min 100 K Free Quota tambahan 2GB untuk 12X pengisian\r\natau 12 bulan mana lebih dahulu </p>', 'assets/img/product/new_andromax_m3z/image.png', '3', 'active', '2016-08-26 14:14:34', 'System', '2016-08-26 14:14:34', 'System');
+INSERT INTO `product` VALUES ('18', 'Samsung Galaxy S7 Edge', '3', '<b>Spesifikasi:</b></p>\r\n\r\n<span lang=IN>Jaringan GSM / HSPA / LTE Kartu SIM Optional\r\nDual SIM (Nano-SIM, dual stand-by) <br/>Layar Tipe super AMOLED&nbsp;capacitive\r\ntouchscreen 16 juta warna, ukuran 5.5\"<br/>Resolusi 1440 x 2560\r\npixels,&nbsp;Corning Gorilla Glass (unspecified version), <br/>Multitouch Sistem\r\nOperasi Android OS, v6 (Marshmallow) <br/>Chipset Qualcomm MSM8996 Snapdragon 820<br/>\r\nExynos 8890 Octa Prosesor Dual-core 2.15 GHz &amp; dual-core 1.6 GHz<br/>\r\nQuad-core 2.3 GHz + quad-core 1.6 GHz GPU Adreno 530<br/>\r\nMali-T880 MP12 RAM 4 GB Memori Internal 32/64 GB,<br/>\r\nmicroSD, up to 200 GB (dedicated slot) – single SIM model<br/>\r\nmicroSD, up to 200 GB (uses SIM 2 slot) – dual SIM model <br/>Kamera Belakang 12 MP,\r\nf/1.7, 26mm, <br/>phase detection autofocus, OIS, LED flash<br/>\r\nDepan 5 MP, f/1.7, 22mm, dual video call, Auto HDR<br/>\r\nVideo 2160p@30fps, 1080p@60fps, 720p@120fps, HDR, dual-video rec<br/>\r\nFitur: 1/2.6&#8243; sensor size, 1.4 µm pixel size, geo-tagging, touch focus,\r\n<br/>face detection, Auto HDR, panorama <br/>Konektifitas Wi-Fi 802.11 a/b/g/n/ac,\r\ndual-band, Wi-Fi Direct, hotspot<br>\r\nBluetooth v4.2, A2DP, LE, apt-X<br>\r\nA-GPS, GLONASS, BDS<br>\r\nNFC<br>\r\nmicroUSB v2.0, USB Host Baterai Non-removable Li-Ion 3600 mAh battery<b> </b></span></p>\r\n\r\n<p class=MsoNormal><b>&nbsp;</b></p>\r\n\r\n<b>Benefit:</b></p>\r\n\r\n1GB<br/>\r\n\r\n100 Menit telepon ke sesama<br/>', 'assets/img/product/samsung_galaxy_s7_edge/image.png', '15', 'active', '2016-08-26 14:16:04', 'System', '2016-08-26 14:16:04', 'System');
 INSERT INTO `product` VALUES ('19', 'Samsung Galaxy S7', '3', '<p class=MsoNormal><b>Spesifikasi:</b><br/>\r\n\r\n<p class=MsoNormal><span lang=IN>Jaringan GSM / HSPA / LTE Kartu SIM Nano-SIM<br/>\r\nLayar Tipe super AMOLED&nbsp;capacitive touchscreen 16 juta warna, ukuran\r\n5.1&#8243;, Resolusi 1440 x 2560 pixels,&nbsp;<br/>\r\nCorning Gorilla Glass(unspecified version), <br/>\r\nMultitouch Sistem Operasi Android OS, v6 (Marshmallow)<br/>\r\nChipset Qualcomm MSM8996 Snapdragon 820<br/>\r\nExynos 8890 Octa Prosesor Dual-core 2.15 GHz &amp; dual-core 1.6 GHz<br/>\r\nQuad-core 2.3 GHz + quad-core 1.6 GHz GPU Adreno 530<br/>\r\nMali-T880 MP12 RAM 4 GB Memori Internal 32/64 GB, <br/>\r\ndidukung kapasitas memori eksternal hingga 200 GB <br/>\r\nKamera Belakang 12 MP, f/1.7, phase detection<br/>\r\nautofocus, OIS, LED flash<br/>\r\nDepan 5 MP, f/1.7, dual video call, Auto HDR<br/>\r\nVideo&nbsp;2160p@30fps, 1080p@60fps, 720p@120fps<br/>\r\nHDR, dual-video rec<br/>\r\nFitur: 1/2.6&#8243; sensor size, 1.4 µm pixel size,<br/>\r\ngeo-tagging, touch focus<br/>\r\nface detection, Auto HDR, panorama <br/>\r\nKonektifitas Wi-Fi 802.11 a/b/g/n/ac<br/>\r\ndual-band, Wi-Fi Direct, hotspot<br/>\r\nBluetooth v4.2, A2DP, LE, apt-X<br/>\r\nA-GPS, GLONASS, BDS<br/>\r\nNFC<br/>\r\nmicroUSB v2.0, USB Host Baterai Non-removable Li-Ion 3000 mAh battery<b> </b></span><br/>\r\n\r\n<p class=MsoNormal>&nbsp;</p>\r\n\r\n<b>Benefit:</b><br/>\r\n\r\n1GB<br/>\r\n\r\n100 Menit telepon ke sesama<br/>', 'assets/img/product/samsung_galaxy_s7/image.png', '1', 'active', '2016-08-26 14:16:09', 'System', '2016-08-26 14:16:09', 'System');
 INSERT INTO `product` VALUES ('20', 'Samsung Galaxy J16', '3', null, 'assets/img/product/samsung_galaxy_j16/image.png', '2', 'active', '2016-08-26 14:16:34', 'System', '2016-08-26 14:16:34', 'System');
 INSERT INTO `product` VALUES ('21', 'Samsung Galaxy J2', '3', null, 'assets/img/product/samsung_galaxy_j2/image.png', '1', 'active', '2016-08-26 14:16:50', 'System', '2016-08-26 14:16:50', 'System');
@@ -17874,7 +17905,7 @@ INSERT INTO `product_colour` VALUES ('5', 'Black', '13', 'assets/img/product/and
 INSERT INTO `product_colour` VALUES ('6', '10.000', '27', 'assets/img/product/pulsa/variant/10.000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('7', '20.000', '27', 'assets/img/product/pulsa/variant/20000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('8', '25.000', '27', 'assets/img/product/pulsa/variant/25000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
-INSERT INTO `product_colour` VALUES ('9', '50.000', '27', 'assets/img/product/pulsa/variant/50000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
+INSERT INTO `product_colour` VALUES ('9', '50.000', '27', 'assets/img/product/pulsa/variant/50000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-11-03 02:34:45', 'TOPPunofficial@smartfren.com');
 INSERT INTO `product_colour` VALUES ('10', '60.000', '27', 'assets/img/product/pulsa/variant/60000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('11', '75.000', '27', 'assets/img/product/pulsa/variant/75000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
 INSERT INTO `product_colour` VALUES ('12', '100.000', '27', 'assets/img/product/pulsa/variant/100000.png', 'active', '2016-08-26 14:25:34', 'System', '2016-08-26 14:25:34', 'System');
@@ -17947,7 +17978,7 @@ INSERT INTO `product_fg_code` VALUES ('1', '1800161', '1', '649000', 'Andromax A
 INSERT INTO `product_fg_code` VALUES ('3', '2424161', '3', '899000', 'Andromax E2', 'active', '2016-08-22 09:23:02', 'System', '2016-08-22 09:23:02', 'System');
 INSERT INTO `product_fg_code` VALUES ('4', '2424162', '4', '999000', 'Andromax E2+', 'active', '2016-08-22 09:23:30', 'System', '2016-08-22 09:23:30', 'System');
 INSERT INTO `product_fg_code` VALUES ('5', '1100161', '5', '1699000', 'R2', 'active', '2016-08-22 09:24:11', 'System', '2016-08-22 09:24:11', 'System');
-INSERT INTO `product_fg_code` VALUES ('6', '1', '6', '10000', 'Masa Aktif 15 hari', 'active', '2016-08-26 14:26:10', 'System', '2016-08-26 14:26:10', 'System');
+INSERT INTO `product_fg_code` VALUES ('6', '1', '6', '10000', 'Masa Aktif 15 hari', 'active', '2016-08-26 14:26:10', 'System', '2016-11-03 02:47:19', 'TOPPunofficial@smartfren.com');
 INSERT INTO `product_fg_code` VALUES ('7', '2', '7', '20000', null, 'active', '2016-08-26 14:26:10', 'System', '2016-08-26 14:26:10', 'System');
 INSERT INTO `product_fg_code` VALUES ('8', '3', '8', '25000', null, 'active', '2016-08-26 14:26:10', 'System', '2016-08-26 14:26:10', 'System');
 INSERT INTO `product_fg_code` VALUES ('9', '4', '9', '50000', null, 'active', '2016-08-26 14:26:11', 'System', '2016-08-26 14:26:11', 'System');
@@ -17996,6 +18027,64 @@ INSERT INTO `product_fg_code` VALUES ('58', '49', '51', '150001', null, 'active'
 INSERT INTO `product_fg_code` VALUES ('59', '50', '52', '300001', null, 'active', '2016-08-26 16:10:50', null, '2016-08-26 16:10:50', null);
 
 -- ----------------------------
+-- Table structure for reset_password
+-- ----------------------------
+DROP TABLE IF EXISTS `reset_password`;
+CREATE TABLE `reset_password` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `status` enum('inactive','active') DEFAULT 'active',
+  `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `input_by` varchar(255) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `reset_password_user_email` (`user_email`),
+  CONSTRAINT `reset_password_user_email` FOREIGN KEY (`user_email`) REFERENCES `users` (`email`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of reset_password
+-- ----------------------------
+INSERT INTO `reset_password` VALUES ('1', 'taufiq.putra@smartfren.com', 'cOvOVqx5TzOo5JzHjtgff0cjiG8RL9MR3OLLTvFh', 'inactive', '2016-10-31 09:12:45', 'Self Reset Password', '2016-11-01 03:07:08', 'New Request Reset Password');
+INSERT INTO `reset_password` VALUES ('2', 'taufiq.putra@smartfren.com', 'cOvOVqx5TzOo5JzHjtgff0cjiG8RL9MR3OLLTvFh', 'inactive', '2016-10-31 09:13:17', 'Self Reset Password', '2016-10-31 09:13:17', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('3', 'taufiq.putra@smartfren.com', 'cOvOVqx5TzOo5JzHjtgff0cjiG8RL9MR3OLLTvFh', 'inactive', '2016-10-31 09:15:00', 'Self Reset Password', '2016-10-31 09:15:00', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('4', 'taufiq.putra@smartfren.com', 'cOvOVqx5TzOo5JzHjtgff0cjiG8RL9MR3OLLTvFh', 'inactive', '2016-10-31 09:25:32', 'Self Reset Password', '2016-10-31 09:27:15', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('5', 'taufiq.putra@smartfren.com', 'n9BdVTuOR5uFxsqvlnJIxoNuVpGcp84noxkmQhdz', 'inactive', '2016-10-31 09:28:22', 'Self Reset Password', '2016-10-31 09:29:04', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('6', 'taufiq.putra@smartfren.com', 'cOvOVqx5TzOo5JzHjtgff0cjiG8RL9MR3OLLTvFh', 'inactive', '2016-10-31 09:29:28', 'Self Reset Password', '2016-10-31 09:29:28', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('7', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 02:15:32', 'Self Reset Password', '2016-11-01 02:15:32', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('8', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 02:27:55', 'Self Reset Password', '2016-11-01 02:27:55', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('9', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 02:28:57', 'Self Reset Password', '2016-11-01 02:28:57', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('10', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 02:35:56', 'Self Reset Password', '2016-11-01 02:36:34', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('11', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 03:07:08', 'Self Reset Password', '2016-11-01 03:07:56', 'New Request Reset Password');
+INSERT INTO `reset_password` VALUES ('12', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 03:07:56', 'Self Reset Password', '2016-11-01 03:08:19', 'New Request Reset Password');
+INSERT INTO `reset_password` VALUES ('13', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 03:08:19', 'Self Reset Password', '2016-11-01 03:15:43', 'New Request Reset Password');
+INSERT INTO `reset_password` VALUES ('14', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 03:15:43', 'Self Reset Password', '2016-11-01 03:17:35', 'Self Reset Password');
+INSERT INTO `reset_password` VALUES ('15', 'taufiq.putra@smartfren.com', 'r0T2uaMf2EZdncFqgRSGCLozND4RQFttHlxV6YRN', 'inactive', '2016-11-01 04:04:18', 'Self Reset Password', '2016-11-01 04:10:02', 'New Request Reset Password');
+INSERT INTO `reset_password` VALUES ('16', 'taufiq.putra@smartfren.com', 'Gw6PDHbPwvYFbzEdMjL2E1HOb43GbF7sqUV3yj0d', 'active', '2016-11-01 04:10:02', 'Self Reset Password', '2016-11-01 04:10:02', 'Self Reset Password');
+
+-- ----------------------------
+-- Table structure for status
+-- ----------------------------
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE `status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of status
+-- ----------------------------
+INSERT INTO `status` VALUES ('2', 'Order Canceled');
+INSERT INTO `status` VALUES ('4', 'Order Completed');
+INSERT INTO `status` VALUES ('5', 'Order Expired');
+INSERT INTO `status` VALUES ('1', 'Order Received');
+INSERT INTO `status` VALUES ('3', 'Payment Complete');
+
+-- ----------------------------
 -- Table structure for transaction
 -- ----------------------------
 DROP TABLE IF EXISTS `transaction`;
@@ -18007,40 +18096,51 @@ CREATE TABLE `transaction` (
   `customer_identity_number` blob NOT NULL,
   `customer_email` blob NOT NULL,
   `customer_mdn` blob NOT NULL,
-  `customer_location_province` varchar(255) NOT NULL,
-  `customer_location_city` varchar(255) NOT NULL,
-  `customer_location_district` varchar(255) NOT NULL,
+  `customer_location_province` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `customer_location_city` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `customer_location_district` varchar(255) CHARACTER SET utf8 NOT NULL,
   `customer_delivery_address` blob NOT NULL,
-  `product_category` varchar(255) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `product_colour` varchar(255) NOT NULL,
-  `product_fg_code` varchar(255) NOT NULL,
+  `product_category` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `product_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `product_colour` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `product_fg_code` varchar(255) CHARACTER SET utf8 NOT NULL,
   `product_price` bigint(255) DEFAULT NULL,
-  `payment_method` varchar(255) NOT NULL,
-  `courier` varchar(255) NOT NULL,
-  `courier_package` varchar(255) NOT NULL,
+  `payment_method` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `courier` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `courier_package` varchar(255) CHARACTER SET utf8 NOT NULL,
   `delivery_price` bigint(255) NOT NULL,
   `total_price` bigint(255) DEFAULT NULL,
-  `refference_number` varchar(255) NOT NULL,
+  `refference_number` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `payment_number` varchar(255) DEFAULT NULL,
+  `airwaybill` varchar(255) DEFAULT NULL,
   `input_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) NOT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 NOT NULL,
   `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) NOT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of transaction
 -- ----------------------------
-INSERT INTO `transaction` VALUES ('1', 0x755736504F46323468414C346C7A616457746D477745616D694358446642687878636C4A33476569796B6843662F46445A695261564C416E2B4463394C493158, 0x384677484C36376D44462F46383744415333576643724B302F2F754E6B5A425853396C324C687961306A69344F44732B2B3057742B303430686C4C554E526442344F32636D6F767231364F62363376716F46397052413D3D, 0x64564F3536726434796B5A39437158423650523349504468426533535279366D46567366674559414C56383D, 0x51626B5634306233796B6A6C54526E484662787073626E576B4E4B353368656466366C78667245477473773D, 0x742B442F515A52717469757930436D70484275346545563362553268732B4A3262713353665A496D535778567A5453696B702B386B415135692F51314D33704E, 0x64706B7442714377464D7059774555537333794347784958666E65532B67586C45305241306B49665A62383D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x536672473758547869364C356A6B326F69714B584863564E513436784841564C5251587164343476556544487258417478414E3166414F32533955544B5A416169375941746C63616B73707A787072466330727236773D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account', 'GED', 'Reguler', '1', null, '1610181', '2016-10-18 03:00:08', 'taufiq.putra@smartfren.com', '2016-10-18 03:00:08', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('2', 0x707145394F46736F77336455792F57534C397668414E6B4E665846664D2F516C6532752B47394C2B6D78637655736B5747586F6E68795653335A596278325434, 0x71644D76384C4D42764363785A584D497165496B454C72744E6F2B436D324F377857416D31533078703573466769396A354C70724376466430555057516D796F5730684A6A41704350704630664B4B595A514B6F6B773D3D, 0x785A496E48736B616C5547385A7079676A4B54656832335669324F4C536A446C4C50765861416F497230493D, 0x6E2F4D3545617573617236474D65386D357730776C784B633232525136565678566F38737A516B327A43733D, 0x76504F61724A7A644C49493275755561466859654870556D506F3247746B7442696171717675352F67335976395453686D44734759367870674B502F6C746B71, 0x5A4D706F557A6956575A5262356F755454464967374C5858667A4E62364E7767716657664536786C5A424D3D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x73784A33794951374E4A753149542F4E35513938486A623259452F3863476B557561682B594B515A7036756A504D624D3243764B524E456263756644656E627A48617761583072587130525975395346427077774C413D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account', 'GED', 'Reguler', '1', null, '1610182', '2016-10-18 03:00:34', 'taufiq.putra@smartfren.com', '2016-10-18 03:00:34', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('3', 0x6E79374F6670615A70656252416B716A4A5644724D4B4264534967705676664737624E7535666551307A443078562F7736385773392F55345A59685350433038, 0x2B642F45306F3454467278586D34375450784862754C5537527475332B3367635A6E664E6C7975756554305A772B574F527275667134347777505A306261516B6931384C2B536E716132502B592B6874564C2F5559773D3D, 0x5968665A3935753033644D374A3261335A4272567069303556637259484C6C324B5A5550707741536539633D, 0x54436261503555573676592B3970625A2F5579497332554674513378324D5136384A7766486E64635933343D, 0x59573154344A3857705765646557336F5A4B5858366B745A7932707861353655394834644E76795335434F516E7445714F366149384D366D71386D596758437A, 0x593859746951434F652F367657414D7167344D762B466E7A54552B6D767A525168706C636C6862756A466F3D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x76474E4735365246692F382B574E6A39354B5837496A6468644A58597A7A362B584D70536C5A6934494B352F33335A6666644A5A627866527269504B464A7467425442617669756B6E50395A6B5842456132664775513D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account', 'GED', 'Reguler', '1', null, '1610183', '2016-10-18 03:11:20', 'taufiq.putra@smartfren.com', '2016-10-18 03:11:20', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('4', 0x554E4B7261634D6467632F64716554304A6D50495551456D794B54615837765A54776B346A46756D726A553D, 0x577634767654316D796E765A39335647516A38556364547A443454384750786739424A6568727A6A5433514A474164762F747166687743504F64435A746F3368, 0x61576E71612F344C6C6F7543522B3972575A2F425A7A38394C4E4465396E674D746D334A43525678667A493D, 0x66494B526A3832796C4D454C6A5550704A4B313847557765504C48686C396B58547873615A6947547038733D, 0x747339796649557A33716C5562343146557165325235396E6C7A306F3943646D734C42486271424E6571346C444932323170396F686A4E563868624C454E6239, 0x4E7A476A2B72744C5A4549434C6F367A6A336C495767397A746B463071634D39367A524C6C63664D3275303D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x632B4C2B6462786468754E56324B644A6251596531656C614F576A2B497550476C552B436E75563967576A3143615045664E705A593049694E4542455872773265706E46393971706E6269676E59592F62612B644E773D3D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account', 'GED', 'Reguler', '1', '649001', '1610184', '2016-10-18 03:49:34', 'taufiq.putra@smartfren.com', '2016-10-18 03:49:34', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('5', 0x6538482F52306A726C4238426A2F65665731566575596F5A6277416B49384A7A36337A54766B5A454270633D, 0x44734A6E774533726F57575058347A736D462F527865456766614957464F48554B38696D4D656B4C765359773858554D6E72565435544C304B792B417A793646, 0x6A7650646566795956637251486D7642526C354C4D366B365A4D424571356B634E735755666B6E563048553D, 0x3146357553676530517664326E7A562B5238794858726835516F6B4A6841545251563155776C324B636E633D, 0x49484C7641316A5447727369497157766C5A5967734354444545373166596D6562545449425A5574464344356E596931626B43537370357A4E2F575357456962, 0x4941416F4B77674D76696174432B75736F58503730756C78586E3242306E5A62587A74543735696F4649303D, 'Bali', 'Badung', 'Abiansemal', 0x41563352507853504B33684766575354335251545641464759344A524144376A5A317366533842507339627170534C764E612B45714D2B6552343968646F2B73, 'Andromax', 'Andromax E2', 'Black', '2424161', '899000', 'Virtual Account', 'GED', 'Reguler', '1', '899001', '1610191', '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com', '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('6', 0x66306A63436245357368433257594C4D4638504941625A32775A5650715238554C5744594169327A547A553D, 0x786D76724C6E7A68424A4B67586B444346574D4E39543054364254365951365170777747386E71344669383D, 0x445A3931784B73534D614E637235682B775931786266743658626C5970537A454D792F30624B41684C50343D, 0x5832446278776D69692B7670666E68434D55703754574B61415347706A336774306F75314B6362555A39513D, 0x3349437868395064475548797A5762633872376C51523537735A63494775736C6A612B77736D42366E2B656E69655A4945597163327456395679536452714B4B, 0x30496B72502F6B466F724870446F6F63676F42306E476E412F467450334A6C2F59634D6B4B6F634B444A513D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x4B686D396735432F486748702B5070597937694C452B356A544961494C6F673352375031756733317171513D, 'Smartphone', 'Samsung Galaxy S7 Edge', 'Silver', '26', '10499000', 'Virtual Account', 'GED', 'Reguler', '1', '10499001', '1610192', '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com', '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('7', 0x387A755348434462416574384B6E4A59764D6E35346330626966675849522B48314C4541614454647862633D, 0x6C4454354D34564172456F6C736E564543593159356B773673305661335677557A394D7A5A6A35624476513D, 0x6E636F342B63504A4364356F70334870564567347A446F52727634553764575A6C77624D595546325851773D, 0x426B366878344D6B7A2F30666A673148334762766D4A655A47584672344A356272544B476B4D5A7850486B3D, 0x5A336B4141667A5148512B6A36622B43752B6D544A4463677054414E5A6B30484C366A2B32414A684355734E366F41456C42364541506E6F484B582B63326B70, 0x4B395854734D594D74614271346C7138452F743249344B33566362415A626B73337556396A6A46506C6C733D, 'Bali', 'Badung', 'Abiansemal', 0x5055786156526B642F376E78726E7137764143414A4D4A664855776B707868585863504F424870504D4D53747655664A505A4873506343554349717233684A31, 'Smartphone', 'Samsung Galaxy J16', 'Gold', '28', '1699000', 'Virtual Account', 'GED', 'Reguler', '1', '1699001', '1610193', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction` VALUES ('8', 0x4962476E6F7448444578366D4E595771457A6172336338484C3344714448474630727963453066742B31413D, 0x307242455677796C2F68696F4D6B7975772F4A547837356E4D63434A446D374F53414342383978705766513D, 0x4A4F34432F4C7A676E66515A7162436F683465324539577434326333563758612F5157575A4D736D7537593D, 0x633349594B797A504D64776348613647615A39337065666A6F2F514F526A2F53536B4D6B5742395231616B3D, 0x4934774B44446E5330734D32646467326C306F55623730714964764366742B57356B616E64456F326A4C43303445704879356D4571575539396231543447516C, 0x6365482B364677676E347165516F454531712F544D364B4750366667655850775337505546634C4F7147343D, 'Bali', 'Badung', 'Abiansemal', 0x477973394958314A566C76466F6E2F5256505762775A434E4D4E715455725136383471326C5551614156453D, 'Mifi', 'New Andromax M3Y', 'Black', '23', '299000', 'Virtual Account', 'GED', 'Reguler', '1', '299001', '1610211', '2016-10-21 09:48:13', 'Self Order', '2016-10-21 09:48:13', 'Self Order');
-INSERT INTO `transaction` VALUES ('9', 0x544B374546657144446146416F496374414A4E5131417267756D376F43657252617662344242575A672F305968426D327A4E452F2B4C63653472724668327358, 0x562F414137413943507977744B744B6D46434471556A50357036624D3757726A6934526865486C46586D4966534D41726674664F65446B7354327A366E62592B544F31626C444E556151694D744531575055766C4D513D3D, 0x435166646F684C3936705951446730304C593354543450486648657A307A756A5867414F6B6562354A726B3D, 0x6249484A4E64696D712B39764C4869313970796941454539346A6A7A5335547737317669427A474336796867656C647556494A5870705A6F614A6F7478334B61, 0x39396369685A52334B69497A733747754F4B39766A4A42746D484A454836596C68686745706F5A424E4D736E517043432F53485A326E57697532793158306D4D, 0x43684B6F586D3844356C48767231486346395679316253417250436D2B73526E6D344178514D42366D6D413D, 'Bali', 'Badung', 'Abiansemal', 0x53315530675343683835363334705876716F4F663446536A2B574E72514741344C6A3058366141347348383D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account', 'GED', 'Reguler', '1', '649001', '1610212', '2016-10-21 10:16:36', 'Self Order', '2016-10-21 10:16:36', 'Self Order');
+INSERT INTO `transaction` VALUES ('1', 0x755736504F46323468414C346C7A616457746D477745616D694358446642687878636C4A33476569796B6843662F46445A695261564C416E2B4463394C493158, 0x384677484C36376D44462F46383744415333576643724B302F2F754E6B5A425853396C324C687961306A69344F44732B2B3057742B303430686C4C554E526442344F32636D6F767231364F62363376716F46397052413D3D, 0x64564F3536726434796B5A39437158423650523349504468426533535279366D46567366674559414C56383D, 0x51626B5634306233796B6A6C54526E484662787073626E576B4E4B353368656466366C78667245477473773D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x64706B7442714377464D7059774555537333794347784958666E65532B67586C45305241306B49665A62383D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x536672473758547869364C356A6B326F69714B584863564E513436784841564C5251587164343476556544487258417478414E3166414F32533955544B5A416169375941746C63616B73707A787072466330727236773D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account BSM', 'GED', 'Reguler', '1', null, '1610181', null, null, '2016-10-18 03:00:08', 'taufiq.putra@smartfren.com', '2016-10-18 03:00:08', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('2', 0x707145394F46736F77336455792F57534C397668414E6B4E665846664D2F516C6532752B47394C2B6D78637655736B5747586F6E68795653335A596278325434, 0x71644D76384C4D42764363785A584D497165496B454C72744E6F2B436D324F377857416D31533078703573466769396A354C70724376466430555057516D796F5730684A6A41704350704630664B4B595A514B6F6B773D3D, 0x785A496E48736B616C5547385A7079676A4B54656832335669324F4C536A446C4C50765861416F497230493D, 0x6E2F4D3545617573617236474D65386D357730776C784B633232525136565678566F38737A516B327A43733D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x5A4D706F557A6956575A5262356F755454464967374C5858667A4E62364E7767716657664536786C5A424D3D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x73784A33794951374E4A753149542F4E35513938486A623259452F3863476B557561682B594B515A7036756A504D624D3243764B524E456263756644656E627A48617761583072587130525975395346427077774C413D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account BSM', 'GED', 'Reguler', '1', null, '1610182', null, null, '2016-10-18 03:00:34', 'taufiq.putra@smartfren.com', '2016-10-18 03:00:34', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('3', 0x6E79374F6670615A70656252416B716A4A5644724D4B4264534967705676664737624E7535666551307A443078562F7736385773392F55345A59685350433038, 0x2B642F45306F3454467278586D34375450784862754C5537527475332B3367635A6E664E6C7975756554305A772B574F527275667134347777505A306261516B6931384C2B536E716132502B592B6874564C2F5559773D3D, 0x5968665A3935753033644D374A3261335A4272567069303556637259484C6C324B5A5550707741536539633D, 0x54436261503555573676592B3970625A2F5579497332554674513378324D5136384A7766486E64635933343D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x593859746951434F652F367657414D7167344D762B466E7A54552B6D767A525168706C636C6862756A466F3D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x76474E4735365246692F382B574E6A39354B5837496A6468644A58597A7A362B584D70536C5A6934494B352F33335A6666644A5A627866527269504B464A7467425442617669756B6E50395A6B5842456132664775513D3D, 'Mifi', 'New Andromax M3Z', 'Brown', '24', null, 'Virtual Account BSM', 'GED', 'Reguler', '1', null, '1610183', null, null, '2016-10-18 03:11:20', 'taufiq.putra@smartfren.com', '2016-10-18 03:11:20', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('4', 0x554E4B7261634D6467632F64716554304A6D50495551456D794B54615837765A54776B346A46756D726A553D, 0x577634767654316D796E765A39335647516A38556364547A443454384750786739424A6568727A6A5433514A474164762F747166687743504F64435A746F3368, 0x61576E71612F344C6C6F7543522B3972575A2F425A7A38394C4E4465396E674D746D334A43525678667A493D, 0x66494B526A3832796C4D454C6A5550704A4B313847557765504C48686C396B58547873615A6947547038733D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x4E7A476A2B72744C5A4549434C6F367A6A336C495767397A746B463071634D39367A524C6C63664D3275303D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x632B4C2B6462786468754E56324B644A6251596531656C614F576A2B497550476C552B436E75563967576A3143615045664E705A593049694E4542455872773265706E46393971706E6269676E59592F62612B644E773D3D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '649001', '1610184', null, null, '2016-10-18 03:49:34', 'taufiq.putra@smartfren.com', '2016-10-18 03:49:34', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('5', 0x6538482F52306A726C4238426A2F65665731566575596F5A6277416B49384A7A36337A54766B5A454270633D, 0x44734A6E774533726F57575058347A736D462F527865456766614957464F48554B38696D4D656B4C765359773858554D6E72565435544C304B792B417A793646, 0x6A7650646566795956637251486D7642526C354C4D366B365A4D424571356B634E735755666B6E563048553D, 0x3146357553676530517664326E7A562B5238794858726835516F6B4A6841545251563155776C324B636E633D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x4941416F4B77674D76696174432B75736F58503730756C78586E3242306E5A62587A74543735696F4649303D, 'Bali', 'Badung', 'Abiansemal', 0x41563352507853504B33684766575354335251545641464759344A524144376A5A317366533842507339627170534C764E612B45714D2B6552343968646F2B73, 'Andromax', 'Andromax E2', 'Black', '2424161', '899000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '899001', '1610191', null, null, '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com', '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('6', 0x66306A63436245357368433257594C4D4638504941625A32775A5650715238554C5744594169327A547A553D, 0x786D76724C6E7A68424A4B67586B444346574D4E39543054364254365951365170777747386E71344669383D, 0x445A3931784B73534D614E637235682B775931786266743658626C5970537A454D792F30624B41684C50343D, 0x5832446278776D69692B7670666E68434D55703754574B61415347706A336774306F75314B6362555A39513D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x30496B72502F6B466F724870446F6F63676F42306E476E412F467450334A6C2F59634D6B4B6F634B444A513D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x4B686D396735432F486748702B5070597937694C452B356A544961494C6F673352375031756733317171513D, 'Smartphone', 'Samsung Galaxy S7 Edge', 'Silver', '26', '10499000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '10499001', '1610192', null, null, '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com', '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('7', 0x387A755348434462416574384B6E4A59764D6E35346330626966675849522B48314C4541614454647862633D, 0x6C4454354D34564172456F6C736E564543593159356B773673305661335677557A394D7A5A6A35624476513D, 0x6E636F342B63504A4364356F70334870564567347A446F52727634553764575A6C77624D595546325851773D, 0x426B366878344D6B7A2F30666A673148334762766D4A655A47584672344A356272544B476B4D5A7850486B3D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x4B395854734D594D74614271346C7138452F743249344B33566362415A626B73337556396A6A46506C6C733D, 'Bali', 'Badung', 'Abiansemal', 0x5055786156526B642F376E78726E7137764143414A4D4A664855776B707868585863504F424870504D4D53747655664A505A4873506343554349717233684A31, 'Smartphone', 'Samsung Galaxy J16', 'Gold', '28', '1699000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '1699001', '1610193', null, null, '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('8', 0x4962476E6F7448444578366D4E595771457A6172336338484C3344714448474630727963453066742B31413D, 0x307242455677796C2F68696F4D6B7975772F4A547837356E4D63434A446D374F53414342383978705766513D, 0x4A4F34432F4C7A676E66515A7162436F683465324539577434326333563758612F5157575A4D736D7537593D, 0x633349594B797A504D64776348613647615A39337065666A6F2F514F526A2F53536B4D6B5742395231616B3D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x6365482B364677676E347165516F454531712F544D364B4750366667655850775337505546634C4F7147343D, 'Bali', 'Badung', 'Abiansemal', 0x477973394958314A566C76466F6E2F5256505762775A434E4D4E715455725136383471326C5551614156453D, 'Mifi', 'New Andromax M3Y', 'Black', '23', '299000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '299001', '1610211', null, null, '2016-10-21 09:48:13', 'Self Order', '2016-10-21 09:48:13', 'Self Order');
+INSERT INTO `transaction` VALUES ('9', 0x544B374546657144446146416F496374414A4E5131417267756D376F43657252617662344242575A672F305968426D327A4E452F2B4C63653472724668327358, 0x562F414137413943507977744B744B6D46434471556A50357036624D3757726A6934526865486C46586D4966534D41726674664F65446B7354327A366E62592B544F31626C444E556151694D744531575055766C4D513D3D, 0x435166646F684C3936705951446730304C593354543450486648657A307A756A5867414F6B6562354A726B3D, 0x6249484A4E64696D712B39764C4869313970796941454539346A6A7A5335547737317669427A474336796867656C647556494A5870705A6F614A6F7478334B61, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x43684B6F586D3844356C48767231486346395679316253417250436D2B73526E6D344178514D42366D6D413D, 'Bali', 'Badung', 'Abiansemal', 0x53315530675343683835363334705876716F4F663446536A2B574E72514741344C6A3058366141347348383D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '649001', '1610212', null, null, '2016-10-21 10:16:36', 'Self Order', '2016-10-21 10:16:36', 'Self Order');
+INSERT INTO `transaction` VALUES ('10', 0x676F355534746D426F7A707A4D6B36794F76645937514872685A6D363250757970664B4B7166517538507659786969324C6D4F61727161496277554749395731, 0x6F6D5933386132524A3976506D562B4F4F6B46534F454F63647544697451697277712B476A57557A514A733D, 0x457042675462793638643474706B693874767866454F39346B6B4C6D317A436C7233586A34462B675A6A4D3D, 0x693730304E336F73626B4A6E464C644A50706565503652386D4C53786865412B663171532B7730416952383D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x775A704E412F6F796C6A482F752B4A494B3076784153584E6977344F396E7A686273396742664F33334C513D, 'Banten', 'Lebak', 'Bojongmanik', 0x4D4434526838477A6F665446544B4A4E7634744A565561533556326368745652756C43496F7658357357413D, 'Andromax', 'Andromax E2', 'Black', '2424161', '899000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '899001', '1610311', null, null, '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com', '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('11', 0x64527666676E5150764E637477626C784754586B324B6A3054775665753636577770454F75616435645272614C786A6F3441486467643779316E355574382F5A, 0x75394545526A634150673736434D486C62314E2B4351535744764A6976704C725A7434382F512F685777673D, 0x494E7564706638676A652F58385279744C4C2B7A316B456762502F5842705A484F6365664F2B66516533773D, 0x615A4B705275384C48575A797235734F6450317859736F6943683446796935636747416C4A323330776F733D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x485148776354654C5666366F55534338346A4A66716C4C4B3742786E414E6F6748496D617052657754426F3D, 'Banten', 'Lebak', 'Bojongmanik', 0x4E63716E324B334941482F616D616A4F6839586E4B4F4170746369327A49766F586D314F32746154455A493D, 'Andromax', 'Andromax E2', 'Black', '2424161', '899000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '899001', '1610312', null, null, '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com', '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('12', 0x736F717173547748432F6165306F6259586E5554723647724138504567724A4A6D57396D467842567055355255496B5A59416B78756C4C386E644F6F674F3952, 0x52485358356A627874764359566F5536304A776A7A7A776D6138392F554B415A2B6955517974334C482F553D, 0x784D6C39672B397959467861735370553077612B507763646D61746F49503247495049674D35614342636B3D, 0x7078757076776C416D684C3871666667504F4C316B544D51794B424A6D5936486D50642F724A645A3850673D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x6E624643564C43734952672B622F795174497241466C612F756C4867794B5231436C562B4B6E4F42772B453D, 'Banten', 'Lebak', 'Bojongmanik', 0x2F397064386733524F50374875414B2B78776E34663530707A4A72716F566B326E706846346E6A776E72553D, 'Andromax', 'Andromax E2', 'Black', '2424161', '899000', 'Virtual Account BSM', 'GED', 'Reguler', '1', '899001', '1610313', null, null, '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com', '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('13', 0x6B715567725A3564337954356D39466879324836692B38316D6F6F6969662F514C536F56545737466D6F553D, 0x547165456F494E6F34343447416547566352336A6863414B49685552394B3558492B6A7134782F6F2F59553D, 0x426E52646163364C7A547254763873702B38366278447858497247736F65694F6451314A654B6876536E593D, 0x3354473767462B39706936615733794D594F656B494D745338365155796C4F72526471563935794F3862343D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x67303649452F3747634B69587767416158426E7358692B7A7773674D716F32434B5733774F68614A6153673D, 'DKI Jakarta', 'Jakarta', 'Jakarta', 0x7652683858414235507A547077764961503354437866724E45694268507749614366346276574F386730553D, 'Smartphone', 'Samsung Galaxy S7 Edge', 'Silver', '26', '10499000', 'COD', 'Internal', 'COD', '5500', '10504500', '1611111', null, '9879746545', '2016-11-11 02:41:55', 'Self Order', '2016-11-14 10:36:07', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('14', 0x42784731555A67747234624B2B316352336B6C2F5730584D7A736263756D525245784255316A737A3044593D, 0x31684E6A557967422F48617831713442373549487571706476614D7A7374316B57516171756E70526368553D, 0x3879772F564E66397735567457675733694E475A4E2F7A6F38574954312F764155544F564F63487A4572733D, 0x37316A3767654E2B5A313439584F634D613776786C5572574D794D58304468557763354A62626F684B31413D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x722F57514475534168594F396A2B6B494878394F4C43575A5634614C417A4F503041532F6F6352454943303D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x2B2B6C476B37303252323378725278724C7A426D456B385244344D58677043394F3942544865476A3433513D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account BSM', 'GED', 'Reguler', '6000', '655000', '1611112', null, null, '2016-11-11 02:47:45', 'Self Order', '2016-11-11 02:47:45', 'Self Order');
+INSERT INTO `transaction` VALUES ('15', 0x39536C2B75504F36485452483350576362623657376B6F51333350422F622B2B50576F48734147737576462F686F4149347242714E68396B4A4C79722B576764, 0x423661756C6D7348483979684A2B4A587A4545716E66744A696E536E7454656F2F2F3367474B5A356D6F383D, 0x676C433275764C306341492F4F726639726978796F3631714C54454F53747135624A624B7A5139596A6D383D, 0x655450424B504165745A4868384C6C4E52662F627273503764354635445055524F4D6E484A684C706164343D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x624E515A727250427A777A4A366E5063703054706C6D683155676D506F666F66536C79464E5656557162303D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x6F2B674E756269377657676F552B2B486959344D786F337444726D4A32314F7234717037423748767172453D, 'Andromax', 'Andromax E2+', 'Black', '2424162', '999000', 'Virtual Account BSM', 'GED', 'Reguler', '6000', '1005000', '1611141', null, '1234567890', '2016-11-14 02:41:35', 'taufiq.putra@smartfren.com', '2016-11-14 07:22:33', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('16', 0x6B715567725A3564337954356D39466879324836692B38316D6F6F6969662F514C536F56545737466D6F553D, 0x547165456F494E6F34343447416547566352336A6863414B49685552394B3558492B6A7134782F6F2F59553D, 0x426E52646163364C7A547254763873702B38366278447858497247736F65694F6451314A654B6876536E593D, 0x3354473767462B39706936615733794D594F656B494D745338365155796C4F72526471563935794F3862343D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x67303649452F3747634B69587767416158426E7358692B7A7773674D716F32434B5733774F68614A6153673D, 'DKI Jakarta', 'Jakarta', 'Jakarta', 0x7652683858414235507A547077764961503354437866724E45694268507749614366346276574F386730553D, 'Smartphone', 'Samsung Galaxy S7 Edge', 'Silver', '26', '10499000', 'Virtual Account BSM', 'GED', 'Reguler', '5500', '10504500', '1611111', null, '9879746545', '2016-11-11 02:41:55', 'Self Order', '2016-11-15 03:06:07', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('17', 0x704248697164446E2F686E443039636352324C436E3774333674647547395967695A7974394C3850333837456C72394B53454770414B39693057744D74597978, 0x7576477A366D69717A796764707936784A4778472F514B736B38714F6336763171784939776D6A6456634D3D, 0x67337464383044476738655A4231473676357448436735386D735177694E6547424F64767A2B68646B4A673D, 0x4146547247744462646D6E3773585468786346505552707348524431556D5941347765584C7648762F74493D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x516456646A6658706361445874624944594A444C333566506F7A64374958753767396C674F6E374C4C4F6F3D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x6C784A2B7449466673774F5A4544392B624A4C5165412F6A39686B7672464F706875324C54734A34516B773D, 'Smartphone', 'Hisense Pureshot', 'White', '34', '1999000', 'Virtual Account BSM', 'GED', 'Reguler', '9000', '2008000', '1611143', '1611144', '654321', '2016-11-14 06:47:54', 'taufiq.putra@smartfren.com', '2016-11-14 10:35:03', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction` VALUES ('18', 0x3077724971623570364448616E5A697341424B694E76716F534F307453316E666451757A427762455078776D6C43774C4C736839656A2B35722F75422B306459, 0x784A55616C66596C6C42385878697371534F4462494F765331724470694671596F4F3674524854413135673D, 0x532B66697558326156323336447A65364F414C54582B3332614672446B4543755034636B412B76793255343D, 0x4B6866366D3261566A48435A6B72523869654A645943514641704A432F31336F6A4F384971636344715A513D, 0x5855685A4D43746C6163752F494A336446646E68304356766C59646A474730446575335868747A67416A6754626A35362B4B314D484D46654E70316553366F70, 0x515944736F50335937784348375A745764497754794656323142526736317970464A64676C4D34646B63773D, 'DKI Jakarta', 'JakartaSelatan', 'PasarMinggu', 0x633048352F3672374F2F7747444E32317531564D4252302B77335036473371354476394364654268664A6B3D, 'Andromax', 'Andromax A', 'Black', '1800161', '649000', 'Virtual Account BSM', 'GED', 'Reguler', '6000', '655000', '1611144', '88991411161003', '123456', '2016-11-14 06:50:11', 'taufiq.putra@smartfren.com', '2016-11-14 07:22:06', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for transaction_status
@@ -18049,15 +18149,17 @@ DROP TABLE IF EXISTS `transaction_status`;
 CREATE TABLE `transaction_status` (
   `id` bigint(255) NOT NULL AUTO_INCREMENT,
   `transaction_id` bigint(255) NOT NULL,
-  `status` varchar(255) DEFAULT NULL,
+  `status` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `transaction_status` (`transaction_id`),
-  CONSTRAINT `transaction_status` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  KEY `transaction_status_status` (`status`),
+  CONSTRAINT `transaction_status_status` FOREIGN KEY (`status`) REFERENCES `status` (`status`) ON UPDATE CASCADE,
+  CONSTRAINT `transaction_status_transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of transaction_status
@@ -18066,14 +18168,34 @@ INSERT INTO `transaction_status` VALUES ('1', '1', 'Order Received', '2016-10-18
 INSERT INTO `transaction_status` VALUES ('2', '2', 'Order Received', '2016-10-18 03:00:34', 'Self Order', '2016-10-18 03:00:34', 'Self Order');
 INSERT INTO `transaction_status` VALUES ('3', '3', 'Order Received', '2016-10-18 03:11:20', 'Self Order', '2016-10-18 03:11:20', 'Self Order');
 INSERT INTO `transaction_status` VALUES ('4', '4', 'Order Received', '2016-10-18 03:49:34', 'Self Order', '2016-10-18 03:49:34', 'Self Order');
-INSERT INTO `transaction_status` VALUES ('5', '1', 'Order Canceled', '2016-10-18 13:25:14', null, '2016-10-18 06:25:14', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction_status` VALUES ('6', '2', 'Order Canceled', '2016-10-18 13:40:25', null, '2016-10-18 06:40:25', 'taufiq.putra@smartfren.com');
-INSERT INTO `transaction_status` VALUES ('7', '3', 'Order Canceled', '2016-10-18 17:43:03', null, '2016-10-18 10:43:03', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('5', '1', 'Order Canceled', '2016-10-18 13:25:14', 'taufiq.putra@smartfren.com', '2016-10-18 06:25:14', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('6', '2', 'Order Canceled', '2016-10-18 13:40:25', 'taufiq.putra@smartfren.com', '2016-10-18 06:40:25', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('7', '3', 'Order Canceled', '2016-10-18 17:43:03', 'taufiq.putra@smartfren.com', '2016-10-18 10:43:03', 'taufiq.putra@smartfren.com');
 INSERT INTO `transaction_status` VALUES ('8', '5', 'Order Received', '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com', '2016-10-19 04:09:10', 'taufiq.putra@smartfren.com');
 INSERT INTO `transaction_status` VALUES ('9', '6', 'Order Received', '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com', '2016-10-19 04:30:20', 'taufiq.putra@smartfren.com');
 INSERT INTO `transaction_status` VALUES ('10', '7', 'Order Received', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com', '2016-10-19 04:38:37', 'taufiq.putra@smartfren.com');
 INSERT INTO `transaction_status` VALUES ('11', '8', 'Order Received', '2016-10-21 09:48:13', 'Self Order', '2016-10-21 09:48:13', 'Self Order');
 INSERT INTO `transaction_status` VALUES ('12', '9', 'Order Received', '2016-10-21 10:16:36', 'Self Order', '2016-10-21 10:16:36', 'Self Order');
+INSERT INTO `transaction_status` VALUES ('13', '10', 'Order Received', '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com', '2016-10-31 04:07:31', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('14', '11', 'Order Received', '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com', '2016-10-31 04:08:51', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('15', '12', 'Order Received', '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com', '2016-10-31 04:13:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('16', '12', 'Order Canceled', '2016-10-31 11:14:22', 'taufiq.putra@smartfren.com', '2016-10-31 04:14:22', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('17', '10', 'Order Canceled', '2016-10-31 04:15:48', 'taufiq.putra@smartfren.com', '2016-10-31 04:15:48', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('18', '13', 'Order Received', '2016-11-11 02:41:55', 'Self Order', '2016-11-11 02:41:55', 'Self Order');
+INSERT INTO `transaction_status` VALUES ('19', '14', 'Order Received', '2016-11-11 02:47:45', 'Self Order', '2016-11-11 02:47:45', 'Self Order');
+INSERT INTO `transaction_status` VALUES ('20', '15', 'Payment Complete', '2016-11-14 02:41:35', 'taufiq.putra@smartfren.com', '2016-11-14 02:41:35', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('23', '8', 'Payment Complete', '2016-11-14 04:25:10', 'taufiq.putra@smartfren.com', '2016-11-14 04:25:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('25', '16', 'Payment Complete', '2016-11-14 04:25:10', 'taufiq.putra@smartfren.com', '2016-11-14 04:25:10', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('26', '17', 'Order Received', '2016-11-14 06:47:54', 'taufiq.putra@smartfren.com', '2016-11-14 06:47:54', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('27', '18', 'Order Received', '2016-11-14 06:50:11', 'taufiq.putra@smartfren.com', '2016-11-14 06:50:11', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('29', '18', 'Payment Complete', '2016-11-14 07:18:19', 'taufiq.putra@smartfren.com', '2016-11-14 07:18:19', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('30', '18', 'Order Completed', '2016-11-14 07:22:06', 'taufiq.putra@smartfren.com', '2016-11-14 07:22:06', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('31', '15', 'Order Completed', '2016-11-14 07:22:33', 'taufiq.putra@smartfren.com', '2016-11-14 07:22:33', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('123', '17', 'Payment Complete', '2016-11-14 10:34:40', 'taufiq.putra@smartfren.com', '2016-11-14 10:34:40', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('124', '17', 'Order Completed', '2016-11-14 10:35:03', 'taufiq.putra@smartfren.com', '2016-11-14 10:35:03', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('126', '13', 'Payment Complete', '2016-11-14 10:36:01', 'taufiq.putra@smartfren.com', '2016-11-14 10:36:01', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('127', '13', 'Order Completed', '2016-11-14 10:36:07', 'taufiq.putra@smartfren.com', '2016-11-15 00:00:00', 'taufiq.putra@smartfren.com');
+INSERT INTO `transaction_status` VALUES ('129', '16', 'Order Completed', '2016-11-15 03:06:07', 'taufiq.putra@smartfren.com', '2016-11-15 03:06:07', 'taufiq.putra@smartfren.com');
 
 -- ----------------------------
 -- Table structure for users
@@ -18081,28 +18203,30 @@ INSERT INTO `transaction_status` VALUES ('12', '9', 'Order Received', '2016-10-2
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
   `role_id` int(11) DEFAULT NULL,
   `remember_token` varchar(255) DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
+  `status` enum('active','inactive') CHARACTER SET utf8 DEFAULT 'active',
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `user_role_id` (`role_id`),
   CONSTRAINT `user_role_id` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$RJaeSZyuDmbrT/RyJwgDFuJTe.nxml9M04mtsy5s0r0TkpVmDr7ja', '3', 'h9YvwLdgwCIgsl4rsPty2UqALNbvXbcwiBRkdXPQw8f59KkGJB2JwTeV05ug', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-09-19 14:51:50', 'Self Registration');
-INSERT INTO `users` VALUES ('3', 'TOPPunofficial@smartfren.com', '$2y$10$RJaeSZyuDmbrT/RyJwgDFuJTe.nxml9M04mtsy5s0r0TkpVmDr7ja', '1', 'W8TIM26wzZeV80U4H2YQuvXwNo3OVzxDFS5UDka2C0Vo3CCp150j0kl4GFIn', 'active', '2016-09-19 14:41:58', 'Self Registration', '2016-09-19 21:41:58', 'Self Registration');
+INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$Cr0hNj.uHaS9xXo2qvUxzOX7KIVAL27a0Ljsf0v9OLnsK8Y9KEImm', '4', 'DY31c28gGjXt3YQRJ2ytGgETAEDZO1gtK1vWGkR64uwhAKWD99OBxfPt9aVK', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-11-03 03:13:45', 'TOPPunofficial@smartfren.com');
+INSERT INTO `users` VALUES ('3', 'TOPPunofficial@smartfren.com', '$2y$10$Cr0hNj.uHaS9xXo2qvUxzOX7KIVAL27a0Ljsf0v9OLnsK8Y9KEImm', '1', 'Fn3G29sqCeLQWjRUg7Htx61bipDcJlwNJ81tIW5JuKkbfwAnkaBXoO2lJsGJ', 'active', '2016-09-19 14:41:58', 'Self Registration', '2016-10-31 07:32:56', 'Self Reset Password');
 INSERT INTO `users` VALUES ('4', 'yogipunx@yahoo.co.uk', '$2y$10$FaMfzrkkZ8bakPiRhdesqeY1UMU6gIbsGuVUkEekJ.HKJYgay6PuO', '1', '6fJGEyqvxJnsDyadu4TkUmnj5fLe3puvABnOxUJYIgFgGcmsxtluwF2gx1Vm', 'active', '2016-09-20 10:41:40', 'Self Registration', '2016-09-21 07:05:30', 'taufiq.putra@smartfren.com');
 INSERT INTO `users` VALUES ('8', 'test@tist.com', '$2y$10$4nYCmmWU0MfuR1vp.9n30eLUCe62iABv.wPjEs2irThbOLd.WQZ2C', '2', null, 'active', '2016-09-21 07:04:46', 'taufiq.putra@smartfren.com', '2016-09-21 07:04:46', 'taufiq.putra@smartfren.com');
+INSERT INTO `users` VALUES ('10', 'tetot@tetit.tutut', '$2y$10$DYqHjNl.9R77.79lzLky5eBsqwhgolv.o/.lRuF1VNd5nxsa7gQ3i', '1', null, 'active', '2016-10-31 04:45:52', 'TOPPunofficial@smartfren.com', '2016-10-31 04:46:18', 'TOPPunofficial@smartfren.com');
+INSERT INTO `users` VALUES ('13', 'TOPPcomptech@gmail.com', '$2y$10$Ik1Oz0SOoDML1PqlxTOepO2yMLHTfulqACQtAQV9ji9WaP8LJemne', '2', 'WmEz9bMTHqTS3remJiVIXVhBfVFfB07BpA5zp0RNLe94xVEllVfM3i7tQpWx', 'active', '2016-11-01 03:16:15', 'Self Registration', '2016-11-01 03:16:15', 'Self Registration');
 
 -- ----------------------------
 -- Table structure for user_roles
@@ -18110,13 +18234,13 @@ INSERT INTO `users` VALUES ('8', 'test@tist.com', '$2y$10$4nYCmmWU0MfuR1vp.9n30e
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE `user_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `input_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `input_by` varchar(255) DEFAULT NULL,
+  `input_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user_roles
@@ -18124,6 +18248,7 @@ CREATE TABLE `user_roles` (
 INSERT INTO `user_roles` VALUES ('1', 'Administrator', '2016-09-16 17:34:11', 'System', '2016-09-16 17:34:11', 'System');
 INSERT INTO `user_roles` VALUES ('2', 'Customer', '2016-09-16 17:34:23', 'System', '2016-09-16 17:34:23', 'System');
 INSERT INTO `user_roles` VALUES ('3', 'Telesales', '2016-10-17 14:07:34', 'System', '2016-10-17 14:07:34', 'System');
+INSERT INTO `user_roles` VALUES ('4', 'Digital & IOT', '2016-11-11 14:39:47', 'System', '2016-11-11 14:39:47', 'System');
 
 -- ----------------------------
 -- View structure for view_active_location
@@ -18169,7 +18294,7 @@ GROUP BY
 	district_id,
 	province,
 	city,
-	district ;
+	district ; ;
 
 -- ----------------------------
 -- View structure for view_active_product
@@ -18205,7 +18330,7 @@ WHERE
 	AND
 	product_colour.`name` IS NOT NULL
 	AND
-	product_fg_code.fg_code IS NOT NULL ;
+	product_fg_code.fg_code IS NOT NULL ; ;
 
 -- ----------------------------
 -- View structure for view_location
@@ -18224,7 +18349,7 @@ LEFT JOIN location_district district ON district.city_id=city.id
 WHERE
     city.`name` IS NOT NULL
     AND
-    district.`name` IS NOT NULL ;
+    district.`name` IS NOT NULL ; ;
 
 -- ----------------------------
 -- Function structure for decrypt_data

@@ -50,28 +50,30 @@ class OrderController extends BaseController
 
     $columns = array(
     // datatable column index  => database column name
-        0 => 'customer_name',
-        1 => 'customer_address',
-        2 => 'customer_identity_type',
-        3 => 'customer_identity_number',
-        4 => 'customer_email',
-        5 => 'customer_mdn',
-        6 => 'customer_location_province',
-        7 => 'customer_location_city',
-        8 => 'customer_location_district',
-        9 => 'customer_delivery_address',
-        10 => 'product_category',
-        11 => 'product_name',
-        12 => 'product_colour',
-        13 => 'product_fg_code',
-        14 => 'product_price',
-        15 => 'payment_method',
-        16 => 'courier',
-        17 => 'courier_package',
-        18 => 'delivery_price',
-        19 => 'total_price',
-        20 => 'refference_number',
-        21 => 'status'
+        0 => 'refference_number',
+        1 => 'customer_name',
+        2 => 'customer_address',
+        3 => 'customer_identity_type',
+        4 => 'customer_identity_number',
+        5 => 'customer_email',
+        6 => 'customer_mdn',
+        7 => 'customer_location_province',
+        8 => 'customer_location_city',
+        9 => 'customer_location_district',
+        10 => 'customer_delivery_address',
+        11 => 'product_category',
+        12 => 'product_name',
+        13 => 'product_colour',
+        14 => 'product_fg_code',
+        15 => 'product_price',
+        16 => 'payment_method',
+        17 => 'courier',
+        18 => 'courier_package',
+        19 => 'delivery_price',
+        20 => 'total_price',
+        21 => 'status',
+        22 => 'payment_number',
+        23 => 'airwaybill'
     );
 
     $model = TransactionModel::select('transaction.*','transaction_status.status')
@@ -121,31 +123,33 @@ class OrderController extends BaseController
     foreach($query as $row) {  // preparing an array
         $nestedData=array();
 
-        $nestedData[$columns[0]] = $this->decrypt($key,$row->customer_name);
-        $nestedData[$columns[1]] = $this->decrypt($key,$row->customer_address);
-        $nestedData[$columns[2]] = $this->decrypt($key,$row->customer_identity_type);
-        $nestedData[$columns[3]] = $this->decrypt($key,$row->customer_identity_number);
-        $nestedData[$columns[4]] = $this->decrypt($key,$row->customer_email);
-        $nestedData[$columns[5]] = $this->decrypt($key,$row->customer_mdn);
-        $nestedData[$columns[6]] = $row->customer_location_province;
-        $nestedData[$columns[7]] = $row->customer_location_city;
-        $nestedData[$columns[8]] = $row->customer_location_district;
-        $nestedData[$columns[9]] = $this->decrypt($key,$row->customer_delivery_address);
-        $nestedData[$columns[10]] = $row->product_category;
-        $nestedData[$columns[11]] = $row->product_name;
-        $nestedData[$columns[12]] = $row->product_colour;
-        $nestedData[$columns[13]] = $row->product_fg_code;
-        $nestedData[$columns[14]] = "Rp ".number_format($row->product_price,0,",",".");;
-        $nestedData[$columns[15]] = $row->payment_method;
-        $nestedData[$columns[16]] = $row->courier;
-        $nestedData[$columns[17]] = $row->courier_package;
-        $nestedData[$columns[18]] = "Rp ".number_format($row->delivery_price,0,",",".");
-        $nestedData[$columns[19]] = "Rp ".number_format($row->total_price,0,",",".");
-        $nestedData[$columns[20]] = $row->refference_number;
+        $nestedData[$columns[0]] = $row->refference_number;
+        $nestedData[$columns[1]] = $this->decrypt($key,$row->customer_name);
+        $nestedData[$columns[2]] = $this->decrypt($key,$row->customer_address);
+        $nestedData[$columns[3]] = $this->decrypt($key,$row->customer_identity_type);
+        $nestedData[$columns[4]] = $this->decrypt($key,$row->customer_identity_number);
+        $nestedData[$columns[5]] = $this->decrypt($key,$row->customer_email);
+        $nestedData[$columns[6]] = $this->decrypt($key,$row->customer_mdn);
+        $nestedData[$columns[7]] = $row->customer_location_province;
+        $nestedData[$columns[8]] = $row->customer_location_city;
+        $nestedData[$columns[9]] = $row->customer_location_district;
+        $nestedData[$columns[10]] = $this->decrypt($key,$row->customer_delivery_address);
+        $nestedData[$columns[11]] = $row->product_category;
+        $nestedData[$columns[12]] = $row->product_name;
+        $nestedData[$columns[13]] = $row->product_colour;
+        $nestedData[$columns[14]] = $row->product_fg_code;
+        $nestedData[$columns[15]] = "Rp ".number_format($row->product_price,0,",",".");;
+        $nestedData[$columns[16]] = $row->payment_method;
+        $nestedData[$columns[17]] = $row->courier;
+        $nestedData[$columns[18]] = $row->courier_package;
+        $nestedData[$columns[19]] = "Rp ".number_format($row->delivery_price,0,",",".");
+        $nestedData[$columns[20]] = "Rp ".number_format($row->total_price,0,",",".");
         $nestedData[$columns[21]] = $row->status;
+        $nestedData[$columns[22]] = $row->payment_number;
+        $nestedData[$columns[23]] = $row->airwaybill;
         if($date->format("Y-m-d") == date("Y-m-d",strtotime($row->input_date)) && $row->status == "Order Received"){
           $nestedData['action'] = '<td><center>
-                             <a data-id="'.$row->id.'" data-refference_number="'.$row->refference_number.'" data-toggle="tooltip" title="Cancel Order" class="btn btn-sm btn-primary" onClick="cancel(this)"> <span class="fa-stack fa-lg"><i class="fa fa-cart-plus fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span> </a>
+                             <a data-id="'.$row->id.'" data-refference_number="'.$row->refference_number.'" data-toggle="tooltip" title="Cancel Order" class="btn btn-sm btn-danger" onClick="cancel(this)"> <span class="fa-stack fa-lg"><i class="fa fa-cart-plus fa-stack-1x"></i><i class="fa fa-ban fa-stack-2x text-danger"></i></span> </a>
                              </center></td>';
         }else{
           $nestedData['action'] = '';
@@ -203,6 +207,7 @@ class OrderController extends BaseController
         $delivery = $this->getDeliveryPrice($_POST['courier_package_id'],$_POST['district_id'],$_POST['fg_code'])->getData();
         $total_transaction = TransactionModel::whereRaw('DATE(input_date)=DATE(CURRENT_TIMESTAMP)')->count();
         $transaction = new TransactionModel; //creating model for transaction
+        $payment_number = $payment_method->id == 2 ? "8899".$date->format("dmy").Auth::User()->id.str_pad(++$total_transaction,3,"0",STR_PAD_LEFT) : $date->format("ymd").++$total_transaction;
 
         $transaction->customer_name = $customer_info->name;
         $transaction->customer_address = $customer_info->address;
@@ -225,6 +230,7 @@ class OrderController extends BaseController
         $transaction->delivery_price = $delivery->delivery_price;
         $transaction->total_price = $product->price+$delivery->delivery_price;
         $transaction->refference_number = $date->format("ymd").++$total_transaction;
+        $transaction->payment_number = $payment_number;
         $transaction->input_date = $date->format("Y-m-d H:i:s");
         $transaction->input_by = Auth::User()->email;
         $transaction->update_date = $date->format("Y-m-d H:i:s");
@@ -232,7 +238,7 @@ class OrderController extends BaseController
 
         try {
           $success = $transaction->save();
-          $message = "New transaction is created successfully!.";
+          $message = "New transaction is created successfully!. The Virtual Account number was ".$transaction->payment_number;
         } catch (Exception $ex) {
           DB::rollback();
           $success = false;
@@ -263,12 +269,12 @@ class OrderController extends BaseController
       }
 
       if($success){
-        Mail::send('frontend.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
+        Mail::send('backend.telesales.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
            $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
            $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
         });
 
-        Mail::send('frontend.emails.transaction_notification_customer', [], function($msg) {
+        Mail::send('backend.telesales.emails.transaction_notification_customer', [], function($msg) {
           $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
           $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
         });

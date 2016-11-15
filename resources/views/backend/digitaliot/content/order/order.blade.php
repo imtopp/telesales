@@ -35,6 +35,7 @@
           <thead>
             <tr>
               <th>Refference Number</th>
+              <th>Channel</th>
               <th>Customer Name</th>
               <th>Customer Address</th>
               <th>Customer Identity Type</th>
@@ -56,7 +57,8 @@
               <th>Delivery Price</th>
               <th>Total Price</th>
               <th>Status</th>
-              <th>Channel</th>
+              <th>Payment Number</th>
+              <th>airwaybill</th>
               <th class="text-center"> Action </th>
             </tr>
           </thead>
@@ -91,7 +93,7 @@
 @endsection
 
 @section('page-js-script')
-  <script type = "text/template" id="modal-template">
+  <script type = "text/template" id="modal-template-deliver-order">
     {!!Form::open(["id"=>"popup_form","class"=>"form form-horizontal"])!!}
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -100,111 +102,13 @@
     <div class="modal-body">
       <div id="message">
         <div class="form-group">
-          <div class="controls">
-            {!! Form::label("category_id", "Category") !!}
-            {!! Form::select('category_id', [''=>'Please Choose Category'], '', ["class"=>"form-control","required","id"=>"category_id"]) !!}
-          </div>
+          {!! Form::hidden('id',null,['id'=>'id']) !!}
         </div>
-        <div class="form-group product" style="display:none">
-          <div class="controls">
-            {!! Form::label("product_id", "Product") !!}
-            {!! Form::select('product_id', [''=>'Please Choose Product'], '', ["class"=>"form-control","required","id"=>"product_id"]) !!}
-            <!--{!! Form::select('product_id', [''=>'Please Choose Product'], '', ["data-size"=>"5","data-width"=>"100%","class"=>"selectpicker","required","id"=>"product_id"]) !!}-->
-          </div>
-        </div>
-        <div id="product_preview" class="row" style="display:none">
-          <div class="col-md-6">
-            <div style="margin-bottom: 10px; margin-top: 10px;">
-              <div class="col-md-1">
-                &nbsp;
-              </div>
-              <div class="col-md-10" style="text-align: center;">
-                <img id="product_img_preview" style="max-width:100%; max-height:360pt" onerror="this.onerror=null;this.src='{{URL::asset('assets/img/img_not_found.jpg')}}';"/>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h4>Detail Product</h4>
-            <hr/>
-            <div class="detail-product" style="text-align:left;">
-              <section id="product_description"></section>
-            </div>
-          </div>
-        </div>
-        <div class="form-group colour" style="display:none">
-          <div class="controls">
-            {!! Form::label("colour_id", "Colour") !!}
-            {!! Form::select('colour_id', [''=>'Please Choose Colour'], '', ["class"=>"form-control","required","id"=>"colour_id"]) !!}
-          </div>
-        </div>
-        <div id="colour_preview" class="row" style="display:none">
-          <div class="col-md-1">
-            &nbsp;
-          </div>
-          <div class="col-md-10" style="text-align: center;">
-            <img id="colour_img_preview" style="max-width:100%; max-height:360pt" onerror="this.onerror=null;this.src='{{URL::asset('assets/img/img_not_found.jpg')}}';"/>
-          </div>
-        </div>
+        <h5>Input AirWayBill Number for order number <span id="refference_number"></span>.</h5>
         <div class="form-group">
-          {!! Form::hidden('fg_code', null,array('id'=>'fg_code')) !!}
-        </div>
-        <div id="customer_form" style="display: none;">
-          <div class="form-group">
-            {!! Form::label('Identity Name') !!}
-            {!! Form::text('name',null,array('required','class'=>'form-control','placeholder'=>'Customer identity Name')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Identity Address') !!}
-            {!! Form::text('address',null,array('required','class'=>'form-control','placeholder'=>'Customer identity address')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Identity Type') !!}
-            {!! Form::select('identity_type',array('KTP'=>'KTP','SIM'=>'SIM','KITAS'=>'KITAS','PASPOR'=>'PASPOR'),null,array('required','class'=>'form-control','placeholder'=>'Customer identity type')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Identity Number') !!}
-            {!! Form::text('identity_number',null,array('required','class'=>'form-control','placeholder'=>'Customer identity number')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Email Address') !!}
-            {!! Form::input('email','email',null,array('required','class'=>'form-control','placeholder'=>'Customer Email')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Contact Number') !!}
-            {!! Form::text('mdn',null,array('required','class'=>'form-control','placeholder'=>'Customer contact number in 088xxxxxxxxx format','onkeypress'=>'return isNumberKey(event);')) !!}
-          </div>
-          <div class='form-group'>
-            {!! Form::label('Delivery Province') !!}
-            {!! Form::select('province',[''=>'Please Choose Customer Delivery Province'],null,array('required','id'=>'province','class'=>'form-control')) !!}
-          </div>
-          <div class='form-group city' style="display:none">
-            {!! Form::label('Delivery City') !!}
-            {!! Form::select('city',[''=>'Please Choose Customer Delivery City'],null,array('required','id'=>'city','class'=>'form-control','placeholder'=>'Customer delivery city')) !!}
-          </div>
-          <div class='form-group district' style="display:none">
-            {!! Form::label('Delivery District') !!}
-            {!! Form::select('district_id',[''=>'Please Choose Customer Delivery District'],null,array('required','id'=>'district_id','class'=>'form-control')) !!}
-          </div>
-          <div class='form-group address' style="display:none">
-            {!! Form::label('Delivery Address') !!}
-            {!! Form::textarea('delivery_address',null,array('required','class'=>'form-control','placeholder'=>'Customer delivery address')) !!}
-          </div>
-          <div class='form-group payment_method' style="display:none">
-            {!! Form::label('Payment Method') !!}
-            {!! Form::select('payment_method_id',[''=>'Please Choose Payment Method'],null,array('required','id'=>'payment_method_id','class'=>'form-control')) !!}
-          </div>
-          <div class='form-group courier' style="display:none">
-            {!! Form::label('Kurir') !!}
-            {!! Form::select('courier_id',[''=>'Please Choose Courier'],null,array('required','id'=>'courier_id','class'=>'form-control')) !!}
-          </div>
-          <div class='form-group courier_package' style="display:none">
-            {!! Form::label('Paket Pengiriman') !!}
-            {!! Form::select('courier_package_id',[''=>'Please Choose Delivery Package'],null,array('required','id'=>'courier_package_id','class'=>'form-control')) !!}
-          </div>
-          <div class='form-group' style="text-align:left">
-            <h4>Harga Barang : <span id="price"></span></h4>
-            <h4 class="delivery_price" style="display:none;">Ongkos Kirim : <span id="delivery_price">Rp 0</span></h4>
-            <h4>Subtotal : <span id="subtotal"></span></h4>
+          <div class="controls">
+            {!! Form::label("airwaybill", "AirWayBill Number") !!}
+            {!! Form::text("airwaybill",null,["class"=>"form-control","required","id"=>"airwaybill"]) !!}
           </div>
         </div>
       </div>
@@ -212,8 +116,33 @@
     <div id="footer" class="modal-footer">
       <div class="form-group">
         <div class="controls">
-          {!!Form::submit("Save",["class"=>"btn btn-primary submit"])!!}
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          {!!Form::submit("Ya",["class"=>"btn btn-primary submit"])!!}
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+        </div>
+      </div>
+    </div>
+    {!!Form::close()!!}
+  </script>
+
+  <script type = "text/template" id="modal-template-payment-received">
+    {!!Form::open(["id"=>"popup_form","class"=>"form form-horizontal"])!!}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 id="title" class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+      <div id="message">
+        <div class="form-group">
+          {!! Form::hidden('id',null,['id'=>'id']) !!}
+        </div>
+        <h5>Apakah anda yakin pesanan <span id="refference_number"></span> telah dibayar?</h5>
+      </div>
+    </div>
+    <div id="footer" class="modal-footer">
+      <div class="form-group">
+        <div class="controls">
+          {!!Form::submit("Ya",["class"=>"btn btn-primary submit"])!!}
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
         </div>
       </div>
     </div>
@@ -296,13 +225,9 @@
       })(jQuery);
 
       table = $('#datatable').dataTable({
-        dom: 'Bfrtipl',
+        dom: 'frtipl',
         "processing": true,
         "serverSide": true,
-        buttons: [{
-          text: 'Tambah Baru',
-          action: create,
-        }],
         ajax: {
           data: {"_token":"{{ csrf_token() }}"},
           url: "{{URL::route('digitaliot_manage_order_read')}}",
@@ -313,11 +238,16 @@
             $("#lookup_processing").css("display","none");
           }
         },
+        "order": [[ 0, "desc" ]],
         pageLength : 10,
         "scrollX": true,
         "columns": [{
           "data": "refference_number",
           "title": "Refference Number"
+        },{
+          "data": "channel",
+          "title": "Channel",
+          "width": "100px"
         },{
           "data": "customer_name",
           "title": "Customer Name",
@@ -391,8 +321,12 @@
           "title": "Status",
           "width": "100px"
         },{
-          "data": "channel",
-          "title": "Channel",
+          "data": "payment_number",
+          "title": "Payment Number",
+          "width": "100px"
+        },{
+          "data": "airwaybill",
+          "title": "Airwaybill",
           "width": "100px"
         },{
           "data": "action",
@@ -410,422 +344,32 @@
       return true;
     }
 
-    function initializeModal(element,title,id,refference_number){
+    function initializeModal(mode,element,title,id,refference_number){
+      $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
-      if(typeof id != 'undefined'){
+
+      if(mode == "delete"){
         $("#id").val(id);
-      }
-      if(typeof refference_number != 'undefined'){
         $("#refference_number").html(refference_number);
-      }else{
-        var data = {"_token":"{{ csrf_token() }}"},price=0,delivery_price=0,subtotal=0;
 
-        Number.prototype.formatMoney = function(c, d, t){
-          var n = this,
-          c = isNaN(c = Math.abs(c)) ? 2 : c,
-          d = d == undefined ? "." : d,
-          t = t == undefined ? "," : t,
-          s = n < 0 ? "-" : "",
-          i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
-          j = (j = i.length) > 3 ? j % 3 : 0;
-          return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-        };
-
-        if($("#category_id").is("select")){
-          $.ajax({
-            url : '{{URL::route('telesales_manage_order_get_category')}}',
-            type: 'POST',
-            dataType: 'JSON',
-            data: data,
-            success : function(data){
-              $.each(data,function(key,value){
-                $("#category_id").append('<option value="'+key+'">'+value+'</option>');
-              });
-            }
-          });
-        }
-
-        $("#category_id").change(function(){
-          if($("#category_id").val()!=""){
-            data.category_id = $("#category_id").val();
-
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_product')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#product_id").empty();
-                $("#product_id").append('<option value="">Please Choose Product</option>');
-
-                $.each(data,function(){
-                  $("#product_id").append('<option value="'+this.product_id+'" data-content="'+"<img src='"+this.product_image_url+"' style='max-width:80px' > "+this.product+'">'+this.product+'</option>');
-                });
-
-                //$("#product_id").selectpicker("refresh");
-
-                $(".product").show();
-                $("#product_preview").hide();
-                $(".colour").hide();
-                $("#colour_preview").hide();
-                $("#customer_form").hide();
-              }
-            });
-          }else{
-            $(".product").hide();
-            $("#product_preview").hide();
-            $(".colour").hide();
-            $("#colour_preview").hide();
-            $("#customer_form").hide();
-          }
-        });
-
-        $("#product_id").change(function(){
-          if($("#product_id").val()!=""){
-            data.product_id = $("#product_id").val();
-
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_product_detail')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#product_img_preview").attr('src',data.image_url);
-                $("#product_description").html(data.description);
-
-                $("#product_preview").show();
-                $("#colour_preview").hide();
-                $("#customer_form").hide();
-              }
-            });
-
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_colour')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#colour_id").empty();
-                $("#colour_id").append('<option value="">Please Choose Colour</option>');
-
-                $.each(data,function(key,value){
-                  $("#colour_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                $(".colour").show();
-              }
-            });
-          }else{
-            $("#product_preview").hide();
-            $(".colour").hide();
-            $("#colour_preview").hide();
-            $("#customer_form").hide();
-          }
-        });
-
-        $("#colour_id").change(function(){
-          if($("#colour_id").val()!=""){
-            data.colour_id = $("#colour_id").val();
-
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_colour_image')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#colour_img_preview").attr('src',data.image_url);
-
-                $("#colour_preview").show();
-              }
-            });
-
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_fg_code')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#fg_code").val("");
-                $("#fg_code").val(data.fg_code);
-
-                price = data.price;
-                subtotal = price;
-                $("#price").html("Rp "+price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+subtotal.formatMoney(0, ',', '.'));
-
-                $(function(){
-                  $.ajax({
-                    url : '{{URL::route('telesales_manage_order_get_province')}}',
-                    type: 'POST',
-                    dataType: 'JSON',
-                    data: {"_token":"{{ csrf_token() }}"},
-                    success : function(data){
-                      $.each(data,function(key,value){
-                        $("#province").append('<option value="'+key+'">'+value+'</option>');
-                      });
-                    }
-                  });
-                });
-
-                $("#customer_form").show();
-              }
-            });
-          }else{
-            $("#colour_preview").hide();
-            $("#customer_form").hide();
-          }
-        });
-
-        $("#province").change(function(){
-          if($("#province").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_city')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","province_id":$("#province").val()},
-              success : function(data){
-                $("#city").empty();
-                $("#city").append('<option value="">Silahkan Pilih Kota</option>');
-                $.each(data,function(key,value){
-                  $("#city").append('<option value="'+key+'">'+value+'</option>');
-                });
-                $(".city").show();
-                $(".district").hide();
-                $(".address").hide();
-                $(".payment_method").hide();
-                $(".courier").hide();
-                $(".courier_package").hide();
-                $(".delivery_price").hide();
-                $("#district_id").empty();
-                $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-              }
-            });
-          }else{
-            $(".city").hide();
-            $(".district").hide();
-            $(".address").hide();
-            $(".payment_method").hide();
-            $(".courier").hide();
-            $(".courier_package").hide();
-            $(".delivery_price").hide();
-            $("#city").empty();
-            $("#city").append('<option value="">Silahkan Pilih Kota</option>');
-            $("#district_id").empty();
-            $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
-        });
-
-        $("#city").change(function(){
-          if($("#city").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_district')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","city_id":$("#city").val()},
-              success : function(data){
-                $("#district_id").empty();
-                $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
-                $.each(data,function(key,value){
-                  $("#district_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-                $(".district").show();
-                $(".address").hide();
-                $(".payment_method").hide();
-                $(".courier").hide();
-                $(".courier_package").hide();
-                $(".delivery_price").hide();
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-              }
-            });
-          }else{
-            $(".district").hide();
-            $(".address").hide();
-            $(".payment_method").hide();
-            $(".courier").hide();
-            $(".courier_package").hide();
-            $(".delivery_price").hide();
-            $("#district_id").empty();
-            $("#district_id").append('<option value="">Silahkan Pilih Kecamatan</option>');
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
-        });
-
-        $("#district_id").change(function(){
-          if($("#district_id").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_payment_method')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val()},
-              success : function(data){
-                $(".address").show();
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-                $.each(data,function(key,value){
-                  $("#payment_method_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-                $(".payment_method").show();
-                $(".courier").hide();
-                $(".courier_package").hide();
-                $(".delivery_price").hide();
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-              }
-            });
-          }else{
-            $(".address").hide();
-            $(".payment_method").hide();
-            $(".courier").hide();
-            $(".courier_package").hide();
-            $(".delivery_price").hide();
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Metode Pembayaran</option>');
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
-        });
-
-        $("#payment_method_id").change(function(){
-          if($("#payment_method_id").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_courier')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val(),"payment_method_id":$("#payment_method_id").val()},
-              success : function(data){
-                $("#courier_id").empty();
-                $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-                $.each(data,function(key,value){
-                  $("#courier_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-                $(".courier").show();
-                $(".courier_package").hide();
-                $(".delivery_price").hide();
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-              }
-            });
-          }else{
-            $(".courier").hide();
-            $(".courier_package").hide();
-            $(".delivery_price").hide();
-            $("#courier_id").empty();
-            $("#courier_id").append('<option value="">Silahkan Pilih Kurir</option>');
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
-        });
-
-        $("#courier_id").change(function(){
-          if($("#courier_id").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_courier_package')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val(),"courier_id":$("#courier_id").val()},
-              success : function(data){
-                $("#courier_package_id").empty();
-                $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-                $.each(data,function(key,value){
-                  $("#courier_package_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-                $(".courier_package").show();
-                $(".delivery_price").hide();
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-              }
-            });
-          }else{
-            $(".courier_package").hide();
-            $(".delivery_price").hide();
-            $("#courier_package_id").empty();
-            $("#courier_package_id").append('<option value="">Silahkan Pilih Paket Pengiriman</option>');
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
-        });
-
-        $("#courier_package_id").change(function(){
-          if($("#courier_package_id").val()!=""){
-            $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_delivery_price')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: {"_token":"{{ csrf_token() }}","courier_package_id":$("#courier_package_id").val(),"district_id":$("#district_id").val(),"fg_code":$("#fg_code").val()},
-              success : function(data){
-                if(typeof data.delivery_price != 'undefined'){
-                  delivery_price = data.delivery_price;
-                }else {
-                  delivery_price = 0;
-                }
-
-                subtotal = price+delivery_price;
-
-                $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-                $("#subtotal").html("Rp "+subtotal.formatMoney(0, ',', '.'));
-
-                $(".delivery_price").show();
-              }
-            });
-          }else{
-            delivery_price = 0;
-            $(".delivery_price").hide();
-            $("#delivery_price").html("Rp "+delivery_price.formatMoney(0, ',', '.'));
-            $("#subtotal").html("Rp "+price.formatMoney(0, ',', '.'));
-          }
+        $.spin("hide");
+        $('#modal_view').modal('show');
+        $('#modal_view').on('hidden.bs.modal',function(){
+          $("#modal-content").html("");
         });
       }
-    }
 
-    function showModal(){
-      $('#modal_view').modal('show');
-    }
+      if(mode == "update"){
+        $("#id").val(id);
+        $("#refference_number").html(refference_number);
 
-    function resetModal(){
-      $("#modal-content").html("");
+        $.spin("hide");
+        $('#modal_view').modal('show');
+        $('#modal_view').on('hidden.bs.modal',function(){
+          $("#modal-content").html("");
+        });
+      }
     }
 
     function getModalFormData(){
@@ -850,35 +394,35 @@
             $("#title").html("Pesan");
             $("#message").html(data.message);
             $("#footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
-            showModal();
-            $('#modal_view').on('hidden.bs.modal',function(){
-              resetModal();
-            });
-            table.fnReloadAjax();
+
             $.spin("hide");
+            $('#modal_view').modal('show');
+            $('#modal_view').on('hidden.bs.modal',function(){
+              $("#modal-content").html("");
+            });
+
+            table.fnReloadAjax();
           }
         });
       });
     }
 
-    function create(){
-      initializeModal($("#modal-template").html(),"Tambah Data Baru");
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+    function paymentReceived(e) {
+      initializeModal("delete",$("#modal-template-payment-received").html(),"Payment Received",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('telesales_manage_order_create')}}');
+      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_payment_received')}}');
     }
 
     function cancel(e) {
-      initializeModal($("#modal-template-cancel-order").html(),"Cancel Order",$(e).data('id'),$(e).data('refference_number'));
-      showModal();
-      $('#modal_view').on('hidden.bs.modal',function(){
-        resetModal();
-      });
+      initializeModal("delete",$("#modal-template-cancel-order").html(),"Cancel Order",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('telesales_manage_order_cancel_order')}}');
+      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_cancel_order')}}');
+    }
+
+    function deliver(e) {
+      initializeModal("update",$("#modal-template-deliver-order").html(),"Deliver Order",$(e).data('id'),$(e).data('refference_number'));
+
+      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_deliver_order')}}');
     }
   </script>
 @stop

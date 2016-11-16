@@ -7,6 +7,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
+use App\Models\ProductFgCode as ProductFgCodeModel;
+use App\Models\User as UserModel;
 use App\Models\Transaction as TransactionModel;
 use App\Models\TransactionStatus as TransactionStatusModel;
 use DB;
@@ -22,7 +24,16 @@ class ScheduleController extends BaseController
     $key = "t3rs3r@h";
     $success = true;
     $message = "Notification to customer is success";
-    $transactions = TransactionModel::select('transaction.*',DB::raw('DATE_FORMAT(transaction.input_date + INTERVAL 1 DAY,"%Y-%m-%d 23:59:59") AS expired_date'))->join('transaction_status','transaction.id','=','transaction_status.transaction_id')
+    $transactions = TransactionModel::select('transaction.*',DB::raw('DATE_FORMAT(transaction.input_date + INTERVAL 1 DAY,"%Y-%m-%d 23:59:59") AS expired_date'))
+                                    ->leftJoin(DB::raw('(
+                                      SELECT transaction_status.*
+                                      FROM (
+                                        SELECT transaction_status.transaction_id,MAX(transaction_status.input_date) AS input_date
+                                        FROM transaction_status
+                                        GROUP BY transaction_status.transaction_id
+                                      ) recent
+                                      LEFT JOIN transaction_status ON transaction_status.transaction_id=recent.transaction_id AND transaction_status.input_date=recent.input_date
+                                      ) transaction_status'),'transaction.id','=','transaction_status.transaction_id')
                                     ->whereRaw('transaction.payment_method = "virtual account BSM" AND transaction_status.status = "Order Received" AND transaction.input_date + INTERVAL 24 HOUR <= CURRENT_TIMESTAMP')
                                     ->get();
 
@@ -47,7 +58,16 @@ class ScheduleController extends BaseController
     $success = true;
     $key = "t3rs3r@h";
     DB::beginTransaction();
-    $transactions = TransactionModel::select('transaction.*')->join('transaction_status','transaction.id','=','transaction_status.transaction_id')
+    $transactions = TransactionModel::select('transaction.*')
+                                    ->leftJoin(DB::raw('(
+                                      SELECT transaction_status.*
+                                      FROM (
+                                        SELECT transaction_status.transaction_id,MAX(transaction_status.input_date) AS input_date
+                                        FROM transaction_status
+                                        GROUP BY transaction_status.transaction_id
+                                      ) recent
+                                      LEFT JOIN transaction_status ON transaction_status.transaction_id=recent.transaction_id AND transaction_status.input_date=recent.input_date
+                                      ) transaction_status'),'transaction.id','=','transaction_status.transaction_id')
                                     ->whereRaw('transaction.payment_method = "virtual account BSM" AND transaction_status.status = "Order Received" AND transaction.input_date + INTERVAL 24 HOUR <= CURRENT_TIMESTAMP')
                                     ->get();
 
@@ -90,6 +110,42 @@ class ScheduleController extends BaseController
           $message = $ex->getMessage();
           break;
         }
+      }
+    }
+
+    return response()->json(["success"=>$success,"message"=>$message]);
+  }
+
+  public function notifyLowStock(){
+    $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
+    $success = true;
+    $message = "Notification low stock is success";
+    $list = array();
+    $fg_codes = ProductFgCodeModel::select('product_fg_code.fg_code','product_fg_code.stock','product_colour.name AS colour','product.name AS product','product_category.name AS category')
+                                    ->leftJoin('product_colour','product_colour.id','=','product_fg_code.product_colour_id')
+                                    ->leftJoin('product','product.id','=','product_colour.product_id')
+                                    ->leftJoin('product_category','product_category.id','=','product.category_id')
+                                    ->whereRaw('product_fg_code.status = "active" AND product_fg_code.stock <= product_fg_code.min_stock_notif')
+                                    ->get();
+
+    foreach($fg_codes as $fg_code){
+      $list[] = array("fg_code"=>$fg_code->fg_code,"name"=>$fg_code->category." - ".$fg_code->product." - ".$fg_code->colour,"stock"=>$fg_code->stock);
+    }
+
+    $users = UserModel::select('users.email')
+                      ->leftJoin('user_roles','user_roles.id','=','users.role_id')
+                      ->where(["users.status"=>"active","user_roles.name"=>"Administrator"])
+                      ->get();
+
+    foreach($users as $user){
+      try{
+        $success = Mail::send('schedule.emails.stock_notification_warning', ["list"=>$list], function($msg) use ($user) {
+          $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
+          $msg->to($user->email, $user->email)->subject('Transaction notifications');
+        });
+      } catch (Exception $ex) {
+        $success = false;
+        $message = $ex->getMessage();
       }
     }
 

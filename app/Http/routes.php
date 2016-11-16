@@ -218,3 +218,4 @@ Route::group(['middleware' => ['auth.digitaliot']], function(){
 
 Route::post('/schedule/update-expired-transaction', ["as"=>"update_expired_transaction","uses"=>"Schedule\ScheduleController@updateExpiredTransaction"]);
 Route::post('/schedule/notify-expired-transaction', ["as"=>"notify_expired_transaction","uses"=>"Schedule\ScheduleController@notifyExpiredTransaction"]);
+Route::post('/schedule/notify-low-stock', ["as"=>"notify_low_stock","uses"=>"Schedule\ScheduleController@notifyLowStock"]);

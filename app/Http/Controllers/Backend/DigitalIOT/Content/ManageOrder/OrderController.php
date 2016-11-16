@@ -222,11 +222,26 @@ class OrderController extends BaseController
 
     try {
       $success = $transaction_status->save();
-      $message = 'Cancel order is success!';
     } catch (Exception $ex) {
       DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      $transaction = TransactionModel::where('id','=',$_POST['id'])->first();
+
+      $fg_code = ProductFgCodeModel::where('fg_code','=',$transaction->product_fg_code)->lockForUpdate()->first();
+      $fg_code->stock+=1;
+
+      try {
+        $success = $fg_code->save();
+        $message = 'Cancel order is success!';
+      } catch (Exception $ex) {
+        DB::rollback();
+        $success = false;
+        $message = $ex->getMessage();
+      }
     }
 
     if($success){

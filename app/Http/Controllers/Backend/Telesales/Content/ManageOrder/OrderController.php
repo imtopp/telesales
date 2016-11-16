@@ -241,7 +241,7 @@ class OrderController extends BaseController
 
             try {
               $success = $transaction->save();
-              $message = "New transaction is created successfully!. The Virtual Account number was ".$transaction->payment_number;
+              $message = "New transaction is created successfully!.".($payment_method->id == 2 ? " The Virtual Account number was ".$transaction->payment_number : "");
             } catch (Exception $ex) {
               DB::rollback();
               $success = false;
@@ -321,11 +321,26 @@ class OrderController extends BaseController
 
     try {
       $success = $transaction_status->save();
-      $message = 'Cancel order is success!';
     } catch (Exception $ex) {
       DB::rollback();
       $success = false;
       $message = $ex->getMessage();
+    }
+
+    if($success){
+      $transaction = TransactionModel::where('id','=',$_POST['id'])->first();
+
+      $fg_code = ProductFgCodeModel::where('fg_code','=',$transaction->product_fg_code)->lockForUpdate()->first();
+      $fg_code->stock+=1;
+
+      try {
+        $success = $fg_code->save();
+        $message = 'Cancel order is success!';
+      } catch (Exception $ex) {
+        DB::rollback();
+        $success = false;
+        $message = $ex->getMessage();
+      }
     }
 
     if($success){
@@ -417,7 +432,8 @@ class OrderController extends BaseController
     if(isset($_POST['district_id'])){
       $payment_method = PaymentMethodModel::join('payment_method_location_mapping','payment_method_location_mapping.payment_method_id','=','payment_method.id')
                                           ->join('view_active_location','view_active_location.district_id','=','payment_method_location_mapping.location_district_id')
-                                          ->where(['view_active_location.district_id'=>$_POST['district_id']])
+                                          ->where('view_active_location.district_id','=',$_POST['district_id'])
+                                          ->whereRaw('payment_method.name = "Virtual Account BSM" OR payment_method.name = "COD"')
                                           ->lists('payment_method.name','payment_method.id');
     }else{
       $payment_method = null;

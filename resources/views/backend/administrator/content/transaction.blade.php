@@ -290,16 +290,17 @@
               $("#lookup_processing").css("display","none");
             }
           },
+          "order": [[ 1, "desc" ]],
           "columns": [{
             "data": "status",
             "title": "Status",
             "width": "200px"
           },{
-            "data": "date",
+            "data": "input_date",
             "title": "Date",
             "width": "100px"
           },{
-            "data": "updated_by",
+            "data": "update_by",
             "title": "Updated By",
             "width": "200px"
           }],

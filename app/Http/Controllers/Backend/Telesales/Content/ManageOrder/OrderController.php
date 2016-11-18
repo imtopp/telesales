@@ -484,14 +484,15 @@ class OrderController extends BaseController
 
     if(isset($data['courier_package_id']) && isset($data['district_id']) && isset($data['fg_code'])){
       $courier_location_mapping = CourierLocationMappingModel::where(['courier_package_id'=>$data['courier_package_id'],'location_district_id'=>$data['district_id']])->first();
+      $courier_package_id = CourierPackageModel::where(["id"=>$data['courier_package_id']])->first();
 
       $product = ProductFgCodeModel::where(['fg_code'=>$data['fg_code']])->first();
       $price_category = CourierPriceCategoryModel::where('status','=','active')
-                                                    ->whereRaw('min_price <='.$product->price.' AND (max_price >= '.$product->price.' OR max_price = 0)')
+                                                    ->whereRaw('(min_price <='.$product->price.' AND (max_price >= '.$product->price.' OR max_price = 0)) AND courier_id = '.$courier_package_id->courier_id)
                                                     ->first();
       $delivery_price = CourierDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id,'courier_price_category_id'=>$price_category->id])
                                                     ->first();
-
+      
       return response()->json(["delivery_price"=>isset($delivery_price->price)?$delivery_price->price:"Null"]);
     }else{
       return null;

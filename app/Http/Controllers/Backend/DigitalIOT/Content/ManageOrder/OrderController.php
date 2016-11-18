@@ -79,9 +79,9 @@ class OrderController extends BaseController
 
     $model = TransactionModel::select('transaction.*',DB::raw('IF(transaction.input_by="Self Order",transaction.input_by,"Telesales") AS channel'),'transaction_status.status')
                               ->join(DB::raw('(SELECT transaction_status.* FROM transaction_status LEFT JOIN (SELECT transaction_id,MAX(input_date) AS input_date FROM transaction_status GROUP BY transaction_id) x ON transaction_status.transaction_id = x.transaction_id AND transaction_status.input_date = x.input_date WHERE x.input_date IS NOT NULL) transaction_status'),'transaction_status.transaction_id','=','transaction.id')
-                              ->whereRaw('(transaction_status.status = "Order Received" AND (transaction.payment_method = "COD" OR transaction.payment_method = "Virtual Account BSM"))')
+                              ->whereRaw('((transaction_status.status = "Order Received" AND (transaction.payment_method = "COD" OR transaction.payment_method = "Virtual Account BSM"))')
                               ->orWhere('transaction_status.status','=','Payment Complete')
-                              ->orWhere('transaction_status.status','=','Order Completed');
+                              ->orWhereRaw('transaction_status.status = "Order Completed")');
 
     $totalData = $model->count();
     $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.

@@ -895,10 +895,12 @@
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","courier_package_id":$("#courier_package_id").val(),"district_id":$("#district_id").val(),"fg_code":$("#fg_code").val()},
               success : function(result){
-                if(typeof result.delivery_price != 'undefined'){
+                if(typeof result.delivery_price != 'undefined' && result.delivery_price != "Null"){
                   delivery_price = result.delivery_price;
-                }else {
-                  delivery_price = 0;
+                }else{
+                  alert("Maaf harga pengiriman untuk kurir ini tidak ditemukan!");
+                  $("#courier_package_id").val("");
+                  $("#courier_package_id").change();
                 }
 
                 subtotal = price+delivery_price;

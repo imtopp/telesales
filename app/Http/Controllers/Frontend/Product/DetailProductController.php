@@ -21,28 +21,34 @@ class DetailProductController extends BaseController
   public function index(){
     if(isset($_GET['id']) && $_GET['id']!=""){
       $product_id = $_GET['id'];
-      $product = array();
 
       //increase product hit count
       $product_data = ProductModel::where(['status'=>'active','id'=>$product_id])->first();
       if(isset($product_data)){
         $product_data->hit_count++;
-        $product_data->save();
-        $product['id'] = $product_data->id;
-        $product['name'] = $product_data->name;
-        $product['description'] = $product_data->description;
-      }
+        try{
+          $product_data->save();
+        }catch (Exception $ex){
+          $message = $ex->getMessage();
+        }
 
-      $product['colours'] = array();
-      $product_detail = ViewActiveProductModel::select('colour_id','colour','colour_image_url','fg_code','price')->where(['product_id'=>$product_id])->groupBy('colour_id','colour','colour_image_url','fg_code','price')->get();
-      foreach($product_detail as $detail){
-        $product['colours'][] = array('id'=>$detail->colour_id,'name'=>$detail->colour,'fg_code'=>$detail->fg_code,'image_url'=>$detail->colour_image_url,'price'=>$detail->price);
+        $active_products = ViewActiveProductModel::where(['product_id'=>$product_id])->groupBy('fg_code')->get();
+
+        $product_detail['id'] = $active_products->first()->product_id;
+        $product_detail['name'] = $active_products->first()->product;
+        $product_detail['description'] = $active_products->first()->product_description;
+
+        foreach($active_products as $product){
+          $product_detail['colours'][] = array('id'=>$product->colour_id,'name'=>$product->colour,'fg_code'=>$product->fg_code,'image_url'=>$product->colour_image_url,'price'=>$product->price);
+        }
+      }else{
+        $message = "Maaf produk yang anda cari tidak dapat ditemukan.";
       }
     }else{ //the fg_code is not found so it cant find the product or product not found
       $message = "Maaf produk yang anda cari tidak dapat ditemukan.";
     }
 
-    return view('frontend/product/detail_product',['product'=>isset($product)?$product:null,'message'=>isset($message)?$message:null]);
+    return view('frontend/product/detail_product',['product'=>isset($product_detail)?$product_detail:null,'message'=>isset($message)?$message:null]);
   }
 
 }

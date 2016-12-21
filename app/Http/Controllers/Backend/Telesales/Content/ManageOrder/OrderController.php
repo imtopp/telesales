@@ -434,6 +434,7 @@ class OrderController extends BaseController
                                           ->join('view_active_location','view_active_location.district_id','=','payment_method_location_mapping.location_district_id')
                                           ->where('view_active_location.district_id','=',$_POST['district_id'])
                                           ->whereRaw('payment_method.name = "Virtual Account BSM" OR payment_method.name = "COD"')
+                                          ->whereRaw('payment_method.status = "active')
                                           ->lists('payment_method.name','payment_method.id');
     }else{
       $payment_method = null;
@@ -492,7 +493,7 @@ class OrderController extends BaseController
                                                     ->first();
       $delivery_price = CourierDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id,'courier_price_category_id'=>$price_category->id])
                                                     ->first();
-      
+
       return response()->json(["delivery_price"=>isset($delivery_price->price)?$delivery_price->price:"Null"]);
     }else{
       return null;

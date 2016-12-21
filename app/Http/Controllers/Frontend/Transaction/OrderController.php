@@ -83,7 +83,7 @@ class OrderController extends BaseController
       $payment_method = PaymentMethodModel::join('payment_method_location_mapping','payment_method_location_mapping.payment_method_id','=','payment_method.id')
                                           ->join('view_active_location','view_active_location.district_id','=','payment_method_location_mapping.location_district_id')
                                           ->where(['view_active_location.district_id'=>$_POST['district_id']])
-                                          ->whereRaw('payment_method.name <> "Virtual Account BSM"')
+                                          ->whereRaw('payment_method.name <> "Virtual Account BSM" AND payment_method.status = "active"')
                                           ->lists('payment_method.name','payment_method.id');
     }else{
       $payment_method = null;

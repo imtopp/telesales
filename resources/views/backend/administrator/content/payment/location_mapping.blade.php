@@ -1,6 +1,6 @@
 @extends('backend\layout\template')
 
-@section('title', 'Payment Method Location Mapping')
+@section('title', 'COD Location Mapping')
 
 @section('sidebar-menu')
   @include('backend\administrator\layout\sidebar_menu_content')
@@ -22,13 +22,13 @@
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Payment Method Location Mapping Page</h2>
+        <h2>COD Location Mapping Page</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        <h4>Welcome to Payment Method Location Mapping Page</h4>
+        <h4>Welcome to COD Location Mapping Page</h4>
         <span>
-          Selamat datang di halaman Payment Method Location Mapping. halaman ini digunakan untuk mengatur lokasi kota pada aplikasi {{ config('settings.app_name') }}
+          Selamat datang di halaman COD Location Mapping. halaman ini digunakan untuk mengatur lokasi kota yang dapat melakukan COD pada aplikasi {{ config('settings.app_name') }}
           anda dapat mengatur mapping pada tabel dibawah.
         </span>
         <table id="datatable" class="table table-striped table-bordered">
@@ -37,7 +37,6 @@
               <th>Province</th>
               <th>City</th>
               <th>District</th>
-              <th>Payment Method</th>
               <th>Status</th>
               <th class="text-center"> Action </th>
             </tr>
@@ -98,12 +97,6 @@
           <div class="controls">
             {!! Form::label("district_id", "Kecamatan") !!}
             {!! Form::select('district_id', [''=>'Harap pilih Kecamatan'], null, ["class"=>"form-control","required","id"=>"district_id"]); !!}
-          </div>
-        </div>
-        <div class="form-group payment_method" style="display:none">
-          <div class="controls">
-            {!! Form::label("payment_method_id", "Metode Pembayaran") !!}
-            {!! Form::select('payment_method_id', [''=>'Harap pilih Payment Method'], null, ["class"=>"form-control","required","id"=>"payment_method_id"]); !!}
           </div>
         </div>
         <div class="form-group">
@@ -210,7 +203,7 @@
         }],
         ajax: {
           data: {"_token":"{{ csrf_token() }}"},
-          url: "{{URL::route('administrator_manage_payment_method_location_mapping_read')}}",
+          url: "{{URL::route('administrator_manage_cod_location_mapping_read')}}",
           type: "POST",
           error: function(){  // error handling
             $(".lookup-error").html("");
@@ -233,10 +226,6 @@
           "title": "Kecamatan",
           "width": "160px"
         },{
-          "data": "payment_method",
-          "title": "Metode Pembayaran",
-          "width": "160px"
-        },{
           "data": "status",
           "title": "Status",
           "width": "100px"
@@ -249,7 +238,7 @@
      });
     });
 
-    function initializeModal(mode,element,title,id,province_id,city_id,district_id,payment_method_id,status){
+    function initializeModal(mode,element,title,id,province_id,city_id,district_id,status){
       $.spin("show");
       $("#modal-content").html(element);
       $("#title").html(title);
@@ -260,13 +249,11 @@
         $("#id").val(id);
 
         if(mode == "update"){
-          $("#payment_method_id").val(payment_method_id);
           $("#status").val(status);
 
           data.province_id = province_id;
           data.city_id = city_id;
           data.district_id = district_id;
-          data.payment_method_id = payment_method_id;
         }else if(mode == "delete"){
           $("#name").html(province_id);
 
@@ -281,7 +268,7 @@
       if(mode == "create" || mode == "update"){
         $(function(){
           $.ajax({
-            url : '{{URL::route('administrator_manage_payment_method_location_mapping_get_province')}}',
+            url : '{{URL::route('administrator_manage_cod_location_mapping_get_province')}}',
             type: 'POST',
             dataType: 'JSON',
             data: data,
@@ -308,7 +295,7 @@
             data.province_id = $("#province_id").val();
 
             $.ajax({
-              url : '{{URL::route('administrator_manage_payment_method_location_mapping_get_city')}}',
+              url : '{{URL::route('administrator_manage_cod_location_mapping_get_city')}}',
               type: 'POST',
               dataType: 'JSON',
               data: data,
@@ -327,23 +314,17 @@
 
                 $(".city").show();
                 $(".district").hide();
-                $(".payment_method").hide();
                 $("#district_id").empty();
                 $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
               }
             });
           }else{
             $(".city").hide();
             $(".district").hide();
-            $(".payment_method").hide();
             $("#city_id").empty();
             $("#city_id").append('<option value="">Harap Pilih Kota</option>');
             $("#district_id").empty();
             $("#district_id").append('<option value="">Harap Pilih Kecamatan</option>');
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
           }
         });
 
@@ -352,7 +333,7 @@
             data.city_id = $("#city_id").val();
 
             $.ajax({
-              url : '{{URL::route('administrator_manage_payment_method_location_mapping_get_district')}}',
+              url : '{{URL::route('administrator_manage_cod_location_mapping_get_district')}}',
               type: 'POST',
               dataType: 'JSON',
               data: data,
@@ -378,57 +359,12 @@
                 }
 
                 $(".district").show();
-                $(".payment_method").hide();
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
               }
             });
           }else{
             $(".district").hide();
-            $(".payment_method").hide();
             $("#district").empty();
             $("#district").append('<option value="">Silahkan Pilih Kecamatan</option>');
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
-          }
-        });
-
-        $("#district_id").change(function(){
-          if($("#district_id").val()!=""){
-            data.district_id = $("#district_id").val();
-
-            $.ajax({
-              url : '{{URL::route('administrator_manage_payment_method_location_mapping_get_payment_method')}}',
-              type: 'POST',
-              dataType: 'JSON',
-              data: data,
-              success : function(data){
-                $("#payment_method_id").empty();
-                $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
-
-                $.each(data,function(key,value){
-                  $("#payment_method_id").append('<option value="'+key+'">'+value+'</option>');
-                });
-
-                if(mode == "update" && $("#district_id").val() == district_id){
-                  $("#payment_method_id").val(district_id);
-                }
-
-                if(mode == "update"){
-                  $.spin("hide");
-                  $('#modal_view').modal('show');
-                  $('#modal_view').on('hidden.bs.modal',function(){
-                    $("#modal-content").html("");
-                  });
-                }
-
-                $(".payment_method").show();
-              }
-            });
-          }else{
-            $(".payment_method").hide();
-            $("#payment_method_id").empty();
-            $("#payment_method_id").append('<option value="">Silahkan Pilih Payment Method</option>');
           }
         });
       }
@@ -472,19 +408,19 @@
     function create(){
       initializeModal("create",$("#modal-template").html(),"Tambah Data Baru");
 
-      setSubmitModalEvent('{{URL::route('administrator_manage_payment_method_location_mapping_create')}}');
+      setSubmitModalEvent('{{URL::route('administrator_manage_cod_location_mapping_create')}}');
     }
 
     function edit(e) {
-      initializeModal("update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('province_id'),$(e).data('city_id'),$(e).data('district_id'),$(e).data('payment_method_id'),$(e).data('status'));
+      initializeModal("update",$("#modal-template").html(),"Edit Data",$(e).data('id'),$(e).data('province_id'),$(e).data('city_id'),$(e).data('district_id'),$(e).data('status'));
 
-      setSubmitModalEvent('{{URL::route('administrator_manage_payment_method_location_mapping_update')}}');
+      setSubmitModalEvent('{{URL::route('administrator_manage_cod_location_mapping_update')}}');
     }
 
     function destroy(e) {
       initializeModal("delete",$("#modal-template-delete").html(),"Delete Data",$(e).data('id'),$(e).data('name'));
 
-      setSubmitModalEvent('{{URL::route('administrator_manage_payment_method_location_mapping_destroy')}}');
+      setSubmitModalEvent('{{URL::route('administrator_manage_cod_location_mapping_destroy')}}');
     }
   </script>
 @stop

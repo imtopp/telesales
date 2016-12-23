@@ -25,7 +25,7 @@
     <li><a><i class="fa fa-credit-card"></i> Manage Payment <span class="fa fa-chevron-down"></span></a>
       <ul class="nav child_menu">
         <li id="manage-payment-method"><a href="{{URL::route('administrator_manage_payment_method')}}">Payment Method</a></li>
-        <li id="manage-payment-method-location-mapping"><a href="{{URL::route('administrator_manage_payment_method_location_mapping')}}">Payment Method Location Mapping</a></li>
+        <li id="manage-cod-location-mapping"><a href="{{URL::route('administrator_manage_cod_location_mapping')}}">COD Location Mapping</a></li>
       </ul>
     </li>
     <li><a><i class="fa fa-send"></i> Manage Courier <span class="fa fa-chevron-down"></span></a>

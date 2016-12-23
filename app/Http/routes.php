@@ -127,15 +127,14 @@ Route::group(['middleware' => ['auth.administrator']], function(){
   Route::post('/administrator/manage-payment/payment_method-read', ["as"=>"administrator_manage_payment_method_read","uses"=>"Backend\Administrator\Content\ManagePayment\PaymentMethodController@read"]);
   Route::post('/administrator/manage-payment/payment_method-update', ["as"=>"administrator_manage_payment_method_update","uses"=>"Backend\Administrator\Content\ManagePayment\PaymentMethodController@update"]);
   //Payment Method Location Mapping
-  Route::get('/administrator/manage-payment/payment_method_location_mapping', ["as"=>"administrator_manage_payment_method_location_mapping","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@index"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-read', ["as"=>"administrator_manage_payment_method_location_mapping_read","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@read"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-create', ["as"=>"administrator_manage_payment_method_location_mapping_create","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@create"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-update', ["as"=>"administrator_manage_payment_method_location_mapping_update","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@update"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-destroy', ["as"=>"administrator_manage_payment_method_location_mapping_destroy","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@destroy"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-get-province', ["as"=>"administrator_manage_payment_method_location_mapping_get_province","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getProvince"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-get-city', ["as"=>"administrator_manage_payment_method_location_mapping_get_city","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getCity"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-get-district', ["as"=>"administrator_manage_payment_method_location_mapping_get_district","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getDistrict"]);
-  Route::post('/administrator/manage-payment/payment_method_location_mapping-get-payment-method', ["as"=>"administrator_manage_payment_method_location_mapping_get_payment_method","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getPaymentMethod"]);
+  Route::get('/administrator/manage-payment/cod_location_mapping', ["as"=>"administrator_manage_cod_location_mapping","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@index"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-read', ["as"=>"administrator_manage_cod_location_mapping_read","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@read"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-create', ["as"=>"administrator_manage_cod_location_mapping_create","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@create"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-update', ["as"=>"administrator_manage_cod_location_mapping_update","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@update"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-destroy', ["as"=>"administrator_manage_cod_location_mapping_destroy","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@destroy"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-get-province', ["as"=>"administrator_manage_cod_location_mapping_get_province","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getProvince"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-get-city', ["as"=>"administrator_manage_cod_location_mapping_get_city","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getCity"]);
+  Route::post('/administrator/manage-payment/cod_location_mapping-get-district', ["as"=>"administrator_manage_cod_location_mapping_get_district","uses"=>"Backend\Administrator\Content\ManagePayment\LocationMappingController@getDistrict"]);
 
   //Manage Courier
   //Courier

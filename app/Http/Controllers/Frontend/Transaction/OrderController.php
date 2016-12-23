@@ -24,6 +24,8 @@ use App\Models\PaymentMethod as PaymentMethodModel;
 use App\Models\PaymentMethodLocationMapping as PaymentMethodLocationMappingModel;
 use App\Models\ViewActiveProduct as ViewActiveProductModel;
 use App\Models\ViewActiveLocation as ViewActiveLocationModel;
+use App\Models\ViewActivePaymentMethod as ViewActivePaymentMethodModel;
+use App\Models\ViewActiveCourier as ViewActiveCourierModel;
 use App\Models\Transaction as TransactionModel;
 use App\Models\TransactionStatus as TransactionStatusModel;
 use File;
@@ -80,11 +82,9 @@ class OrderController extends BaseController
 
   public function getPaymentMethodDropdown(){
     if(isset($_POST['district_id'])){
-      $payment_method = PaymentMethodModel::join('payment_method_location_mapping','payment_method_location_mapping.payment_method_id','=','payment_method.id')
-                                          ->join('view_active_location','view_active_location.district_id','=','payment_method_location_mapping.location_district_id')
-                                          ->where(['view_active_location.district_id'=>$_POST['district_id']])
-                                          ->whereRaw('payment_method.name <> "Virtual Account BSM" AND payment_method.status = "active"')
-                                          ->lists('payment_method.name','payment_method.id');
+      $payment_method = ViewActivePaymentMethodModel::where('location_district_id','=',$_POST['district_id'])
+                                              ->where('id','<>','2')
+                                              ->lists('name','id');
     }else{
       $payment_method = null;
     }
@@ -96,12 +96,9 @@ class OrderController extends BaseController
     if(isset($_POST['district_id']) && isset($_POST['payment_method_id'])){
       $payment_method = PaymentMethodModel::where(['id'=>$_POST['payment_method_id']])->first();
 
-      $courier = CourierModel::join('courier_package','courier_package.courier_id','=','courier.id')
-                            ->join('courier_location_mapping','courier_location_mapping.courier_package_id','=','courier_package.id')
-                            ->join('view_active_location','view_active_location.district_id','=','courier_location_mapping.location_district_id')
-                            ->where(['view_active_location.district_id'=>$_POST['district_id']])
-                            ->whereRaw($payment_method->id=='1'?'courier.id="1"':'courier.id<>"1"')
-                            ->lists('courier.name','courier.id');
+      $courier = ViewActiveCourierModel::where(['location_district_id'=>$_POST['district_id']])
+                              ->whereRaw($payment_method->id=='1'?'courier_id="1"':'courier_id<>"1"')
+                              ->lists('courier_name','courier_id');
     }else{
       $courier = null;
     }
@@ -110,12 +107,8 @@ class OrderController extends BaseController
 
   public function getCourierPackageDropdown(){
     if(isset($_POST['district_id']) && isset($_POST['courier_id'])){
-      $courier_package = CourierPackageModel::join('courier_location_mapping','courier_location_mapping.courier_package_id','=','courier_package.id')
-                                            ->join('courier','courier.id','=','courier_package.courier_id')
-                                            ->join('view_active_location','view_active_location.district_id','=','courier_location_mapping.location_district_id')
-                                            ->where(['view_active_location.district_id'=>$_POST['district_id']])
-                                            ->where(['courier.id'=>$_POST['courier_id']])
-                                            ->lists('courier_package.name','courier_package.id');
+      $courier_package = ViewActiveCourierModel::where(['location_district_id'=>$_POST['district_id'],'courier_id'=>$_POST['courier_id']])
+                              ->lists('courier_package_name','courier_package_id');
     }else{
       $courier_package = null;
     }
@@ -133,15 +126,11 @@ class OrderController extends BaseController
     }
 
     if(isset($data['courier_package_id']) && isset($data['district_id']) && isset($data['fg_code'])){
-      $courier_location_mapping = CourierLocationMappingModel::where(['courier_package_id'=>$data['courier_package_id'],'location_district_id'=>$data['district_id']])->first();
-      $courier_package_id = CourierPackageModel::where(["id"=>$data['courier_package_id']])->first();
-
       $product = ProductFgCodeModel::where(['fg_code'=>$data['fg_code']])->first();
-      $price_category = CourierPriceCategoryModel::where('status','=','active')
-                                                    ->whereRaw('(min_price <='.$product->price.' AND (max_price >= '.$product->price.' OR max_price = 0)) AND courier_id = '.$courier_package_id->courier_id)
-                                                    ->first();
-      $delivery_price = CourierDeliveryPriceModel::where(['courier_location_mapping_id'=>$courier_location_mapping->id,'courier_price_category_id'=>$price_category->id])
-                                                    ->first();var_dump($courier_location_mapping->id);die;
+
+      $delivery_price = ViewActiveCourierModel::where(['location_district_id'=>$_POST['district_id'],'courier_package_id'=>$data['courier_package_id']])
+                                              ->whereRaw('(min_price <='.$product->price.' AND (max_price >= '.$product->price.' OR max_price = 0))')
+                                              ->first();
 
       return response()->json(["delivery_price"=>isset($delivery_price->price)?$delivery_price->price:"Null"]);
     }else{

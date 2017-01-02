@@ -214,6 +214,7 @@ class OrderController extends BaseController
             $transaction = new TransactionModel; //creating model for transaction
             $payment_number = $payment_method->id == 2 ? "8899".$date->format("dmy").Auth::User()->id.str_pad(++$total_transaction,3,"0",STR_PAD_LEFT) : $date->format("ymd").++$total_transaction;
 
+            $transaction->customer_id = $customer_info->id;
             $transaction->customer_name = $customer_info->name;
             $transaction->customer_address = $customer_info->address;
             $transaction->customer_identity_type = $customer_info->identity_type;
@@ -228,10 +229,13 @@ class OrderController extends BaseController
             $transaction->product_name = $product->product;
             $transaction->product_colour = $product->colour;
             $transaction->product_fg_code = $product->fg_code;
+            $transaction->product_fg_code_id = $product->fg_code_id;
             $transaction->product_price = $product->price;
             $transaction->payment_method = $payment_method->name;
+            $transaction->payment_method_id = $payment_method->id;
             $transaction->courier = $courier->name;
             $transaction->courier_package = $courier_package->name;
+            $transaction->courier_package_id = $courier_package->id;
             $transaction->delivery_price = $delivery->delivery_price;
             $transaction->total_price = $product->price+$delivery->delivery_price;
             $transaction->refference_number = $date->format("ymd").++$total_transaction;
@@ -285,7 +289,7 @@ class OrderController extends BaseController
             DB::commit();
           }
 
-          if($success){
+          /*if($success){
             Mail::send('backend.telesales.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
                $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
                $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
@@ -295,7 +299,7 @@ class OrderController extends BaseController
               $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
               $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
             });
-          }
+          }*/
         }else{
           $success = false;
           $message = "Maaf stock barang sudah SOLD OUT.";

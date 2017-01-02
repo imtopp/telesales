@@ -289,7 +289,7 @@ class OrderController extends BaseController
             DB::commit();
           }
 
-          /*if($success){
+          if($success){
             Mail::send('backend.telesales.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
                $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
                $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
@@ -299,7 +299,7 @@ class OrderController extends BaseController
               $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
               $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
             });
-          }*/
+          }
         }else{
           $success = false;
           $message = "Maaf stock barang sudah SOLD OUT.";

@@ -108,6 +108,7 @@ class AuthController extends Controller {
     {
         $login_info = $request->only('email', 'password');
         $login_info['status'] = 'active';
+		
         if ($this->auth->attempt($login_info))
         {
             if($this->auth->user()->userRole->name=="Customer"){

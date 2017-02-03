@@ -170,7 +170,6 @@ class PasswordController extends Controller
         DB::beginTransaction();
         $user = User::where(['email'=>$request->email])->first();
         $date = DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')); //initialize date parameter
-
         $user->password = Hash::make($request->password);
         $user->update_date = $date->format('Y-m-d H:i:s');
         $user->update_by = 'Self Reset Password';
@@ -197,6 +196,12 @@ class PasswordController extends Controller
             $success = false;
             $message = $ex->getMessage();
           }
+		  
+		  if($success){
+			  DB::commit();
+		  }else{
+			  DB::rollback();
+		  }
         }
 
         return \Redirect::route('login')->withErrors([

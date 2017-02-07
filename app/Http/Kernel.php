@@ -37,15 +37,15 @@ class Kernel extends HttpKernel
 
         'auth.administrator' => [
             \App\Http\Middleware\Authenticate::class,
-            \App\Http\Middleware\Administrator::class,
+            \App\Http\Middleware\RoleAdministrator::class,
         ],
-        'auth.telesales' => [
+        'auth.agent' => [
             \App\Http\Middleware\Authenticate::class,
-            \App\Http\Middleware\Telesales::class,
+            \App\Http\Middleware\RoleAgent::class,
         ],
-        'auth.digitaliot' => [
+        'auth.order_fulfillment' => [
             \App\Http\Middleware\Authenticate::class,
-            \App\Http\Middleware\DigitalIOT::class,
+            \App\Http\Middleware\RoleOrderFulfillment::class,
         ],
     ];
 

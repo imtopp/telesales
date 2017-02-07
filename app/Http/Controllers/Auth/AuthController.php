@@ -108,17 +108,17 @@ class AuthController extends Controller {
     {
         $login_info = $request->only('email', 'password');
         $login_info['status'] = 'active';
-		
+
         if ($this->auth->attempt($login_info))
         {
             if($this->auth->user()->userRole->name=="Customer"){
               return redirect('/');
             }else if($this->auth->user()->userRole->name=="Administrator"){
               return \Redirect::route('administrator_home');
-            }else if($this->auth->user()->userRole->name=="Telesales"){
-              return \Redirect::route('telesales_home');
-            }else if($this->auth->user()->userRole->name=="Digital & IOT"){
-              return \Redirect::route('digitaliot_home');
+            }else if($this->auth->user()->userRole->name=="Agent"){
+              return \Redirect::route('agent_home');
+            }else if($this->auth->user()->userRole->name=="Order Fulfillment"){
+              return \Redirect::route('order_fulfillment_home');
             }
         }
 

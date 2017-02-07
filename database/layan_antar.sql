@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : Localwoy
-Source Server Version : 50621
-Source Host           : localhost:3306
-Source Database       : telesales
+Source Server         : localhost
+Source Server Version : 50620
+Source Host           : localhost:3307
+Source Database       : layan_antar
 
 Target Server Type    : MYSQL
-Target Server Version : 50621
+Target Server Version : 50620
 File Encoding         : 65001
 
-Date: 2017-01-02 10:21:06
+Date: 2017-02-07 14:23:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -12612,9 +12612,9 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$Cr0hNj.uHaS9xXo2qvUxzOX7KIVAL27a0Ljsf0v9OLnsK8Y9KEImm', '3', 'c7DJAzPcDclCbnV1VwrYzyaUc3IruqxUswbMSaurEzoyBedVe0GusgH8q2dK', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-11-03 03:13:45', 'TOPPunofficial@smartfren.com');
+INSERT INTO `users` VALUES ('1', 'taufiq.putra@smartfren.com', '$2y$10$Cr0hNj.uHaS9xXo2qvUxzOX7KIVAL27a0Ljsf0v9OLnsK8Y9KEImm', '3', 'wBXdfaeitAMxHEDwu5H6wNwcpi4jzBQeoP8T04K9XhCa4naS1DAJiBGEc5hd', 'active', '2016-09-19 07:51:50', 'Self Registration', '2016-11-03 03:13:45', 'TOPPunofficial@smartfren.com');
 INSERT INTO `users` VALUES ('4', 'yogi.hutomo@smartfren.com', '$2y$10$FaMfzrkkZ8bakPiRhdesqeY1UMU6gIbsGuVUkEekJ.HKJYgay6PuO', '1', '6fJGEyqvxJnsDyadu4TkUmnj5fLe3puvABnOxUJYIgFgGcmsxtluwF2gx1Vm', 'active', '2016-09-20 10:41:40', 'Self Registration', '2016-09-21 07:05:30', 'taufiq.putra@smartfren.com');
-INSERT INTO `users` VALUES ('13', 'TOPPcomptech@gmail.com', '$2y$10$Ik1Oz0SOoDML1PqlxTOepO2yMLHTfulqACQtAQV9ji9WaP8LJemne', '1', 'Ihs52Z2mtqU15WmJFc4JaBGwhUv9TWFjzv37v4vXXtOsdOmmMadw6GrqjW4G', 'active', '2016-11-01 03:16:15', 'Self Registration', '2016-11-01 03:16:15', 'Self Registration');
+INSERT INTO `users` VALUES ('13', 'TOPPcomptech@gmail.com', '$2y$10$Ik1Oz0SOoDML1PqlxTOepO2yMLHTfulqACQtAQV9ji9WaP8LJemne', '1', '7OIqIMIBTNhveKb9lMUK80nhlV8Clz5zeo1vjpYuLkaXZeRd9xiwjVW52FiI', 'active', '2016-11-01 03:16:15', 'Self Registration', '2016-11-01 03:16:15', 'Self Registration');
 INSERT INTO `users` VALUES ('15', 'wicaksono.adhi@smartfren.com', '$2y$10$P0Bzu5mtRjKO8kx9ZR4kEuCAdcPUAuPFajYJRdFmJLwaCYprggJWe', '3', null, 'active', '2016-11-18 09:32:24', 'Self Registration', '2016-11-18 09:32:24', 'Self Registration');
 
 -- ----------------------------
@@ -12636,8 +12636,8 @@ CREATE TABLE `user_roles` (
 -- ----------------------------
 INSERT INTO `user_roles` VALUES ('1', 'Administrator', '2016-09-16 17:34:11', 'System', '2016-09-16 17:34:11', 'System');
 INSERT INTO `user_roles` VALUES ('2', 'Customer', '2016-09-16 17:34:23', 'System', '2016-09-16 17:34:23', 'System');
-INSERT INTO `user_roles` VALUES ('3', 'Telesales', '2016-10-17 14:07:34', 'System', '2016-10-17 14:07:34', 'System');
-INSERT INTO `user_roles` VALUES ('4', 'Digital & IOT', '2016-11-11 14:39:47', 'System', '2016-11-11 14:39:47', 'System');
+INSERT INTO `user_roles` VALUES ('3', 'Agent', '2016-10-17 14:07:34', 'System', '2016-10-17 14:07:34', 'System');
+INSERT INTO `user_roles` VALUES ('4', 'Order Fulfillment', '2016-11-11 14:39:47', 'System', '2016-11-11 14:39:47', 'System');
 
 -- ----------------------------
 -- View structure for view_active_courier
@@ -12766,7 +12766,7 @@ WHERE
 	AND
 	product_colour.`name` IS NOT NULL
 	AND
-	product_fg_code.fg_code IS NOT NULL ; ;
+	product_fg_code.fg_code IS NOT NULL ;
 
 -- ----------------------------
 -- View structure for view_location
@@ -12785,7 +12785,7 @@ LEFT JOIN location_district district ON district.city_id=city.id
 WHERE
     city.`name` IS NOT NULL
     AND
-    district.`name` IS NOT NULL ; ;
+    district.`name` IS NOT NULL ;
 
 -- ----------------------------
 -- Function structure for decrypt_data
@@ -12821,3 +12821,4 @@ BEGIN
 END
 ;;
 DELIMITER ;
+SET FOREIGN_KEY_CHECKS=1;

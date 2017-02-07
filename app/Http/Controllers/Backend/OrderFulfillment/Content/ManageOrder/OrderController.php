@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\DigitalIOT\Content\ManageOrder;
+namespace App\Http\Controllers\Backend\OrderFulfillment\Content\ManageOrder;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -39,7 +39,7 @@ class OrderController extends BaseController
 
   //Render Page
   public function index(){
-    return view('backend/digitaliot/content/order/order');
+    return view('backend/order_fulfillment/content/order/order');
   }
 
   //Read All Data
@@ -77,7 +77,7 @@ class OrderController extends BaseController
         24 => 'airwaybill'
     );
 
-    $model = TransactionModel::select('transaction.*',DB::raw('IF(transaction.input_by="Self Order",transaction.input_by,"Telesales") AS channel'),'transaction_status.status')
+    $model = TransactionModel::select('transaction.*',DB::raw('IF(transaction.input_by="Self Order",transaction.input_by,"Agent") AS channel'),'transaction_status.status')
                               ->join(DB::raw('(SELECT transaction_status.* FROM transaction_status LEFT JOIN (SELECT transaction_id,MAX(input_date) AS input_date FROM transaction_status GROUP BY transaction_id) x ON transaction_status.transaction_id = x.transaction_id AND transaction_status.input_date = x.input_date WHERE x.input_date IS NOT NULL) transaction_status'),'transaction_status.transaction_id','=','transaction.id')
                               ->whereRaw('((transaction_status.status = "Order Received" AND (transaction.payment_method = "COD" OR transaction.payment_method = "Virtual Account BSM"))')
                               ->orWhere('transaction_status.status','=','Payment Complete')
@@ -295,7 +295,7 @@ class OrderController extends BaseController
 
     if($success){
       try{
-        $success = Mail::send('backend.digitaliot.emails.transaction_notification_customer_delivered', ["product"=>$transaction->product_name." - ".$transaction->product_colour,"date_created"=>$transaction->input_date,"courier"=>$transaction->courier,"airwaybill"=>$transaction->airwaybill], function($msg) use ($transaction,$key) {
+        $success = Mail::send('backend.order_fulfillment.emails.transaction_notification_customer_delivered', ["product"=>$transaction->product_name." - ".$transaction->product_colour,"date_created"=>$transaction->input_date,"courier"=>$transaction->courier,"airwaybill"=>$transaction->airwaybill], function($msg) use ($transaction,$key) {
           $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
           $msg->to($this->decrypt($key,$transaction->customer_email), $this->decrypt($key,$transaction->customer_name))->subject('Transaction notifications');
         });

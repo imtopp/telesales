@@ -3,11 +3,11 @@
 @section('title', 'Manage Order')
 
 @section('sidebar-menu')
-  @include('backend\digitaliot\layout\sidebar_menu_content')
+  @include('backend\order_fulfillment\layout\sidebar_menu_content')
 @endsection
 
 @section('sidebar-footer')
-  @include('backend\digitaliot\layout\sidebar_footer')
+  @include('backend\order_fulfillment\layout\sidebar_footer')
 @endsection
 
 @section('page-css-file')
@@ -230,7 +230,7 @@
         "serverSide": true,
         ajax: {
           data: {"_token":"{{ csrf_token() }}"},
-          url: "{{URL::route('digitaliot_manage_order_read')}}",
+          url: "{{URL::route('order_fulfillment_manage_order_read')}}",
           type: "POST",
           error: function(){  // error handling
             $(".lookup-error").html("");
@@ -410,19 +410,19 @@
     function paymentReceived(e) {
       initializeModal("delete",$("#modal-template-payment-received").html(),"Payment Received",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_payment_received')}}');
+      setSubmitModalEvent('{{URL::route('order_fulfillment_manage_order_payment_received')}}');
     }
 
     function cancel(e) {
       initializeModal("delete",$("#modal-template-cancel-order").html(),"Cancel Order",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_cancel_order')}}');
+      setSubmitModalEvent('{{URL::route('order_fulfillment_manage_order_cancel_order')}}');
     }
 
     function deliver(e) {
       initializeModal("update",$("#modal-template-deliver-order").html(),"Deliver Order",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('digitaliot_manage_order_deliver_order')}}');
+      setSubmitModalEvent('{{URL::route('order_fulfillment_manage_order_deliver_order')}}');
     }
   </script>
 @stop

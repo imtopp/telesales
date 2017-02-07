@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Telesales;
+namespace App\Http\Controllers\Backend\Agent;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -16,11 +16,11 @@ class MainController extends BaseController
 
   //public function for showing all product at frontpage
   public function home(){
-    return view('backend/telesales/content/home'); //display list_product view with all_category and all_product
+    return view('backend/agent/content/home'); //display list_product view with all_category and all_product
   }
 
-  public function telesales(){
-    redirect(URL::route('telesales_home'));
+  public function agent(){
+    redirect(URL::route('agent_home'));
   }
 
 }

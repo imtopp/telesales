@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Telesales\Content\ManageOrder;
+namespace App\Http\Controllers\Backend\Agent\Content\ManageOrder;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -41,7 +41,7 @@ class OrderController extends BaseController
 
   //Render Page
   public function index(){
-    return view('backend/telesales/content/order/order');
+    return view('backend/agent/content/order/order');
   }
 
   //Read All Data
@@ -290,12 +290,12 @@ class OrderController extends BaseController
           }
 
           if($success){
-            Mail::send('backend.telesales.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
+            Mail::send('backend.agent.emails.transaction_notification_administrator', ['customer_name'=>$_POST['name'],'customer_mdn'=>$_POST['mdn'],'delivery_address'=>$_POST['delivery_address'].", ".$location->district.", ".$location->city.", ".$location->province."."], function($msg) {
                $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
                $msg->to(config('settings.digital_iot_email'), 'Digital & IOT Team')->subject('Transaction notifications');
             });
 
-            Mail::send('backend.telesales.emails.transaction_notification_customer', [], function($msg) {
+            Mail::send('backend.agent.emails.transaction_notification_customer', [], function($msg) {
               $msg->from('administrator-'.str_replace(' ','_',strtolower(config('settings.app_name'))).'@smartfren.com', "Administrator - ".config('settings.app_name'));
               $msg->to($_POST['email'], $_POST['name'])->subject('Transaction notifications');
             });

@@ -3,11 +3,11 @@
 @section('title', 'Home')
 
 @section('sidebar-menu')
-  @include('backend\digitaliot\layout\sidebar_menu_content')
+  @include('backend\order_fulfillment\layout\sidebar_menu_content')
 @endsection
 
 @section('sidebar-footer')
-  @include('backend\digitaliot\layout\sidebar_footer')
+  @include('backend\order_fulfillment\layout\sidebar_footer')
 @endsection
 
 @section('content')
@@ -19,9 +19,9 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        <h4>Welcome to {{ config('settings.app_name') }} Digital & IOT Home Page</h4>
+        <h4>Welcome to {{ config('settings.app_name') }} Order Fulfillment Home Page</h4>
         <span>
-          Selamat datang di halaman telesales aplikasi {{ config('settings.app_name') }}. halaman telesales ini merupakan bagian dari aplikasi {{ config('settings.app_name') }}
+          Selamat datang di halaman order fulfillment aplikasi {{ config('settings.app_name') }}. halaman order fulfillment ini merupakan bagian dari aplikasi {{ config('settings.app_name') }}
           yang merupakan halaman untuk memproses order customer dari aplikasi {{ config('settings.app_name') }}.
         </span>
       </div>

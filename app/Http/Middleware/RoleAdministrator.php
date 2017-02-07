@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class DigitalIOT
+class RoleAdministrator
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class DigitalIOT
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::Check()?Auth::User()->userRole->name!="Digital & IOT":false) {
+        if (Auth::Check()?Auth::User()->userRole->name!="Administrator":false) {
              abort(404, 'Not Found');
         }
 

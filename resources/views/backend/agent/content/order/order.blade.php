@@ -3,11 +3,11 @@
 @section('title', 'Manage Order')
 
 @section('sidebar-menu')
-  @include('backend\telesales\layout\sidebar_menu_content')
+  @include('backend\agent\layout\sidebar_menu_content')
 @endsection
 
 @section('sidebar-footer')
-  @include('backend\telesales\layout\sidebar_footer')
+  @include('backend\agent\layout\sidebar_footer')
 @endsection
 
 @section('page-css-file')
@@ -306,7 +306,7 @@
         }],
         ajax: {
           data: {"_token":"{{ csrf_token() }}"},
-          url: "{{URL::route('telesales_manage_order_read')}}",
+          url: "{{URL::route('agent_manage_order_read')}}",
           type: "POST",
           error: function(){  // error handling
             $(".lookup-error").html("");
@@ -448,7 +448,7 @@
 
         $(function($) {
           $.ajax({
-            url : '{{URL::route('telesales_manage_order_get_category')}}',
+            url : '{{URL::route('agent_manage_order_get_category')}}',
             type: 'POST',
             dataType: 'JSON',
             data: data,
@@ -476,7 +476,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_product')}}',
+              url : '{{URL::route('agent_manage_order_get_product')}}',
               type: 'POST',
               dataType: 'JSON',
               data: data,
@@ -516,7 +516,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_product_detail')}}',
+              url : '{{URL::route('agent_manage_order_get_product_detail')}}',
               type: 'POST',
               dataType: 'JSON',
               data: data,
@@ -530,7 +530,7 @@
 
                 $(function(){
                   $.ajax({
-                    url : '{{URL::route('telesales_manage_order_get_colour')}}',
+                    url : '{{URL::route('agent_manage_order_get_colour')}}',
                     type: 'POST',
                     dataType: 'JSON',
                     data: data,
@@ -568,7 +568,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_colour_image')}}',
+              url : '{{URL::route('agent_manage_order_get_colour_image')}}',
               type: 'POST',
               dataType: 'JSON',
               data: data,
@@ -579,7 +579,7 @@
 
                 $(function(){
                   $.ajax({
-                    url : '{{URL::route('telesales_manage_order_get_fg_code')}}',
+                    url : '{{URL::route('agent_manage_order_get_fg_code')}}',
                     type: 'POST',
                     dataType: 'JSON',
                     data: data,
@@ -594,7 +594,7 @@
 
                       $(function(){
                         $.ajax({
-                          url : '{{URL::route('telesales_manage_order_get_province')}}',
+                          url : '{{URL::route('agent_manage_order_get_province')}}',
                           type: 'POST',
                           dataType: 'JSON',
                           data: {"_token":"{{ csrf_token() }}"},
@@ -629,7 +629,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_city')}}',
+              url : '{{URL::route('agent_manage_order_get_city')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","province_id":$("#province").val()},
@@ -694,7 +694,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_district')}}',
+              url : '{{URL::route('agent_manage_order_get_district')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","city_id":$("#city").val()},
@@ -753,7 +753,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_payment_method')}}',
+              url : '{{URL::route('agent_manage_order_get_payment_method')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val()},
@@ -806,7 +806,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_courier')}}',
+              url : '{{URL::route('agent_manage_order_get_courier')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val(),"payment_method_id":$("#payment_method_id").val()},
@@ -851,7 +851,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_courier_package')}}',
+              url : '{{URL::route('agent_manage_order_get_courier_package')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","district_id":$("#district_id").val(),"courier_id":$("#courier_id").val()},
@@ -890,7 +890,7 @@
             }
 
             $.ajax({
-              url : '{{URL::route('telesales_manage_order_get_delivery_price')}}',
+              url : '{{URL::route('agent_manage_order_get_delivery_price')}}',
               type: 'POST',
               dataType: 'JSON',
               data: {"_token":"{{ csrf_token() }}","courier_package_id":$("#courier_package_id").val(),"district_id":$("#district_id").val(),"fg_code":$("#fg_code").val()},
@@ -963,13 +963,13 @@
     function create(){
       initializeModal("create",$("#modal-template").html(),"Tambah Data Baru");
 
-      setSubmitModalEvent('{{URL::route('telesales_manage_order_create')}}');
+      setSubmitModalEvent('{{URL::route('agent_manage_order_create')}}');
     }
 
     function cancel(e) {
       initializeModal("delete",$("#modal-template-cancel-order").html(),"Cancel Order",$(e).data('id'),$(e).data('refference_number'));
 
-      setSubmitModalEvent('{{URL::route('telesales_manage_order_cancel_order')}}');
+      setSubmitModalEvent('{{URL::route('agent_manage_order_cancel_order')}}');
     }
   </script>
 @stop

@@ -3,11 +3,11 @@
 @section('title', 'Home')
 
 @section('sidebar-menu')
-  @include('backend\telesales\layout\sidebar_menu_content')
+  @include('backend\agent\layout\sidebar_menu_content')
 @endsection
 
 @section('sidebar-footer')
-  @include('backend\telesales\layout\sidebar_footer')
+  @include('backend\agent\layout\sidebar_footer')
 @endsection
 
 @section('content')
@@ -19,9 +19,9 @@
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        <h4>Welcome to {{ config('settings.app_name') }} Telesales Home Page</h4>
+        <h4>Welcome to {{ config('settings.app_name') }} agent Home Page</h4>
         <span>
-          Selamat datang di halaman telesales aplikasi {{ config('settings.app_name') }}. halaman telesales ini merupakan bagian dari aplikasi {{ config('settings.app_name') }}
+          Selamat datang di halaman agent aplikasi {{ config('settings.app_name') }}. halaman agent ini merupakan bagian dari aplikasi {{ config('settings.app_name') }}
           yang merupakan halaman untuk memasukan order customer dari aplikasi {{ config('settings.app_name') }}.
         </span>
       </div>

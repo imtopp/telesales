@@ -173,46 +173,46 @@ Route::group(['middleware' => ['auth.administrator']], function(){
   Route::post('/administrator/transction/list-read-status', ["as"=>"administrator_transaction_list_read_status","uses"=>"Backend\Administrator\Content\TransactionController@readStatus"]);
 });
 
-//Telesales Route Group
-Route::group(['middleware' => ['auth.telesales']], function(){
+//agent Route Group
+Route::group(['middleware' => ['auth.agent']], function(){
 
   //Dashboard
-  Route::get('/telesales', ["uses"=>"Backend\Telesales\MainController@telesales"]);
-  Route::get('/telesales/home', ["as"=>"telesales_home","uses"=>"Backend\Telesales\MainController@home"]);
+  Route::get('/agent', ["uses"=>"Backend\Agent\MainController@agent"]);
+  Route::get('/agent/home', ["as"=>"agent_home","uses"=>"Backend\Agent\MainController@home"]);
 
   //Manage Order
-  Route::get('/telesales/manage-order', ["as"=>"telesales_manage_order","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@index"]);
-  Route::post('/telesales/manage-order-read', ["as"=>"telesales_manage_order_read","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@read"]);
-  Route::post('/telesales/manage-order-create', ["as"=>"telesales_manage_order_create","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@create"]);
-  Route::post('/telesales/manage-order-cancel-order', ["as"=>"telesales_manage_order_cancel_order","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@cancelOrder"]);
-  Route::post('/telesales/manage-order-get-category', ["as"=>"telesales_manage_order_get_category","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getCategory"]);
-  Route::post('/telesales/manage-order-get-product', ["as"=>"telesales_manage_order_get_product","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getProduct"]);
-  Route::post('/telesales/manage-order-get-product-detail', ["as"=>"telesales_manage_order_get_product_detail","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getProductDetail"]);
-  Route::post('/telesales/manage-order-get-colour', ["as"=>"telesales_manage_order_get_colour","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getColour"]);
-  Route::post('/telesales/manage-order-get-colour-image', ["as"=>"telesales_manage_order_get_colour_image","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getColourImage"]);
-  Route::post('/telesales/manage-order-get-fg-code', ["as"=>"telesales_manage_order_get_fg_code","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getFgCode"]);
-  Route::post('/telesales/manage-order-get-province', ["as"=>"telesales_manage_order_get_province","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getProvince"]);
-  Route::post('/telesales/manage-order-get-city', ["as"=>"telesales_manage_order_get_city","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getCity"]);
-  Route::post('/telesales/manage-order-get-district', ["as"=>"telesales_manage_order_get_district","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getDistrict"]);
-  Route::post('/telesales/manage-order-get-courier', ["as"=>"telesales_manage_order_get_courier","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getCourier"]);
-  Route::post('/telesales/manage-order-get-courier-package', ["as"=>"telesales_manage_order_get_courier_package","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getCourierPackage"]);
-  Route::post('/telesales/manage-order-get-payment-method', ["as"=>"telesales_manage_order_get_payment_method","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getPaymentMethod"]);
-  Route::post('/telesales/manage-order-get-delivery-price', ["as"=>"telesales_manage_order_get_delivery_price","uses"=>"Backend\Telesales\Content\ManageOrder\OrderController@getDeliveryPrice"]);
+  Route::get('/agent/manage-order', ["as"=>"agent_manage_order","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@index"]);
+  Route::post('/agent/manage-order-read', ["as"=>"agent_manage_order_read","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@read"]);
+  Route::post('/agent/manage-order-create', ["as"=>"agent_manage_order_create","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@create"]);
+  Route::post('/agent/manage-order-cancel-order', ["as"=>"agent_manage_order_cancel_order","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@cancelOrder"]);
+  Route::post('/agent/manage-order-get-category', ["as"=>"agent_manage_order_get_category","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getCategory"]);
+  Route::post('/agent/manage-order-get-product', ["as"=>"agent_manage_order_get_product","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getProduct"]);
+  Route::post('/agent/manage-order-get-product-detail', ["as"=>"agent_manage_order_get_product_detail","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getProductDetail"]);
+  Route::post('/agent/manage-order-get-colour', ["as"=>"agent_manage_order_get_colour","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getColour"]);
+  Route::post('/agent/manage-order-get-colour-image', ["as"=>"agent_manage_order_get_colour_image","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getColourImage"]);
+  Route::post('/agent/manage-order-get-fg-code', ["as"=>"agent_manage_order_get_fg_code","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getFgCode"]);
+  Route::post('/agent/manage-order-get-province', ["as"=>"agent_manage_order_get_province","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getProvince"]);
+  Route::post('/agent/manage-order-get-city', ["as"=>"agent_manage_order_get_city","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getCity"]);
+  Route::post('/agent/manage-order-get-district', ["as"=>"agent_manage_order_get_district","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getDistrict"]);
+  Route::post('/agent/manage-order-get-courier', ["as"=>"agent_manage_order_get_courier","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getCourier"]);
+  Route::post('/agent/manage-order-get-courier-package', ["as"=>"agent_manage_order_get_courier_package","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getCourierPackage"]);
+  Route::post('/agent/manage-order-get-payment-method', ["as"=>"agent_manage_order_get_payment_method","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getPaymentMethod"]);
+  Route::post('/agent/manage-order-get-delivery-price', ["as"=>"agent_manage_order_get_delivery_price","uses"=>"Backend\Agent\Content\ManageOrder\OrderController@getDeliveryPrice"]);
 });
 
 //Digital & IOT Route Group
-Route::group(['middleware' => ['auth.digitaliot']], function(){
+Route::group(['middleware' => ['auth.order_fulfillment']], function(){
 
   //Dashboard
-  Route::get('/digital-iot', ["uses"=>"Backend\DigitalIOT\MainController@digitaliot"]);
-  Route::get('/digital-iot/home', ["as"=>"digitaliot_home","uses"=>"Backend\DigitalIOT\MainController@home"]);
+  Route::get('/order-fulfillment', ["uses"=>"Backend\OrderFulfillment\MainController@order_fulfillment"]);
+  Route::get('/order-fulfillment/home', ["as"=>"order_fulfillment_home","uses"=>"Backend\OrderFulfillment\MainController@home"]);
 
   //Manage Order
-  Route::get('/digital-iot/manage-order', ["as"=>"digitaliot_manage_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@index"]);
-  Route::post('/digital-iot/manage-order-read', ["as"=>"digitaliot_manage_order_read","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@read"]);
-  Route::post('/digital-iot/manage-order-payment-received', ["as"=>"digitaliot_manage_order_payment_received","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@paymentReceived"]);
-  Route::post('/digital-iot/manage-order-cancel-order', ["as"=>"digitaliot_manage_order_cancel_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@cancelOrder"]);
-  Route::post('/digital-iot/manage-order-deliver-order', ["as"=>"digitaliot_manage_order_deliver_order","uses"=>"Backend\DigitalIOT\Content\ManageOrder\OrderController@deliverOrder"]);
+  Route::get('/order-fulfillment/manage-order', ["as"=>"order_fulfillment_manage_order","uses"=>"Backend\OrderFulfillment\Content\ManageOrder\OrderController@index"]);
+  Route::post('/order-fulfillment/manage-order-read', ["as"=>"order_fulfillment_manage_order_read","uses"=>"Backend\OrderFulfillment\Content\ManageOrder\OrderController@read"]);
+  Route::post('/order-fulfillment/manage-order-payment-received', ["as"=>"order_fulfillment_manage_order_payment_received","uses"=>"Backend\OrderFulfillment\Content\ManageOrder\OrderController@paymentReceived"]);
+  Route::post('/order-fulfillment/manage-order-cancel-order', ["as"=>"order_fulfillment_manage_order_cancel_order","uses"=>"Backend\OrderFulfillment\Content\ManageOrder\OrderController@cancelOrder"]);
+  Route::post('/order-fulfillment/manage-order-deliver-order', ["as"=>"order_fulfillment_manage_order_deliver_order","uses"=>"Backend\OrderFulfillment\Content\ManageOrder\OrderController@deliverOrder"]);
 });
 
 Route::post('/schedule/update-expired-transaction', ["as"=>"update_expired_transaction","uses"=>"Schedule\ScheduleController@updateExpiredTransaction"]);
